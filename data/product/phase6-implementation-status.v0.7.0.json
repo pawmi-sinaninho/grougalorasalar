@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "0.7.0",
+  "releaseVersion": "0.7.0",
+  "phase": 6,
+  "status": "pre_live_manual_flow_implemented",
+  "automaticCriticalConfirmation": false,
+  "modelCalibrationStatus": "unvalidated",
+  "implemented": {
+    "repositoryScaffold": true,
+    "manualVerticalSlice": true,
+    "deterministicSolver": true,
+    "analysisSessionApi": true,
+    "annotatedOutput": true,
+    "immediateDeletion": true,
+    "referenceProposalBaseline": true,
+    "generalScreenshotDetector": false,
+    "lockedCorpusValidation": false,
+    "liveGameplayVerification": false
+  },
+  "testSummary": {
+    "pythonTestsPassed": 7,
+    "typecheckPassed": true,
+    "nextProductionBuildPassed": true,
+    "npmKnownVulnerabilities": 0,
+    "dockerComposeExecuted": false
+  },
+  "nextPhase": "Phase 7 — Pre-Live Validation"
+}

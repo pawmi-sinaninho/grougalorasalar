@@ -1,0 +1,98 @@
+{
+  "schemaVersion": "0.5.0",
+  "calibrationId": "user-reference-calibration-0.5.0",
+  "source": {
+    "path": "assets/reference/user_reference.png",
+    "width": 1951,
+    "height": 1267,
+    "sha256": "2756a38a4451117001dedeab2e4da14423d4aa50978bc4549c9ff0cb1340f976"
+  },
+  "originPixel": {
+    "x": 964.895,
+    "y": 441.7425
+  },
+  "basisX": {
+    "x": 66.75,
+    "y": 33.375
+  },
+  "basisY": {
+    "x": -66.75,
+    "y": 33.375
+  },
+  "estimatedResidualPx": 2.5,
+  "status": "provisional_single_reference",
+  "anchors": [
+    {
+      "id": "A0",
+      "logicalCell": {
+        "x": 0,
+        "y": 0
+      },
+      "pixel": {
+        "x": 964.895,
+        "y": 441.7425
+      },
+      "role": "origin"
+    },
+    {
+      "id": "AX",
+      "logicalCell": {
+        "x": 1,
+        "y": 0
+      },
+      "pixel": {
+        "x": 1031.645,
+        "y": 475.1175
+      },
+      "role": "x_axis"
+    },
+    {
+      "id": "AY",
+      "logicalCell": {
+        "x": 0,
+        "y": 1
+      },
+      "pixel": {
+        "x": 898.145,
+        "y": 475.1175
+      },
+      "role": "y_axis"
+    },
+    {
+      "id": "G-B1",
+      "logicalCell": {
+        "x": -1,
+        "y": -1
+      },
+      "pixel": {
+        "x": 964.895,
+        "y": 374.9925
+      },
+      "role": "visible_black_glyph"
+    },
+    {
+      "id": "G-W1",
+      "logicalCell": {
+        "x": 0,
+        "y": -3
+      },
+      "pixel": {
+        "x": 1165.145,
+        "y": 341.6175
+      },
+      "role": "visible_white_glyph"
+    },
+    {
+      "id": "PLAYER",
+      "logicalCell": {
+        "x": 7,
+        "y": -1
+      },
+      "pixel": {
+        "x": 1498.895,
+        "y": 641.9925000000001
+      },
+      "role": "visible_player_cell"
+    }
+  ]
+}

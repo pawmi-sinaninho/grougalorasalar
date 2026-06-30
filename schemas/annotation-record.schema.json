@@ -1,0 +1,385 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/grougalorasalar/annotation-record.schema.json",
+  "title": "ScreenshotAnnotationRecord",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "annotationId",
+    "image",
+    "consent",
+    "capture",
+    "splitGroup",
+    "labels",
+    "quality"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "0.5.0"
+    },
+    "annotationId": {
+      "type": "string"
+    },
+    "image": {
+      "type": "object",
+      "required": [
+        "imageId",
+        "width",
+        "height",
+        "sha256"
+      ],
+      "properties": {
+        "imageId": {
+          "type": "string"
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sha256": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "consent": {
+      "type": "object",
+      "required": [
+        "retentionAllowed",
+        "trainingAllowed",
+        "publicDisplayAllowed",
+        "redactionStatus"
+      ],
+      "properties": {
+        "retentionAllowed": {
+          "type": "boolean"
+        },
+        "trainingAllowed": {
+          "type": "boolean"
+        },
+        "publicDisplayAllowed": {
+          "type": "boolean"
+        },
+        "redactionStatus": {
+          "enum": [
+            "not_required",
+            "pending",
+            "completed"
+          ]
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "capture": {
+      "type": "object",
+      "required": [
+        "sessionId",
+        "resolutionFamily",
+        "windowMode",
+        "uiScale",
+        "language",
+        "clientVersion",
+        "visualPreset"
+      ],
+      "properties": {
+        "sessionId": {
+          "type": "string"
+        },
+        "resolutionFamily": {
+          "enum": [
+            "1920x1080",
+            "2560x1440",
+            "3840x2160",
+            "other"
+          ]
+        },
+        "windowMode": {
+          "enum": [
+            "fullscreen",
+            "borderless",
+            "windowed",
+            "unknown"
+          ]
+        },
+        "uiScale": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0.5,
+          "maximum": 2.5
+        },
+        "language": {
+          "enum": [
+            "fr",
+            "de",
+            "en",
+            "other",
+            "unknown"
+          ]
+        },
+        "clientVersion": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "visualPreset": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "compression": {
+          "enum": [
+            "lossless",
+            "lossy",
+            "unknown"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "splitGroup": {
+      "type": "object",
+      "required": [
+        "groupId",
+        "recommendedSplit"
+      ],
+      "properties": {
+        "groupId": {
+          "type": "string"
+        },
+        "recommendedSplit": {
+          "enum": [
+            "train",
+            "validation",
+            "locked_test",
+            "holdout_variant",
+            "unassigned"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "labels": {
+      "type": "object",
+      "required": [
+        "arenaPresent",
+        "registration",
+        "multiplayerDetected",
+        "playerCell",
+        "pillars",
+        "glyphPattern",
+        "actionBudget",
+        "spells",
+        "progress"
+      ],
+      "properties": {
+        "arenaPresent": {
+          "type": "boolean"
+        },
+        "registration": {
+          "type": "object"
+        },
+        "multiplayerDetected": {
+          "type": "boolean"
+        },
+        "playerCell": {
+          "anyOf": [
+            {
+              "type": "object",
+              "required": [
+                "x",
+                "y"
+              ],
+              "properties": {
+                "x": {
+                  "type": "integer"
+                },
+                "y": {
+                  "type": "integer"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "pillars": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "cell",
+              "spellType",
+              "visibility"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "cell": {
+                "type": "object",
+                "required": [
+                  "x",
+                  "y"
+                ],
+                "properties": {
+                  "x": {
+                    "type": "integer"
+                  },
+                  "y": {
+                    "type": "integer"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "spellType": {
+                "enum": [
+                  "indecision",
+                  "reflection",
+                  "repulsion",
+                  "attraction"
+                ]
+              },
+              "visibility": {
+                "enum": [
+                  "clear",
+                  "partial",
+                  "occluded"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "glyphPattern": {
+          "type": "object",
+          "required": [
+            "anchorCell",
+            "blackCells",
+            "whiteCells"
+          ],
+          "properties": {
+            "anchorCell": {
+              "type": "object",
+              "required": [
+                "x",
+                "y"
+              ],
+              "properties": {
+                "x": {
+                  "type": "integer"
+                },
+                "y": {
+                  "type": "integer"
+                }
+              },
+              "additionalProperties": false
+            },
+            "blackCells": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "x",
+                  "y"
+                ],
+                "properties": {
+                  "x": {
+                    "type": "integer"
+                  },
+                  "y": {
+                    "type": "integer"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "uniqueItems": true
+            },
+            "whiteCells": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "x",
+                  "y"
+                ],
+                "properties": {
+                  "x": {
+                    "type": "integer"
+                  },
+                  "y": {
+                    "type": "integer"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "uniqueItems": true
+            }
+          },
+          "additionalProperties": false
+        },
+        "actionBudget": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "spells": {
+          "type": "object"
+        },
+        "progress": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": false
+    },
+    "quality": {
+      "type": "object",
+      "required": [
+        "annotationStatus",
+        "annotatorCount",
+        "adjudicated",
+        "issues"
+      ],
+      "properties": {
+        "annotationStatus": {
+          "enum": [
+            "provisional_single_annotation",
+            "double_annotated",
+            "adjudicated_gold",
+            "rejected"
+          ]
+        },
+        "annotatorCount": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "adjudicated": {
+          "type": "boolean"
+        },
+        "issues": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

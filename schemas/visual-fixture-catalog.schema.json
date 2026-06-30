@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/grougalorasalar/visual-fixture-catalog.schema.json",
+  "title": "VisualFixtureCatalog",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "catalogId",
+    "fixtureCount",
+    "fixtures"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "0.5.0"
+    },
+    "catalogId": {
+      "const": "visual-contract-fixtures-v0.5.0"
+    },
+    "fixtureCount": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "fixtures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "fixtureId",
+          "category",
+          "inputCondition",
+          "expectedGate",
+          "expectedReasonCodes",
+          "criticalFields"
+        ],
+        "properties": {
+          "fixtureId": {
+            "type": "string",
+            "pattern": "^VFX-[0-9]{3}$"
+          },
+          "category": {
+            "enum": [
+              "ingest",
+              "registration",
+              "player",
+              "pillars",
+              "glyph",
+              "resources",
+              "progress",
+              "conflict",
+              "policy"
+            ]
+          },
+          "inputCondition": {
+            "type": "string"
+          },
+          "expectedGate": {
+            "enum": [
+              "ready_for_solver",
+              "review_required",
+              "rejected"
+            ]
+          },
+          "expectedReasonCodes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          },
+          "criticalFields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

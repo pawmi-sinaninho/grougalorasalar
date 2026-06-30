@@ -1,0 +1,548 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/grougalorasalar/turn-state.schema.json",
+  "title": "TurnState",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "arena",
+    "image",
+    "turnContext",
+    "player",
+    "pillars",
+    "glyphPattern",
+    "spellState",
+    "progress",
+    "confidence",
+    "rulesProfileId",
+    "visualProvenance",
+    "pillarSet"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "0.5.0"
+    },
+    "rulesProfileId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "arena": {
+      "type": "object",
+      "required": [
+        "arenaModelId",
+        "calibrationStatus",
+        "calibrationConfidence",
+        "calibrationConfirmed"
+      ],
+      "properties": {
+        "arenaModelId": {
+          "type": "string"
+        },
+        "calibrationStatus": {
+          "enum": [
+            "confirmed",
+            "manual",
+            "uncertain"
+          ]
+        },
+        "cellConfirmations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "cell",
+              "confirmedAsWalkable"
+            ],
+            "properties": {
+              "cell": {
+                "$ref": "#/$defs/cell"
+              },
+              "confirmedAsWalkable": {
+                "type": "boolean"
+              },
+              "note": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "calibrationConfidence": {
+          "$ref": "#/$defs/confidence"
+        },
+        "calibrationConfirmed": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "image": {
+      "type": "object",
+      "required": [
+        "width",
+        "height",
+        "arenaPresenceConfidence",
+        "arenaPresenceConfirmed"
+      ],
+      "properties": {
+        "width": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "canonicalTransformId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "sourceRetained": {
+          "type": "boolean"
+        },
+        "arenaPresenceConfidence": {
+          "$ref": "#/$defs/confidence"
+        },
+        "arenaPresenceConfirmed": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "turnContext": {
+      "type": "object",
+      "required": [
+        "turnNumber",
+        "multiplayerDetected",
+        "multiplayerConfidence",
+        "multiplayerConfirmed"
+      ],
+      "properties": {
+        "turnNumber": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "multiplayerDetected": {
+          "type": "boolean"
+        },
+        "actionBudgetVisible": {
+          "type": "boolean"
+        },
+        "multiplayerConfidence": {
+          "$ref": "#/$defs/confidence"
+        },
+        "multiplayerConfirmed": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "player": {
+      "type": "object",
+      "required": [
+        "currentCell",
+        "previousCell",
+        "confidence",
+        "confirmed"
+      ],
+      "properties": {
+        "currentCell": {
+          "$ref": "#/$defs/cell"
+        },
+        "previousCell": {
+          "$ref": "#/$defs/nullableCell"
+        },
+        "confidence": {
+          "$ref": "#/$defs/confidence"
+        },
+        "confirmed": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "pillars": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "cell",
+          "spellType",
+          "confidence",
+          "confirmed"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "cell": {
+            "$ref": "#/$defs/cell"
+          },
+          "spellType": {
+            "$ref": "#/$defs/spell"
+          },
+          "confidence": {
+            "$ref": "#/$defs/confidence"
+          },
+          "confirmed": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "glyphPattern": {
+      "type": "object",
+      "required": [
+        "blackOffsets",
+        "whiteOffsets",
+        "physicalBlackCells",
+        "physicalWhiteCells",
+        "confirmed",
+        "anchorCell",
+        "anchorConfirmed",
+        "blackConfidence",
+        "whiteConfidence",
+        "blackConfirmed",
+        "whiteConfirmed"
+      ],
+      "properties": {
+        "blackOffsets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/offset"
+          },
+          "uniqueItems": true
+        },
+        "whiteOffsets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/offset"
+          },
+          "uniqueItems": true
+        },
+        "physicalBlackCells": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/cell"
+          },
+          "uniqueItems": true
+        },
+        "physicalWhiteCells": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/cell"
+          },
+          "uniqueItems": true
+        },
+        "confirmed": {
+          "type": "boolean"
+        },
+        "anchorCell": {
+          "$ref": "#/$defs/cell"
+        },
+        "anchorConfirmed": {
+          "type": "boolean"
+        },
+        "blackConfidence": {
+          "$ref": "#/$defs/confidence"
+        },
+        "whiteConfidence": {
+          "$ref": "#/$defs/confidence"
+        },
+        "blackConfirmed": {
+          "type": "boolean"
+        },
+        "whiteConfirmed": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "spellState": {
+      "type": "object",
+      "required": [
+        "actionBudget",
+        "spells",
+        "actionBudgetConfidence",
+        "actionBudgetConfirmed"
+      ],
+      "properties": {
+        "actionBudget": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "spells": {
+          "type": "object",
+          "required": [
+            "indecision",
+            "reflection",
+            "repulsion",
+            "attraction"
+          ],
+          "properties": {
+            "indecision": {
+              "$ref": "#/$defs/spellState"
+            },
+            "reflection": {
+              "$ref": "#/$defs/spellState"
+            },
+            "repulsion": {
+              "$ref": "#/$defs/spellState"
+            },
+            "attraction": {
+              "$ref": "#/$defs/spellState"
+            }
+          },
+          "additionalProperties": false
+        },
+        "actionBudgetConfidence": {
+          "$ref": "#/$defs/confidence"
+        },
+        "actionBudgetConfirmed": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "progress": {
+      "type": "object",
+      "required": [
+        "crocoburio",
+        "dragon"
+      ],
+      "properties": {
+        "crocoburio": {
+          "$ref": "#/$defs/progressValue"
+        },
+        "dragon": {
+          "$ref": "#/$defs/progressValue"
+        }
+      },
+      "additionalProperties": false
+    },
+    "confidence": {
+      "type": "object",
+      "required": [
+        "overall",
+        "criticalFieldsConfirmed",
+        "warnings"
+      ],
+      "properties": {
+        "overall": {
+          "$ref": "#/$defs/confidence"
+        },
+        "criticalFieldsConfirmed": {
+          "type": "boolean"
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "pillarSet": {
+      "type": "object",
+      "required": [
+        "confidence",
+        "confirmed",
+        "completenessStatus"
+      ],
+      "properties": {
+        "confidence": {
+          "$ref": "#/$defs/confidence"
+        },
+        "confirmed": {
+          "type": "boolean"
+        },
+        "completenessStatus": {
+          "enum": [
+            "complete",
+            "possibly_incomplete",
+            "unknown"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "visualProvenance": {
+      "type": "object",
+      "required": [
+        "source",
+        "recognitionResultId",
+        "pipelineVersion",
+        "observationIds",
+        "manualOverrideCount",
+        "gateStatus"
+      ],
+      "properties": {
+        "source": {
+          "enum": [
+            "manual",
+            "automatic",
+            "hybrid",
+            "synthetic"
+          ]
+        },
+        "recognitionResultId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "pipelineVersion": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "observationIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "manualOverrideCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "gateStatus": {
+          "enum": [
+            "ready_for_solver",
+            "review_required",
+            "rejected",
+            "not_evaluated"
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$defs": {
+    "cell": {
+      "type": "object",
+      "required": [
+        "x",
+        "y"
+      ],
+      "properties": {
+        "x": {
+          "type": "integer"
+        },
+        "y": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false
+    },
+    "nullableCell": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/cell"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "offset": {
+      "type": "object",
+      "required": [
+        "dx",
+        "dy"
+      ],
+      "properties": {
+        "dx": {
+          "type": "integer"
+        },
+        "dy": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "spell": {
+      "enum": [
+        "indecision",
+        "reflection",
+        "repulsion",
+        "attraction"
+      ]
+    },
+    "spellState": {
+      "type": "object",
+      "required": [
+        "availability",
+        "value",
+        "confidence",
+        "confirmed"
+      ],
+      "properties": {
+        "availability": {
+          "enum": [
+            "available",
+            "unavailable",
+            "unknown"
+          ]
+        },
+        "value": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "confidence": {
+          "$ref": "#/$defs/confidence"
+        },
+        "confirmed": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "progressValue": {
+      "type": "object",
+      "required": [
+        "index",
+        "confidence",
+        "confirmed"
+      ],
+      "properties": {
+        "index": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "confidence": {
+          "$ref": "#/$defs/confidence"
+        },
+        "confirmed": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "0.5.0",
+  "policyId": "status-precedence-v0.5.0",
+  "precedence": [
+    {
+      "order": 1,
+      "status": "invalid_state",
+      "when": "Any structural contradiction, failed schema invariant, multiplayer=true, missing player, duplicate occupancy, or no usable arena calibration."
+    },
+    {
+      "order": 2,
+      "status": "blocked_unverified_rule",
+      "when": "A blocking unknown/hypothesis changes root legality, a candidate destination, terminal race result, or the identity/order of the best safe candidate."
+    },
+    {
+      "order": 3,
+      "status": "no_safe_solution",
+      "when": "At least one definite legal terminal candidate exists, all definite legal terminal candidates are adverse, and no conditional candidate can be safe."
+    },
+    {
+      "order": 4,
+      "status": "confirmation_required",
+      "when": "A complete best candidate exists and all non-authoritative dependencies are single_source_supported; no hypothesis/unknown can change the recommendation."
+    },
+    {
+      "order": 5,
+      "status": "solved",
+      "when": "A complete best candidate exists and every dependency affecting legality, result and ordering is authoritative and every critical visual field used is confirmed."
+    }
+  ],
+  "specialRules": [
+    "Candidate-set completeness is established before no_safe_solution is evaluated.",
+    "Unknown progress indices do not block per-turn race direction; they set terminalFightState=unknown.",
+    "A user confirmation does not promote rule authority. Outputs that depend on single-source rules remain confirmation_required."
+  ]
+}

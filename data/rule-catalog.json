@@ -1,0 +1,402 @@
+{
+  "catalogVersion": "0.5.0",
+  "updatedAt": "2026-06-28",
+  "statusValues": [
+    "verified_multi_source",
+    "verified_direct_observation",
+    "single_source_supported",
+    "screenshot_observed",
+    "hypothesis",
+    "unknown"
+  ],
+  "rules": [
+    {
+      "id": "R-001",
+      "name": "race_objective",
+      "status": "verified_multi_source",
+      "critical": true,
+      "statement": "Crocoburio must reach the Dofus before Grougalorasalar."
+    },
+    {
+      "id": "R-002",
+      "name": "no_normal_movement_points",
+      "status": "verified_multi_source",
+      "critical": true,
+      "statement": "The controlled avatar moves through special spells rather than normal PM."
+    },
+    {
+      "id": "R-003",
+      "name": "four_movement_spells",
+      "status": "verified_multi_source",
+      "critical": true,
+      "statement": "Indécision, Reflet, Rejet and Attrait are the movement actions."
+    },
+    {
+      "id": "R-004",
+      "name": "pillars_change_each_turn",
+      "status": "verified_multi_source",
+      "critical": true,
+      "statement": "Pillar layout is regenerated or changed each turn."
+    },
+    {
+      "id": "R-005",
+      "name": "glyph_pattern_changes_each_turn",
+      "status": "verified_multi_source",
+      "critical": true,
+      "statement": "The central black/white pattern changes each turn."
+    },
+    {
+      "id": "R-006",
+      "name": "relative_glyph_projection",
+      "status": "verified_multi_source",
+      "critical": true,
+      "statement": "The central pattern is projected as offsets around the final player cell."
+    },
+    {
+      "id": "R-007",
+      "name": "black_pillar_adverse",
+      "status": "verified_multi_source",
+      "critical": true,
+      "statement": "Any projected black glyph colliding with a pillar advances Grougalorasalar."
+    },
+    {
+      "id": "R-008",
+      "name": "black_priority",
+      "status": "single_source_supported",
+      "critical": true,
+      "statement": "If black and white projected glyphs both hit pillars, only Grougalorasalar advances."
+    },
+    {
+      "id": "R-009",
+      "name": "white_matching_recharge",
+      "status": "verified_multi_source",
+      "critical": true,
+      "statement": "A projected white glyph on a pillar recharges the spell represented by that pillar."
+    },
+    {
+      "id": "R-010",
+      "name": "indecision_contact_teleport",
+      "status": "verified_multi_source",
+      "critical": true,
+      "statement": "Indécision teleports to a contact target cell."
+    },
+    {
+      "id": "R-011",
+      "name": "reflection_range_two",
+      "status": "single_source_supported",
+      "critical": true,
+      "statement": "Reflet targets a pillar at exact range 2."
+    },
+    {
+      "id": "R-012",
+      "name": "reflection_formula",
+      "status": "verified_multi_source",
+      "critical": true,
+      "statement": "Reflet teleports to the cell symmetric to the source across the targeted pillar."
+    },
+    {
+      "id": "R-013",
+      "name": "repulsion_range",
+      "status": "single_source_supported",
+      "critical": true,
+      "statement": "Rejet targets a pillar at range 1 to 2."
+    },
+    {
+      "id": "R-014",
+      "name": "repulsion_distance",
+      "status": "verified_multi_source",
+      "critical": true,
+      "statement": "Rejet moves the player three cells away from the targeted pillar."
+    },
+    {
+      "id": "R-015",
+      "name": "attraction_range",
+      "status": "single_source_supported",
+      "critical": true,
+      "statement": "Attrait targets a pillar at range 1 to 6."
+    },
+    {
+      "id": "R-016",
+      "name": "attraction_distance",
+      "status": "verified_multi_source",
+      "critical": true,
+      "statement": "Attrait moves the player three cells toward the targeted pillar."
+    },
+    {
+      "id": "R-017",
+      "name": "attraction_line_only",
+      "status": "single_source_supported",
+      "critical": true,
+      "statement": "Attrait requires line alignment."
+    },
+    {
+      "id": "R-018",
+      "name": "stationary_adverse",
+      "status": "verified_multi_source",
+      "critical": true,
+      "statement": "Finishing without changing position advances Grougalorasalar."
+    },
+    {
+      "id": "R-019",
+      "name": "no_collision_croco_advance",
+      "status": "single_source_supported",
+      "critical": true,
+      "statement": "If neither black nor white projected glyph touches a pillar, Crocoburio advances."
+    },
+    {
+      "id": "R-020",
+      "name": "center_black_adverse",
+      "status": "single_source_supported",
+      "critical": true,
+      "statement": "Finishing on the physical central black glyph advances Grougalorasalar."
+    },
+    {
+      "id": "R-021",
+      "name": "center_white_recharge",
+      "status": "single_source_supported",
+      "critical": true,
+      "statement": "Finishing on the physical central white glyph recharges spells by one."
+    },
+    {
+      "id": "R-022",
+      "name": "dragon_track_length",
+      "status": "verified_multi_source",
+      "critical": false,
+      "statement": "Grougalorasalar reaches the Dofus after eight adverse advances.",
+      "value": 8
+    },
+    {
+      "id": "R-023",
+      "name": "croco_track_length_13",
+      "status": "single_source_supported",
+      "critical": false,
+      "statement": "JeuxOnLine states Crocoburio needs 13 advances.",
+      "value": 13,
+      "conflictsWith": [
+        "R-024"
+      ]
+    },
+    {
+      "id": "R-024",
+      "name": "croco_track_length_14",
+      "status": "single_source_supported",
+      "critical": false,
+      "statement": "DofusPourLesNoobs states Crocoburio needs 14 advances.",
+      "value": 14,
+      "conflictsWith": [
+        "R-023"
+      ]
+    },
+    {
+      "id": "R-025",
+      "name": "spells_can_become_unavailable",
+      "status": "verified_multi_source",
+      "critical": true,
+      "statement": "Gauge depletion can make a spell unavailable."
+    },
+    {
+      "id": "R-026",
+      "name": "cost_per_cast",
+      "status": "single_source_supported",
+      "critical": true,
+      "statement": "Phase-0 evidence suggests each movement spell costs one AP.",
+      "value": 1
+    },
+    {
+      "id": "R-027",
+      "name": "turn_action_budget",
+      "status": "unknown",
+      "critical": true,
+      "statement": "Total AP or cast budget per turn is not verified."
+    },
+    {
+      "id": "R-028",
+      "name": "multiple_casts_per_turn",
+      "status": "single_source_supported",
+      "critical": true,
+      "statement": "The turn may contain multiple movement casts."
+    },
+    {
+      "id": "R-029",
+      "name": "numeric_charge_bounds",
+      "status": "unknown",
+      "critical": true,
+      "statement": "Initial and maximum numeric charges are not verified."
+    },
+    {
+      "id": "R-030",
+      "name": "recharge_per_white_pillar",
+      "status": "hypothesis",
+      "critical": true,
+      "statement": "One matching white-pillar hit may restore one charge."
+    },
+    {
+      "id": "R-031",
+      "name": "multiple_white_hits_stack",
+      "status": "hypothesis",
+      "critical": true,
+      "statement": "Multiple matching white hits may stack recharge."
+    },
+    {
+      "id": "R-032",
+      "name": "recharge_timing",
+      "status": "single_source_supported",
+      "critical": true,
+      "statement": "Recharge appears intended for a following turn, exact timing not directly observed."
+    },
+    {
+      "id": "R-033",
+      "name": "movement_path_blocking",
+      "status": "unknown",
+      "critical": true,
+      "statement": "Whether movement ignores, fails on or truncates at intermediate blockers is unknown."
+    },
+    {
+      "id": "R-034",
+      "name": "occupied_destination",
+      "status": "unknown",
+      "critical": true,
+      "statement": "Destination behaviour when occupied by a pillar is unknown."
+    },
+    {
+      "id": "R-035",
+      "name": "edge_truncation",
+      "status": "unknown",
+      "critical": true,
+      "statement": "Movement behaviour at the board edge is unknown."
+    },
+    {
+      "id": "R-036",
+      "name": "multiplayer_shared_spells",
+      "status": "single_source_supported",
+      "critical": false,
+      "statement": "A 2026 forum report claims multiple players can join and share movement spells."
+    },
+    {
+      "id": "R-037",
+      "name": "four_visible_gauges",
+      "status": "screenshot_observed",
+      "critical": false,
+      "statement": "The supplied screenshot shows four colour-coded lower gauges."
+    },
+    {
+      "id": "R-038",
+      "name": "runner_identity",
+      "status": "verified_multi_source",
+      "critical": true,
+      "statement": "The lower-left runner is Crocoburio and is not the controlled main-board avatar."
+    },
+    {
+      "id": "R-039",
+      "name": "indecision_contact_metric",
+      "status": "unknown",
+      "critical": true,
+      "statement": "The exact logical metric for Indécision contact targeting is not directly verified."
+    },
+    {
+      "id": "R-040",
+      "name": "reflection_range_metric",
+      "status": "unknown",
+      "critical": true,
+      "statement": "The metric used to interpret Reflet range 2 is not directly verified."
+    },
+    {
+      "id": "R-041",
+      "name": "reflection_alignment",
+      "status": "unknown",
+      "critical": true,
+      "statement": "Whether Reflet requires cardinal alignment, permits diagonal alignment or uses another range geometry is unknown."
+    },
+    {
+      "id": "R-042",
+      "name": "repulsion_alignment",
+      "status": "unknown",
+      "critical": true,
+      "statement": "The exact cardinal and diagonal alignment set accepted by Rejet is unknown."
+    },
+    {
+      "id": "R-043",
+      "name": "attraction_range_metric",
+      "status": "unknown",
+      "critical": true,
+      "statement": "The exact logical metric used for Attrait range 1 to 6 is unknown."
+    },
+    {
+      "id": "R-044",
+      "name": "target_pillar_spell_type",
+      "status": "unknown",
+      "critical": true,
+      "statement": "Whether Reflet, Rejet and Attrait must target the matching coloured pillar or may target any pillar is unknown."
+    },
+    {
+      "id": "R-045",
+      "name": "target_line_of_sight",
+      "status": "unknown",
+      "critical": true,
+      "statement": "Line-of-sight requirements for movement-spell targets are unknown."
+    },
+    {
+      "id": "R-046",
+      "name": "stationary_reference",
+      "status": "unknown",
+      "critical": true,
+      "statement": "The exact reference for the stationary penalty—turn-start cell, previous resolved cell or zero casts—is unknown."
+    },
+    {
+      "id": "R-047",
+      "name": "recharge_during_adverse_resolution",
+      "status": "unknown",
+      "critical": true,
+      "statement": "Whether white recharge still applies when a black or stationary adverse condition advances Grougalorasalar is unknown."
+    },
+    {
+      "id": "R-048",
+      "name": "availability_only_repeat_cast",
+      "status": "unknown",
+      "critical": true,
+      "statement": "When only boolean spell availability is known, legality of a second cast of the same spell in the same turn is unknown."
+    },
+    {
+      "id": "R-049",
+      "name": "pillar_path_blocking",
+      "status": "unknown",
+      "critical": true,
+      "statement": "Whether pillars block intermediate displacement cells is unknown."
+    },
+    {
+      "id": "R-050",
+      "name": "direct_center_priority",
+      "status": "unknown",
+      "critical": true,
+      "statement": "Priority between direct central-glyph effects and projected black/white collisions is unknown."
+    },
+    {
+      "id": "R-051",
+      "name": "white_without_black_race_outcome",
+      "status": "single_source_supported",
+      "critical": true,
+      "statement": "A turn with one or more projected white pillar hits and no adverse condition advances Crocoburio and recharges matching spells."
+    },
+    {
+      "id": "R-052",
+      "name": "per_turn_progress_without_track_index",
+      "status": "verified_direct_observation",
+      "critical": false,
+      "statement": "Product contract: current track indices are not required to report which runner advances this turn; they are required only for terminal win/loss prediction."
+    },
+    {
+      "id": "R-053",
+      "name": "indecision_occupied_target",
+      "status": "unknown",
+      "critical": true,
+      "statement": "Whether Indécision may target a pillar-occupied contact cell is unknown."
+    },
+    {
+      "id": "R-054",
+      "name": "reflection_path_relevance",
+      "status": "unknown",
+      "critical": true,
+      "statement": "Whether intermediate cells matter for Reflet is unknown."
+    }
+  ]
+}

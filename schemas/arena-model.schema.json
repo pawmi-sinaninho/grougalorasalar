@@ -1,0 +1,270 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/grougalorasalar/arena-model.schema.json",
+  "title": "ArenaModel",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "arenaModelId",
+    "status",
+    "sourceReferences",
+    "coordinateSystem",
+    "projectionAnchorCell",
+    "projectionAnchorStatus",
+    "cellSets",
+    "cellClassificationPolicy",
+    "permanentBlockedCells",
+    "occlusionRegions",
+    "screenshotLayout",
+    "calibration",
+    "limitations"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "0.5.0"
+    },
+    "arenaModelId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "enum": [
+        "draft_single_reference",
+        "draft_multi_reference",
+        "verified"
+      ]
+    },
+    "sourceReferences": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "path",
+          "width",
+          "height",
+          "sha256",
+          "authority"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "authority": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "coordinateSystem": {
+      "type": "object",
+      "required": [
+        "type",
+        "originCell",
+        "originPixel",
+        "xAxis",
+        "yAxis",
+        "projectionFormula",
+        "inverseUse"
+      ],
+      "properties": {
+        "type": {
+          "const": "logical_square_grid_isometric_render"
+        },
+        "originCell": {
+          "$ref": "#/$defs/cell"
+        },
+        "originPixel": {
+          "$ref": "#/$defs/pixel"
+        },
+        "xAxis": {
+          "$ref": "#/$defs/axis"
+        },
+        "yAxis": {
+          "$ref": "#/$defs/axis"
+        },
+        "projectionFormula": {
+          "type": "string"
+        },
+        "inverseUse": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "projectionAnchorCell": {
+      "$ref": "#/$defs/cell"
+    },
+    "projectionAnchorStatus": {
+      "type": "string"
+    },
+    "cellSets": {
+      "type": "object",
+      "required": [
+        "walkableConfirmed",
+        "walkableObserved",
+        "boundaryUnverified",
+        "occludedUnknown",
+        "permanentBlocked"
+      ],
+      "properties": {
+        "walkableConfirmed": {
+          "$ref": "#/$defs/cellArray"
+        },
+        "walkableObserved": {
+          "$ref": "#/$defs/cellArray"
+        },
+        "boundaryUnverified": {
+          "$ref": "#/$defs/cellArray"
+        },
+        "occludedUnknown": {
+          "$ref": "#/$defs/cellArray"
+        },
+        "permanentBlocked": {
+          "$ref": "#/$defs/cellArray"
+        }
+      },
+      "additionalProperties": false
+    },
+    "cellClassificationPolicy": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "permanentBlockedCells": {
+      "$ref": "#/$defs/cellArray"
+    },
+    "occlusionRegions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "polygon",
+          "reason",
+          "affects"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "polygon": {
+            "type": "array",
+            "minItems": 3,
+            "items": {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "minItems": 2,
+              "maxItems": 2
+            }
+          },
+          "reason": {
+            "type": "string"
+          },
+          "affects": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "screenshotLayout": {
+      "type": "object"
+    },
+    "calibration": {
+      "type": "object"
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "$defs": {
+    "cell": {
+      "type": "object",
+      "required": [
+        "x",
+        "y"
+      ],
+      "properties": {
+        "x": {
+          "type": "integer"
+        },
+        "y": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false
+    },
+    "pixel": {
+      "type": "object",
+      "required": [
+        "x",
+        "y"
+      ],
+      "properties": {
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "axis": {
+      "type": "object",
+      "required": [
+        "screenDirection",
+        "basisPixel"
+      ],
+      "properties": {
+        "screenDirection": {
+          "type": "string"
+        },
+        "basisPixel": {
+          "$ref": "#/$defs/pixel"
+        }
+      },
+      "additionalProperties": false
+    },
+    "cellArray": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/cell"
+      },
+      "uniqueItems": true
+    }
+  },
+  "additionalProperties": false
+}

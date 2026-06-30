@@ -1,0 +1,113 @@
+{
+  "schemaVersion": "0.6.0",
+  "catalogId": "package-ownership-v0.6.0",
+  "releaseVersion": "0.6.0",
+  "runtime": {
+    "node": "24.17.0",
+    "python": "3.13.14",
+    "nextMajor": 16,
+    "fastapi": "0.138.1"
+  },
+  "packages": [
+    {
+      "path": "apps/web",
+      "owner": "web-ui",
+      "responsibilities": [
+        "routes",
+        "review UI",
+        "overlay interaction",
+        "i18n"
+      ],
+      "forbidden": [
+        "movement rules",
+        "image decoding"
+      ]
+    },
+    {
+      "path": "services/api",
+      "owner": "http-orchestrator",
+      "responsibilities": [
+        "API",
+        "session state",
+        "auth token",
+        "error envelope"
+      ],
+      "forbidden": [
+        "pixel heuristics",
+        "tactical ranking"
+      ]
+    },
+    {
+      "path": "python/grougal_vision",
+      "owner": "vision",
+      "responsibilities": [
+        "ingest",
+        "registration",
+        "observations"
+      ],
+      "forbidden": [
+        "tactical decisions",
+        "auto promotion"
+      ]
+    },
+    {
+      "path": "python/grougal_solver",
+      "owner": "solver",
+      "responsibilities": [
+        "preflight",
+        "enumeration",
+        "transition",
+        "ranking"
+      ],
+      "forbidden": [
+        "pixels",
+        "storage"
+      ]
+    },
+    {
+      "path": "python/grougal_storage",
+      "owner": "privacy-storage",
+      "responsibilities": [
+        "TTL",
+        "delete",
+        "consent isolation"
+      ],
+      "forbidden": [
+        "tactical semantics"
+      ]
+    },
+    {
+      "path": "packages/contracts",
+      "owner": "contract-authority",
+      "responsibilities": [
+        "schemas",
+        "generated bindings",
+        "manifest"
+      ],
+      "forbidden": [
+        "runtime side effects"
+      ]
+    },
+    {
+      "path": "packages/ui",
+      "owner": "ui-primitives",
+      "responsibilities": [
+        "accessible components",
+        "tokens"
+      ],
+      "forbidden": [
+        "analysis lifecycle"
+      ]
+    },
+    {
+      "path": "packages/fixtures",
+      "owner": "test-fixtures",
+      "responsibilities": [
+        "versioned fixture access"
+      ],
+      "forbidden": [
+        "production defaults"
+      ]
+    }
+  ]
+}

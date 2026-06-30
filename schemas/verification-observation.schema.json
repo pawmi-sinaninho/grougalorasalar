@@ -1,0 +1,196 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/grougalorasalar/verification-observation.schema.json",
+  "title": "VerificationObservation",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "observationId",
+    "capturedAt",
+    "environment",
+    "ruleIds",
+    "before",
+    "actions",
+    "after",
+    "review"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "0.5.0"
+    },
+    "observationId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "capturedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "environment": {
+      "type": "object",
+      "required": [
+        "clientVersion",
+        "language",
+        "resolution",
+        "uiScale",
+        "multiplayer"
+      ],
+      "properties": {
+        "clientVersion": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "language": {
+          "type": "string"
+        },
+        "resolution": {
+          "type": "object",
+          "required": [
+            "width",
+            "height"
+          ],
+          "properties": {
+            "width": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "height": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "uiScale": {
+          "type": [
+            "string",
+            "number",
+            "null"
+          ]
+        },
+        "multiplayer": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ruleIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^R-[0-9]{3}$"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "sourceFiles": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "videoTimestamps": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "before": {
+      "type": "object"
+    },
+    "actions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "spell",
+          "targetDescription"
+        ],
+        "properties": {
+          "spell": {
+            "enum": [
+              "indecision",
+              "reflection",
+              "repulsion",
+              "attraction",
+              "end_turn"
+            ]
+          },
+          "targetDescription": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "targetCell": {
+            "$ref": "#/$defs/nullableCell"
+          },
+          "targetPillarId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "after": {
+      "type": "object"
+    },
+    "observedEffect": {
+      "type": "string",
+      "minLength": 1
+    },
+    "review": {
+      "type": "object",
+      "required": [
+        "status",
+        "reviewer",
+        "notes"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "unreviewed",
+            "accepted",
+            "rejected",
+            "ambiguous"
+          ]
+        },
+        "reviewer": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$defs": {
+    "nullableCell": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "x": {
+          "type": "integer"
+        },
+        "y": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "x",
+        "y"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

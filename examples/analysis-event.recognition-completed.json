@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "0.6.0",
+  "eventId": "evt_demo01",
+  "analysisId": "ana_demo01",
+  "stateVersion": 4,
+  "type": "recognition.completed",
+  "occurredAt": "2026-06-28T10:04:00Z",
+  "payload": {
+    "gateStatus": "review_required"
+  }
+}

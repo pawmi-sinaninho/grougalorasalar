@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+node_modules/
+.next/
+test-results/
+playwright-report/
+.playwright-tmp/
+runtime/sessions/*
+!runtime/sessions/.gitkeep
+.env

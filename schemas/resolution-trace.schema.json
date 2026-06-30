@@ -1,0 +1,146 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/grougalorasalar/resolution-trace.schema.json",
+  "title": "ResolutionTrace",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "traceId",
+    "candidateId",
+    "events",
+    "result"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "0.5.0"
+    },
+    "traceId": {
+      "type": "string"
+    },
+    "candidateId": {
+      "type": "string"
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "index",
+          "type",
+          "message",
+          "ruleIds",
+          "data"
+        ],
+        "properties": {
+          "index": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "type": {
+            "enum": [
+              "preflight",
+              "root_enumeration",
+              "cast_cost",
+              "charge_cost",
+              "movement_formula",
+              "path_resolution",
+              "destination_validation",
+              "end_turn",
+              "stationary_check",
+              "center_check",
+              "glyph_projection",
+              "collision_collection",
+              "race_resolution",
+              "recharge_resolution",
+              "next_state",
+              "candidate_ranking",
+              "final_status"
+            ]
+          },
+          "message": {
+            "type": "string"
+          },
+          "ruleIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^R-[0-9]{3}$"
+            },
+            "uniqueItems": true
+          },
+          "data": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "result": {
+      "type": "object",
+      "required": [
+        "classification",
+        "finalCell",
+        "raceOutcome",
+        "statusDependencies"
+      ],
+      "properties": {
+        "classification": {
+          "enum": [
+            "definite",
+            "conditional",
+            "invalid"
+          ]
+        },
+        "finalCell": {
+          "$ref": "#/$defs/nullableCell"
+        },
+        "raceOutcome": {
+          "enum": [
+            "crocoburio_advance",
+            "dragon_advance",
+            "neutral",
+            "unknown"
+          ]
+        },
+        "statusDependencies": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^R-[0-9]{3}$"
+          },
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "cell": {
+      "type": "object",
+      "required": [
+        "x",
+        "y"
+      ],
+      "properties": {
+        "x": {
+          "type": "integer"
+        },
+        "y": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false
+    },
+    "nullableCell": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/cell"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  }
+}

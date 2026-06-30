@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "0.6.0",
+  "error": {
+    "code": "API-STATE-VERSION-CONFLICT",
+    "httpStatus": 409,
+    "messageKey": "errors.stateVersionConflict",
+    "requestId": "req_01",
+    "retryable": false,
+    "fieldErrors": [],
+    "details": {
+      "currentStateVersion": 13
+    }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "0.7.0",
+  "environment": {
+    "python": "3.13.5 host / isolated dependencies",
+    "cpuMode": "shared container"
+  },
+  "samples": {
+    "solverFixture": {
+      "count": 130,
+      "medianMs": 0.737,
+      "p95Ms": 1.06,
+      "maxMs": 4.172
+    },
+    "referenceImageNormalisation": {
+      "count": 5,
+      "medianMs": 5088.4,
+      "p95Ms": 5111.342,
+      "maxMs": 5123.621
+    },
+    "baselineRecognitionProposal": {
+      "count": 5,
+      "medianMs": 1.256,
+      "p95Ms": 1.322,
+      "maxMs": 1.387
+    },
+    "sessionMutation": {
+      "count": 100,
+      "medianMs": 4.351,
+      "p95Ms": 5.487,
+      "maxMs": 11.579
+    },
+    "sessionDelete": {
+      "count": 10,
+      "medianMs": 0.512,
+      "p95Ms": 0.567,
+      "maxMs": 0.593
+    }
+  },
+  "notes": [
+    "Not a production hardware benchmark.",
+    "Docker startup and browser network timings not measured in this environment."
+  ]
+}

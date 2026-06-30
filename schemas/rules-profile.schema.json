@@ -1,0 +1,687 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/grougalorasalar/rules-profile.schema.json",
+  "title": "RulesProfile",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "profileId",
+    "purpose",
+    "authority",
+    "sourceRuleIds",
+    "movement",
+    "resources",
+    "resolution",
+    "progress"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "0.5.0"
+    },
+    "profileId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "purpose": {
+      "enum": [
+        "production",
+        "developer_review",
+        "specification_test_only"
+      ]
+    },
+    "authority": {
+      "enum": [
+        "verified",
+        "mixed",
+        "hypothesis_only"
+      ]
+    },
+    "sourceRuleIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^R-[0-9]{3}$"
+      },
+      "uniqueItems": true
+    },
+    "movement": {
+      "type": "object",
+      "required": [
+        "indecision",
+        "reflection",
+        "repulsion",
+        "attraction",
+        "pathBlockers",
+        "lineOfSightBlockers"
+      ],
+      "properties": {
+        "indecision": {
+          "type": "object",
+          "required": [
+            "contactMetric",
+            "lineOfSight",
+            "destinationOccupancy"
+          ],
+          "properties": {
+            "contactMetric": {
+              "enum": [
+                "orthogonal",
+                "chebyshev",
+                "unknown"
+              ]
+            },
+            "lineOfSight": {
+              "enum": [
+                "ignored",
+                "required_clear",
+                "unknown"
+              ]
+            },
+            "destinationOccupancy": {
+              "enum": [
+                "invalid",
+                "allowed",
+                "unknown"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "reflection": {
+          "type": "object",
+          "required": [
+            "targetPillarType",
+            "rangeMetric",
+            "minRange",
+            "maxRange",
+            "alignment",
+            "lineOfSight",
+            "pathMode",
+            "destinationOccupancy",
+            "edgeMode"
+          ],
+          "properties": {
+            "targetPillarType": {
+              "enum": [
+                "matching_spell_type",
+                "any_pillar",
+                "unknown"
+              ]
+            },
+            "rangeMetric": {
+              "enum": [
+                "manhattan",
+                "chebyshev",
+                "aligned_steps",
+                "unknown"
+              ]
+            },
+            "minRange": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "maxRange": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "alignment": {
+              "enum": [
+                "cardinal",
+                "cardinal_or_diagonal",
+                "metric_only",
+                "unknown"
+              ]
+            },
+            "lineOfSight": {
+              "enum": [
+                "ignored",
+                "required_clear",
+                "unknown"
+              ]
+            },
+            "pathMode": {
+              "enum": [
+                "teleport_ignore_intermediate",
+                "fail_if_blocked",
+                "truncate_before_blocker",
+                "unknown"
+              ]
+            },
+            "destinationOccupancy": {
+              "enum": [
+                "invalid",
+                "allowed",
+                "unknown"
+              ]
+            },
+            "edgeMode": {
+              "enum": [
+                "invalid",
+                "truncate_to_last_walkable",
+                "unknown"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "repulsion": {
+          "type": "object",
+          "required": [
+            "targetPillarType",
+            "rangeMetric",
+            "minRange",
+            "maxRange",
+            "allowedAlignments",
+            "lineOfSight",
+            "distance",
+            "pathMode",
+            "destinationOccupancy",
+            "edgeMode"
+          ],
+          "properties": {
+            "targetPillarType": {
+              "enum": [
+                "matching_spell_type",
+                "any_pillar",
+                "unknown"
+              ]
+            },
+            "rangeMetric": {
+              "enum": [
+                "manhattan",
+                "chebyshev",
+                "aligned_steps",
+                "unknown"
+              ]
+            },
+            "minRange": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "maxRange": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "allowedAlignments": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "enum": [
+                  "cardinal",
+                  "diagonal"
+                ]
+              },
+              "uniqueItems": true
+            },
+            "lineOfSight": {
+              "enum": [
+                "ignored",
+                "required_clear",
+                "unknown"
+              ]
+            },
+            "distance": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 1
+            },
+            "pathMode": {
+              "enum": [
+                "teleport_ignore_intermediate",
+                "fail_if_blocked",
+                "truncate_before_blocker",
+                "unknown"
+              ]
+            },
+            "destinationOccupancy": {
+              "enum": [
+                "invalid",
+                "allowed",
+                "unknown"
+              ]
+            },
+            "edgeMode": {
+              "enum": [
+                "invalid",
+                "truncate_to_last_walkable",
+                "unknown"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "attraction": {
+          "type": "object",
+          "required": [
+            "targetPillarType",
+            "rangeMetric",
+            "minRange",
+            "maxRange",
+            "alignment",
+            "lineOfSight",
+            "distance",
+            "pathMode",
+            "destinationOccupancy",
+            "edgeMode",
+            "shortRangeBehaviour"
+          ],
+          "properties": {
+            "targetPillarType": {
+              "enum": [
+                "matching_spell_type",
+                "any_pillar",
+                "unknown"
+              ]
+            },
+            "rangeMetric": {
+              "enum": [
+                "manhattan",
+                "chebyshev",
+                "aligned_steps",
+                "unknown"
+              ]
+            },
+            "minRange": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "maxRange": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "alignment": {
+              "enum": [
+                "cardinal",
+                "cardinal_or_diagonal",
+                "metric_only",
+                "unknown"
+              ]
+            },
+            "lineOfSight": {
+              "enum": [
+                "ignored",
+                "required_clear",
+                "unknown"
+              ]
+            },
+            "distance": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 1
+            },
+            "pathMode": {
+              "enum": [
+                "teleport_ignore_intermediate",
+                "fail_if_blocked",
+                "truncate_before_blocker",
+                "unknown"
+              ]
+            },
+            "destinationOccupancy": {
+              "enum": [
+                "invalid",
+                "allowed",
+                "unknown"
+              ]
+            },
+            "edgeMode": {
+              "enum": [
+                "invalid",
+                "truncate_to_last_walkable",
+                "unknown"
+              ]
+            },
+            "shortRangeBehaviour": {
+              "enum": [
+                "stop_adjacent_to_pillar",
+                "overshoot_pillar",
+                "action_invalid",
+                "unknown"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "pathBlockers": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "enum": [
+              "pillars",
+              "permanent_blocked"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "lineOfSightBlockers": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "enum": [
+              "pillars",
+              "permanent_blocked"
+            ]
+          },
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "resources": {
+      "type": "object",
+      "required": [
+        "actionBudgetPerTurn",
+        "movementActionCost",
+        "trackingMode",
+        "chargeCostPerCast",
+        "maxCharges",
+        "rechargePerMatchingPillar",
+        "multipleWhiteHitsStack",
+        "centerWhiteRecharge",
+        "rechargeTiming",
+        "rechargeWhenAdverse"
+      ],
+      "properties": {
+        "actionBudgetPerTurn": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "movementActionCost": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "trackingMode": {
+          "enum": [
+            "availability_only",
+            "numeric",
+            "unknown"
+          ]
+        },
+        "chargeCostPerCast": {
+          "type": "object",
+          "required": [
+            "indecision",
+            "reflection",
+            "repulsion",
+            "attraction"
+          ],
+          "properties": {
+            "indecision": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "reflection": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "repulsion": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "attraction": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            }
+          },
+          "additionalProperties": false
+        },
+        "maxCharges": {
+          "type": "object",
+          "required": [
+            "indecision",
+            "reflection",
+            "repulsion",
+            "attraction"
+          ],
+          "properties": {
+            "indecision": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "reflection": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "repulsion": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "attraction": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            }
+          },
+          "additionalProperties": false
+        },
+        "rechargePerMatchingPillar": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "multipleWhiteHitsStack": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "centerWhiteRecharge": {
+          "enum": [
+            "all_spells_plus_one",
+            "matching_only",
+            "none",
+            "unknown"
+          ]
+        },
+        "rechargeTiming": {
+          "enum": [
+            "before_progress",
+            "after_progress_same_turn",
+            "next_turn",
+            "unknown"
+          ]
+        },
+        "rechargeWhenAdverse": {
+          "enum": [
+            "apply",
+            "suppress",
+            "unknown"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "resolution": {
+      "type": "object",
+      "required": [
+        "blackPriority",
+        "stationaryReference",
+        "stationaryOutcome",
+        "centerBlackOutcome",
+        "centerBlackPriority",
+        "noBlackNoWhiteOutcome",
+        "whiteWithoutBlackOutcome"
+      ],
+      "properties": {
+        "blackPriority": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "stationaryReference": {
+          "enum": [
+            "turn_start_cell",
+            "previous_resolved_cell",
+            "zero_casts",
+            "unknown"
+          ]
+        },
+        "stationaryOutcome": {
+          "enum": [
+            "dragon_advance",
+            "neutral",
+            "unknown"
+          ]
+        },
+        "centerBlackOutcome": {
+          "enum": [
+            "dragon_advance",
+            "neutral",
+            "unknown"
+          ]
+        },
+        "centerBlackPriority": {
+          "enum": [
+            "same_as_projected_black",
+            "before_projection",
+            "after_projection",
+            "unknown"
+          ]
+        },
+        "noBlackNoWhiteOutcome": {
+          "enum": [
+            "crocoburio_advance",
+            "neutral",
+            "dragon_advance",
+            "unknown"
+          ]
+        },
+        "whiteWithoutBlackOutcome": {
+          "enum": [
+            "crocoburio_advance_and_recharge",
+            "recharge_only",
+            "unknown"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "progress": {
+      "type": "object",
+      "required": [
+        "dragonTrackLength",
+        "crocoburioTrackLength"
+      ],
+      "properties": {
+        "dragonTrackLength": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "crocoburioTrackLength": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "spellNullableInt": {
+      "type": "object",
+      "required": [
+        "indecision",
+        "reflection",
+        "repulsion",
+        "attraction"
+      ],
+      "properties": {
+        "indecision": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "reflection": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "repulsion": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "attraction": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

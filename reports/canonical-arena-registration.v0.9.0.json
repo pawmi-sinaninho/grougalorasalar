@@ -1,0 +1,345 @@
+{
+  "schemaVersion": "0.9.0",
+  "images": [
+    {
+      "source": "assets/reference/user_reference.png",
+      "output": "assets/arena/validation/canonical-reference.overlay.png",
+      "width": 1951,
+      "height": 1267,
+      "registration": {
+        "status": "canonical_identity",
+        "accepted": true,
+        "medianResidualCell": 0.0,
+        "p95ResidualCell": 0.0,
+        "confidence": 1.0,
+        "inlierCount": null,
+        "spatialRegionCount": null,
+        "reasonCodes": []
+      }
+    },
+    {
+      "source": "assets/reference/empty_arena.jpeg",
+      "output": "assets/arena/validation/empty-arena.overlay.png",
+      "width": 1910,
+      "height": 970,
+      "registration": {
+        "status": "accepted_review_required",
+        "accepted": true,
+        "referenceToImageAffine": [
+          [
+            0.6439939982741252,
+            2.3601380444710166e-05,
+            312.84912086433985
+          ],
+          [
+            -2.3601380444710166e-05,
+            0.6439939982741252,
+            18.804303567570535
+          ]
+        ],
+        "imageToReferenceAffine": [
+          [
+            1.5528095003010058,
+            -5.690805795237302e-05,
+            -485.7940169225674
+          ],
+          [
+            5.690805795237302e-05,
+            1.5528095003010058,
+            -29.21730486216812
+          ]
+        ],
+        "originImage": {
+          "x": 934.246136,
+          "y": 303.261049
+        },
+        "basisXImage": {
+          "x": 42.987387,
+          "y": 21.491724
+        },
+        "basisYImage": {
+          "x": -42.985812,
+          "y": 21.494875
+        },
+        "inlierCount": 118,
+        "goodMatchCount": 131,
+        "spatialRegionCount": 7,
+        "medianResidualCell": 0.02014,
+        "p95ResidualCell": 0.055749,
+        "ambiguityMargin": 1.0,
+        "confidence": 0.888766,
+        "reasonCodes": []
+      }
+    },
+    {
+      "source": "assets/reference/user_hidden_cells_annotation.png",
+      "output": "assets/arena/validation/user-hidden-cells.overlay.png",
+      "width": 1638,
+      "height": 1002,
+      "registration": {
+        "status": "accepted_review_required",
+        "accepted": true,
+        "referenceToImageAffine": [
+          [
+            0.5930517196322986,
+            4.2254312188819974e-05,
+            227.94263475709064
+          ],
+          [
+            -4.2254312188819974e-05,
+            0.5930517196322986,
+            11.451037149878564
+          ]
+        ],
+        "imageToReferenceAffine": [
+          [
+            1.6861935676429751,
+            -0.00012013952081977245,
+            -384.35402879688223
+          ],
+          [
+            0.00012013952081977245,
+            1.6861935676429751,
+            -19.336050103880094
+          ]
+        ],
+        "originImage": {
+          "x": 800.193939,
+          "y": 273.386415
+        },
+        "basisXImage": {
+          "x": 39.587613,
+          "y": 19.790281
+        },
+        "basisYImage": {
+          "x": -39.584792,
+          "y": 19.795922
+        },
+        "inlierCount": 146,
+        "goodMatchCount": 366,
+        "spatialRegionCount": 6,
+        "medianResidualCell": 0.026184,
+        "p95ResidualCell": 0.054083,
+        "ambiguityMargin": 0.842466,
+        "confidence": 0.903038,
+        "reasonCodes": []
+      }
+    },
+    {
+      "source": "packages/fixtures/real/phase7/round-01.png",
+      "output": "assets/arena/validation/round-01.overlay.png",
+      "width": 2048,
+      "height": 1151,
+      "registration": {
+        "status": "accepted_review_required",
+        "accepted": true,
+        "referenceToImageAffine": [
+          [
+            0.7422118775622576,
+            0.00017487721519780222,
+            284.19312219373734
+          ],
+          [
+            -0.00017487721519780222,
+            0.7422118775622576,
+            13.619517956095098
+          ]
+        ],
+        "imageToReferenceAffine": [
+          [
+            1.3473240926423764,
+            -0.00031745151541372457,
+            -382.8959169582668
+          ],
+          [
+            0.00031745151541372457,
+            1.3473240926423764,
+            -18.44012220973294
+          ]
+        ],
+        "originImage": {
+          "x": 1000.426902,
+          "y": 341.31731
+        },
+        "basisXImage": {
+          "x": 49.548479,
+          "y": 24.759648
+        },
+        "basisYImage": {
+          "x": -49.536806,
+          "y": 24.782994
+        },
+        "inlierCount": 145,
+        "goodMatchCount": 348,
+        "spatialRegionCount": 9,
+        "medianResidualCell": 0.025694,
+        "p95ResidualCell": 0.048515,
+        "ambiguityMargin": 0.82069,
+        "confidence": 0.905342,
+        "reasonCodes": []
+      }
+    },
+    {
+      "source": "packages/fixtures/real/phase7/round-02.png",
+      "output": "assets/arena/validation/round-02.overlay.png",
+      "width": 2048,
+      "height": 1151,
+      "registration": {
+        "status": "accepted_review_required",
+        "accepted": true,
+        "referenceToImageAffine": [
+          [
+            0.7420507453844916,
+            -2.9669342156206586e-05,
+            284.7415909329873
+          ],
+          [
+            2.9669342156206586e-05,
+            0.7420507453844916,
+            13.441621685372397
+          ]
+        ],
+        "imageToReferenceAffine": [
+          [
+            1.3476167292079468,
+            5.3881627480316785e-05,
+            -383.72325569903194
+          ],
+          [
+            -5.3881627480316785e-05,
+            1.3476167292079468,
+            -18.098811910561356
+          ]
+        ],
+        "originImage": {
+          "x": 1000.729539,
+          "y": 341.265601
+        },
+        "basisXImage": {
+          "x": 49.530897,
+          "y": 24.767924
+        },
+        "basisYImage": {
+          "x": -49.532877,
+          "y": 24.763963
+        },
+        "inlierCount": 159,
+        "goodMatchCount": 356,
+        "spatialRegionCount": 9,
+        "medianResidualCell": 0.023295,
+        "p95ResidualCell": 0.055162,
+        "ambiguityMargin": 0.886792,
+        "confidence": 0.908739,
+        "reasonCodes": []
+      }
+    },
+    {
+      "source": "packages/fixtures/real/phase7/round-03.png",
+      "output": "assets/arena/validation/round-03.overlay.png",
+      "width": 2048,
+      "height": 1151,
+      "registration": {
+        "status": "accepted_review_required",
+        "accepted": true,
+        "referenceToImageAffine": [
+          [
+            0.741805788459909,
+            -0.0004155507208382045,
+            285.2081190831034
+          ],
+          [
+            0.0004155507208382045,
+            0.741805788459909,
+            13.314654059826921
+          ]
+        ],
+        "imageToReferenceAffine": [
+          [
+            1.3480613143577789,
+            0.0007551678075719785,
+            -384.4880866747932
+          ],
+          [
+            -0.0007551678075719785,
+            1.3480613143577789,
+            -17.733590062119703
+          ]
+        ],
+        "originImage": {
+          "x": 1000.789249,
+          "y": 341.40276
+        },
+        "basisXImage": {
+          "x": 49.501667,
+          "y": 24.785506
+        },
+        "basisYImage": {
+          "x": -49.529405,
+          "y": 24.73003
+        },
+        "inlierCount": 173,
+        "goodMatchCount": 366,
+        "spatialRegionCount": 6,
+        "medianResidualCell": 0.023743,
+        "p95ResidualCell": 0.05393,
+        "ambiguityMargin": 0.867052,
+        "confidence": 0.916075,
+        "reasonCodes": []
+      }
+    },
+    {
+      "source": "packages/fixtures/real/phase7/round-04.png",
+      "output": "assets/arena/validation/round-04.overlay.png",
+      "width": 2048,
+      "height": 1151,
+      "registration": {
+        "status": "accepted_review_required",
+        "accepted": true,
+        "referenceToImageAffine": [
+          [
+            0.742109873777285,
+            -0.0007288726669445334,
+            285.1368844273365
+          ],
+          [
+            0.0007288726669445334,
+            0.742109873777285,
+            12.630265581837088
+          ]
+        ],
+        "imageToReferenceAffine": [
+          [
+            1.347508058702091,
+            0.001323472206987777,
+            -384.2409654045071
+          ],
+          [
+            -0.001323472206987777,
+            1.347508058702091,
+            -16.642013913346464
+          ]
+        ],
+        "originImage": {
+          "x": 1000.873017,
+          "y": 341.155022
+        },
+        "basisXImage": {
+          "x": 49.511508,
+          "y": 24.816569
+        },
+        "basisYImage": {
+          "x": -49.56016,
+          "y": 24.719265
+        },
+        "inlierCount": 157,
+        "goodMatchCount": 366,
+        "spatialRegionCount": 8,
+        "medianResidualCell": 0.023902,
+        "p95ResidualCell": 0.051373,
+        "ambiguityMargin": 0.853503,
+        "confidence": 0.909674,
+        "reasonCodes": []
+      }
+    }
+  ]
+}

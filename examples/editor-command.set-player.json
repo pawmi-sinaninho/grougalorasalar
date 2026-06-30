@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "0.6.0",
+  "commandId": "cmd_demo01",
+  "analysisId": "ana_demo01",
+  "expectedStateVersion": 7,
+  "type": "set_player_cell",
+  "payload": {
+    "cell": {
+      "x": 7,
+      "y": -1
+    }
+  },
+  "issuedAt": "2026-06-28T10:06:00Z",
+  "observationIds": [
+    "obs-player"
+  ]
+}

@@ -1,0 +1,207 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/grougalorasalar/analysis-session.schema.json",
+  "title": "AnalysisSession",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "analysisId",
+    "state",
+    "stateVersion",
+    "locale",
+    "consent",
+    "createdAt",
+    "lastActivityAt",
+    "expiresAt",
+    "gate",
+    "assets",
+    "review",
+    "recommendation"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "0.6.0"
+    },
+    "analysisId": {
+      "type": "string",
+      "pattern": "^ana_[A-Za-z0-9_-]+$"
+    },
+    "state": {
+      "enum": [
+        "created",
+        "uploading",
+        "ingesting",
+        "recognition_running",
+        "registration_review",
+        "board_review",
+        "resources_review",
+        "rules_blocked",
+        "ready_for_solver",
+        "solving",
+        "solved",
+        "confirmation_required",
+        "no_safe_solution",
+        "rejected",
+        "technical_failure",
+        "expired",
+        "deleted"
+      ]
+    },
+    "stateVersion": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "locale": {
+      "enum": [
+        "fr",
+        "de",
+        "en"
+      ]
+    },
+    "consent": {
+      "type": "object",
+      "required": [
+        "retention",
+        "qualityImprovement"
+      ],
+      "properties": {
+        "retention": {
+          "const": "ephemeral_only"
+        },
+        "qualityImprovement": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "lastActivityAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expiresAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "gate": {
+      "type": "object",
+      "required": [
+        "status",
+        "blockingReasonCodes"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "not_started",
+            "running",
+            "review_required",
+            "ready_for_solver",
+            "rejected"
+          ]
+        },
+        "blockingReasonCodes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "assets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "kind",
+          "available"
+        ],
+        "properties": {
+          "kind": {
+            "enum": [
+              "normalised",
+              "thumbnail",
+              "annotated"
+            ]
+          },
+          "available": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "review": {
+      "type": "object",
+      "required": [
+        "unresolvedCount",
+        "conflictCount",
+        "recommendationInvalidated"
+      ],
+      "properties": {
+        "unresolvedCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "conflictCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "recommendationInvalidated": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "recognitionResultId": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "manualEditorSessionId": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "recommendation": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "required": [
+            "status",
+            "candidateId"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "solved",
+                "confirmation_required",
+                "blocked_unverified_rule",
+                "no_safe_solution",
+                "invalid_state",
+                "capacity_exceeded"
+              ]
+            },
+            "candidateId": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    }
+  },
+  "additionalProperties": false
+}

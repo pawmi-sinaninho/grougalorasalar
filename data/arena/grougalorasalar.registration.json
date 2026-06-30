@@ -1,0 +1,120 @@
+{
+  "schemaVersion": "0.9.0",
+  "arenaModelId": "grougalorasalar-arena-canonical-0.9.0",
+  "canonicalReference": {
+    "path": "assets/reference/user_reference.png",
+    "width": 1951,
+    "height": 1267,
+    "origin": {
+      "x": 964.895,
+      "y": 441.7425
+    },
+    "basisX": {
+      "x": 66.75,
+      "y": 33.375
+    },
+    "basisY": {
+      "x": -66.75,
+      "y": 33.375
+    }
+  },
+  "functionContract": {
+    "python": "register_screenshot_to_arena(image, project_root) -> RegistrationResult",
+    "compatibilityAlias": "registerScreenshotToArena(image, project_root)",
+    "steps": [
+      "decode",
+      "bounded_working_copy",
+      "distributed_ORB_landmarks",
+      "RANSAC_affine_basis",
+      "project_canonical_centres",
+      "measure_cell_residuals",
+      "compare_alternative_hypothesis",
+      "review_gate_on_ambiguity"
+    ]
+  },
+  "acceptanceThresholds": {
+    "minimumInliers": 40,
+    "minimumSpatialRegions": 3,
+    "automaticMedianResidualCellMax": 0.06,
+    "automaticP95ResidualCellMax": 0.1,
+    "reviewP95ResidualCellMax": 0.16
+  },
+  "registeredEvidence": [
+    {
+      "id": "empty-arena",
+      "path": "assets/reference/empty_arena.jpeg",
+      "role": "clean_grid_and_parity_reference",
+      "width": 1910,
+      "height": 970,
+      "sha256": "cf2dba5c69e13df9c1cfaa9d59beeb2ee22bb15ca8d264af8ba2b42db5f6c81c",
+      "measuredRegistration": {
+        "referenceToImageAffine": [
+          [
+            0.6439939982741252,
+            2.3601380444710166e-05,
+            312.84912086433985
+          ],
+          [
+            -2.3601380444710166e-05,
+            0.6439939982741252,
+            18.804303567570535
+          ]
+        ],
+        "originImage": {
+          "x": 934.246136,
+          "y": 303.261049
+        },
+        "basisXImage": {
+          "x": 42.987387,
+          "y": 21.491724
+        },
+        "basisYImage": {
+          "x": -42.985812,
+          "y": 21.494875
+        },
+        "inlierCount": 118,
+        "medianResidualCell": 0.02014,
+        "p95ResidualCell": 0.055749,
+        "confidence": 0.888766
+      }
+    },
+    {
+      "id": "user-hidden-cells",
+      "path": "assets/reference/user_hidden_cells_annotation.png",
+      "role": "user_occluded_boundary_evidence",
+      "width": 1638,
+      "height": 1002,
+      "sha256": "f1011df15c6df30a5a6cd087365ae15b163a0c7c81c241dcbe4e487ade6895cd",
+      "measuredRegistration": {
+        "referenceToImageAffine": [
+          [
+            0.5930517196322986,
+            4.2254312188819974e-05,
+            227.94263475709064
+          ],
+          [
+            -4.2254312188819974e-05,
+            0.5930517196322986,
+            11.451037149878564
+          ]
+        ],
+        "originImage": {
+          "x": 800.193939,
+          "y": 273.386415
+        },
+        "basisXImage": {
+          "x": 39.587613,
+          "y": 19.790281
+        },
+        "basisYImage": {
+          "x": -39.584792,
+          "y": 19.795922
+        },
+        "inlierCount": 146,
+        "medianResidualCell": 0.026184,
+        "p95ResidualCell": 0.054083,
+        "confidence": 0.903038
+      }
+    }
+  ]
+}

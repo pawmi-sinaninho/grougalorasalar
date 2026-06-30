@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "0.8.0",
+  "releaseVersion": "0.8.0",
+  "phase": "7A",
+  "status": "fast_path_baseline_complete_full_validation_open",
+  "implemented": {
+    "realScreenshotFixtures": 4,
+    "distinctFixtureHashesVerified": true,
+    "browserImmediatePreview": true,
+    "webWorkerPreprocessing": true,
+    "resolutionIndependentArenaRegistration": true,
+    "canonicalLogicalCellSampling": true,
+    "playerDetection": true,
+    "pillarDetectionAndClassification": true,
+    "registeredOverlay": true,
+    "performanceInstrumentation": true,
+    "numericUnknownActionBudgetControl": true,
+    "generalGlyphDetector": false,
+    "generalUiResourceDetector": false,
+    "browserLocalRegistration": false,
+    "hardTimeoutIsolation": false
+  },
+  "automaticCriticalConfirmation": false,
+  "modelCalibrationStatus": "unvalidated",
+  "ocrInStandardPath": false,
+  "generativeModelInCriticalPath": false,
+  "tests": {
+    "pythonPassed": 19,
+    "typescriptPassed": true,
+    "nextBuildPassed": true,
+    "npmKnownVulnerabilities": 0
+  },
+  "performanceReport": "reports/performance-phase7a.json",
+  "nextPhase": "7B_evidence_browser_e2e_locked_corpus"
+}

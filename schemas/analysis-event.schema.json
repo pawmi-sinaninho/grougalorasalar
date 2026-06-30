@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/grougalorasalar/analysis-event.schema.json",
+  "title": "AnalysisEvent",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "eventId",
+    "analysisId",
+    "stateVersion",
+    "type",
+    "occurredAt",
+    "payload"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "0.6.0"
+    },
+    "eventId": {
+      "type": "string"
+    },
+    "analysisId": {
+      "type": "string"
+    },
+    "stateVersion": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "type": {
+      "enum": [
+        "analysis.created",
+        "upload.accepted",
+        "ingest.completed",
+        "recognition.started",
+        "recognition.completed",
+        "review.updated",
+        "solver.started",
+        "solver.completed",
+        "analysis.deleted",
+        "analysis.expired",
+        "analysis.failed"
+      ]
+    },
+    "occurredAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "payload": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false
+}

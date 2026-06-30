@@ -1,0 +1,219 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/grougalorasalar/overlay-document.schema.json",
+  "title": "OverlayDocument",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "overlayId",
+    "analysisId",
+    "stateVersion",
+    "coordinateSpace",
+    "canvas",
+    "layers",
+    "recommendationValid"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "0.6.0"
+    },
+    "overlayId": {
+      "type": "string"
+    },
+    "analysisId": {
+      "type": "string"
+    },
+    "stateVersion": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "coordinateSpace": {
+      "const": "logical_grid"
+    },
+    "canvas": {
+      "type": "object",
+      "required": [
+        "imageWidth",
+        "imageHeight",
+        "originPixel",
+        "basisX",
+        "basisY"
+      ],
+      "properties": {
+        "imageWidth": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "imageHeight": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "originPixel": {
+          "$ref": "#/$defs/point"
+        },
+        "basisX": {
+          "$ref": "#/$defs/point"
+        },
+        "basisY": {
+          "$ref": "#/$defs/point"
+        }
+      },
+      "additionalProperties": false
+    },
+    "layers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "kind",
+          "visible",
+          "elements"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "grid",
+              "observations",
+              "conflicts",
+              "edit_preview",
+              "recommendation",
+              "focus"
+            ]
+          },
+          "visible": {
+            "type": "boolean"
+          },
+          "elements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/element"
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "recommendationValid": {
+      "type": "boolean"
+    },
+    "recommendationId": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "point": {
+      "type": "object",
+      "required": [
+        "x",
+        "y"
+      ],
+      "properties": {
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "cell": {
+      "type": "object",
+      "required": [
+        "x",
+        "y"
+      ],
+      "properties": {
+        "x": {
+          "type": "integer"
+        },
+        "y": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false
+    },
+    "element": {
+      "type": "object",
+      "required": [
+        "elementId",
+        "type",
+        "state",
+        "label"
+      ],
+      "properties": {
+        "elementId": {
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "player",
+            "pillar",
+            "glyph_black",
+            "glyph_white",
+            "uncertainty",
+            "conflict",
+            "action_target",
+            "movement_arrow",
+            "final_cell",
+            "unsafe_hit",
+            "recharge_hit"
+          ]
+        },
+        "state": {
+          "enum": [
+            "confirmed",
+            "review_required",
+            "conflict",
+            "missing",
+            "manual_override",
+            "instruction"
+          ]
+        },
+        "label": {
+          "type": "string"
+        },
+        "cell": {
+          "$ref": "#/$defs/cell"
+        },
+        "fromCell": {
+          "$ref": "#/$defs/cell"
+        },
+        "toCell": {
+          "$ref": "#/$defs/cell"
+        },
+        "order": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "spell": {
+          "enum": [
+            "indecision",
+            "reflection",
+            "repulsion",
+            "attraction"
+          ]
+        },
+        "pillarId": {
+          "type": "string"
+        },
+        "reasonCodes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

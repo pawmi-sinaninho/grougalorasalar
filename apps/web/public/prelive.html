@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Grougalorasalar Solver — Pré-live</title>
+<style>
+:root{color-scheme:dark;font:15px/1.45 system-ui,sans-serif;background:#0c100e;color:#edf1ec}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 20% 0,#263128,#0c100e 45rem)}main{max-width:1500px;margin:auto;padding:28px}header{border-left:5px solid #c0db73;padding-left:18px}h1{font-size:clamp(2rem,5vw,4rem);letter-spacing:-.04em;margin:.15em 0}.tag{color:#c0db73;letter-spacing:.18em;font-weight:800}.panel{background:#151b18;border:1px solid #3d4942;box-shadow:0 20px 70px #0008;padding:18px}.upload{margin-top:28px;padding:50px}.grid{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:18px;margin-top:20px}img{width:100%;display:block}.toolbar{align-self:start;position:sticky;top:16px}.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}button,input,select{width:100%;padding:10px;margin:5px 0;background:#222b26;color:#edf1ec;border:1px solid #56645b}button{cursor:pointer;text-align:left}button:hover,button:focus{border-color:#c0db73;outline:none}.primary{background:#c0db73;color:#101310;font-weight:900;text-align:center}.warn{color:#ffc56c}.ok{color:#c0db73}pre{white-space:pre-wrap;max-height:380px;overflow:auto;background:#090b0a;padding:12px;border:1px solid #303833}.result{margin-top:18px}.hidden{display:none}@media(max-width:767px){main{padding:14px}.grid{display:block}.toolbar{position:static;margin-top:14px}.toolbar:before{content:'Correction précise: écran ≥ 768 px requis.';display:block;color:#ffc56c;margin-bottom:8px}}
+</style>
+</head>
+<body><main>
+<header><div class="tag">PRÉ-LIVE · MODEL-001 ACTIF</div><h1>Grougalorasalar Solver</h1><p>Chargement, correction manuelle, moteur déterministe, annotation et suppression éphémère.</p></header>
+<section id="uploadPanel" class="panel upload"><label>Capture PNG/JPEG/WebP (min. 1280×720)<input id="file" type="file" accept="image/png,image/jpeg,image/webp"></label><button id="upload" class="primary">Créer l’analyse et charger</button><p id="status"></p></section>
+<section id="workspace" class="hidden">
+<div class="grid"><div class="panel"><img id="shot" alt="Capture protégée"><p id="session"></p></div>
+<aside class="panel toolbar"><h2>Validation</h2><p id="blockers" class="warn"></p>
+<button data-cmd="accept_detection">Confirmer les propositions</button>
+<button data-cmd="set_projection_anchor_confirmation" data-payload='{"confirmed":true}'>Confirmer l’ancrage</button>
+<button data-cmd="set_pillar_set_complete" data-payload='{"complete":true}'>Confirmer la liste des piliers</button>
+<div class="row"><input id="px" type="number" value="7" aria-label="Joueur x"><input id="py" type="number" value="-1" aria-label="Joueur y"></div><button id="player">Définir la case du joueur</button>
+<input id="budget" type="number" min="0" max="12" value="3"><button id="setBudget">Définir le budget d’actions</button>
+<div id="spellButtons"></div>
+<hr><h3>Ajouter un pilier</h3><div class="row"><input id="pillarX" type="number" value="0"><input id="pillarY" type="number" value="0"></div><select id="pillarSpell"><option>indecision</option><option>reflection</option><option>repulsion</option><option>attraction</option></select><button id="addPillar">Ajouter</button>
+<h3>Peindre un glyphe relatif</h3><div class="row"><input id="glyphX" type="number" value="0"><input id="glyphY" type="number" value="0"></div><select id="glyphColour"><option value="black">noir</option><option value="white">blanc</option></select><button id="paintGlyph">Peindre</button>
+<button id="solve" class="primary">Calculer le tour</button><button id="delete">Supprimer immédiatement</button></aside></div>
+<section id="result" class="panel result hidden"><h2>Résultat</h2><div id="instructions"></div><img id="annotated" alt="Capture annotée"><details><summary>État technique</summary><pre id="debug"></pre></details></section>
+</section>
+</main><script>
+const API='/api/v1'; let id='',token='',version=0,data=null; const $=s=>document.querySelector(s);
+function auth(){return {'Authorization':'Bearer '+token}}
+async function json(response){const body=await response.json().catch(()=>({}));if(!response.ok)throw new Error(body.error?.code||response.statusText);return body}
+async function refreshImage(kind,target){const r=await fetch(`${API}/analyses/${id}/asset/${kind}`,{headers:auth()});if(!r.ok)return;const b=await r.blob();target.src=URL.createObjectURL(b)}
+function render(d){data=d;version=d.session.stateVersion;$('#session').textContent=`${d.session.state} · version ${version}`;$('#blockers').textContent=d.session.gate.blockingReasonCodes.join(' · ')||'Prêt pour le solveur';$('#debug').textContent=JSON.stringify(d,null,2);if(d.recommendation){$('#result').classList.remove('hidden');$('#instructions').innerHTML=`<p><b>${d.recommendation.status}</b> — ${d.recommendation.statusReasonCodes.join(' · ')}</p><ol>${d.recommendation.actions.map(a=>`<li>${a.instruction}</li>`).join('')}</ol><p>Course: ${d.recommendation.expected.raceOutcome}</p>`;refreshImage('annotated',$('#annotated'))}}
+async function command(type,payload={}){const body={schemaVersion:'0.6.0',commandId:'cmd_'+crypto.randomUUID().replaceAll('-',''),analysisId:id,expectedStateVersion:version,type,payload,issuedAt:new Date().toISOString()};render(await json(await fetch(`${API}/analyses/${id}/commands`,{method:'POST',headers:{...auth(),'Content-Type':'application/json'},body:JSON.stringify(body)})))}
+$('#upload').onclick=async()=>{try{const f=$('#file').files[0];if(!f)throw new Error('Sélectionner une capture');$('#status').textContent='Chargement…';const c=await json(await fetch(`${API}/analyses`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({schemaVersion:'0.8.0',locale:'fr',retentionConsent:'ephemeral_only',qualityImprovementConsent:false})}));id=c.session.analysisId;token=c.accessToken;version=c.session.stateVersion;const fd=new FormData();fd.append('file',f);fd.append('expectedStateVersion',version);const d=await json(await fetch(`${API}/analyses/${id}/image`,{method:'POST',headers:auth(),body:fd}));$('#uploadPanel').classList.add('hidden');$('#workspace').classList.remove('hidden');render(d);refreshImage('normalised',$('#shot'))}catch(e){$('#status').textContent=e.message}}
+document.querySelectorAll('[data-cmd]').forEach(b=>b.onclick=()=>command(b.dataset.cmd,JSON.parse(b.dataset.payload||'{}')));
+$('#player').onclick=()=>command('set_player_cell',{cell:{x:+$('#px').value,y:+$('#py').value}});$('#setBudget').onclick=()=>command('set_action_budget',{value:+$('#budget').value});
+for(const spell of ['indecision','reflection','repulsion','attraction']){const b=document.createElement('button');b.textContent=`${spell}: disponible`;b.onclick=()=>command('set_spell_state',{spell,availability:'available',value:null,confirmed:true});$('#spellButtons').appendChild(b)}
+$('#addPillar').onclick=()=>command('add_pillar',{id:'P'+Date.now(),cell:{x:+$('#pillarX').value,y:+$('#pillarY').value},spellType:$('#pillarSpell').value});
+$('#paintGlyph').onclick=()=>command('paint_glyph_cell',{colour:$('#glyphColour').value,offset:{dx:+$('#glyphX').value,dy:+$('#glyphY').value}});
+$('#solve').onclick=async()=>{try{render(await json(await fetch(`${API}/analyses/${id}/solve`,{method:'POST',headers:{...auth(),'Content-Type':'application/json'},body:JSON.stringify({schemaVersion:'0.8.0',expectedStateVersion:version,mode:'review',confirmedSingleSourceRuleIds:[],maxAlternatives:2})})))}catch(e){alert(e.message)}};
+$('#delete').onclick=async()=>{await fetch(`${API}/analyses/${id}`,{method:'DELETE',headers:auth()});location.reload()};
+</script></body></html>

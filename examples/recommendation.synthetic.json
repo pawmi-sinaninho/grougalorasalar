@@ -1,0 +1,127 @@
+{
+  "schemaVersion": "0.5.0",
+  "status": "confirmation_required",
+  "statusReasonCodes": [
+    "S-CONFIRM-NO-COLLISION"
+  ],
+  "rulesProfileId": "review-explicit-hypothesis-0.5.0",
+  "rankingPolicyId": "ranking-lexicographic-v0.5.0",
+  "candidateId": "C-EX-001",
+  "sequenceKey": "indecision@cell:1,0:-",
+  "actions": [
+    {
+      "order": 1,
+      "actionId": "A-EX-001",
+      "spell": "indecision",
+      "sourceCell": {
+        "x": 0,
+        "y": 0
+      },
+      "destinationCell": {
+        "x": 1,
+        "y": 0
+      },
+      "targetKind": "cell",
+      "targetCell": {
+        "x": 1,
+        "y": 0
+      },
+      "targetPillarId": null,
+      "canonicalSignature": "indecision@cell:1,0:-",
+      "instruction": "Use Indécision on the marked adjacent cell."
+    }
+  ],
+  "expected": {
+    "finalCell": {
+      "x": 1,
+      "y": 0
+    },
+    "raceOutcome": "crocoburio_advance",
+    "terminalFightState": "unknown",
+    "blackPillarIds": [],
+    "whitePillarIds": [],
+    "rechargedSpells": [],
+    "directCenterEffect": "none",
+    "nextSpellState": null
+  },
+  "confidence": {
+    "visual": 1.0,
+    "mechanical": 0.7,
+    "overall": 0.7
+  },
+  "assumptions": [
+    {
+      "ruleId": "R-019",
+      "statement": "No collision advances Crocoburio.",
+      "authority": "single_source_supported",
+      "confirmedByUser": false
+    }
+  ],
+  "searchSummary": {
+    "definiteRootActions": 4,
+    "conditionalRootActions": 0,
+    "definiteTerminalCandidates": 4,
+    "conditionalTerminalCandidates": 0,
+    "adverseDefiniteCandidates": 0,
+    "safeDefiniteCandidates": 4
+  },
+  "rankingKey": [
+    0,
+    2,
+    [
+      0,
+      0,
+      0,
+      0
+    ],
+    -4,
+    1,
+    -1.0,
+    "indecision@cell:1,0:-"
+  ],
+  "trace": [
+    {
+      "index": 0,
+      "type": "preflight",
+      "message": "Synthetic example input accepted.",
+      "ruleIds": [],
+      "data": {}
+    },
+    {
+      "index": 1,
+      "type": "movement_formula",
+      "message": "Indécision destination equals target.",
+      "ruleIds": [
+        "R-010"
+      ],
+      "data": {
+        "destination": {
+          "x": 1,
+          "y": 0
+        }
+      }
+    },
+    {
+      "index": 2,
+      "type": "end_turn",
+      "message": "Turn ended.",
+      "ruleIds": [],
+      "data": {}
+    },
+    {
+      "index": 3,
+      "type": "race_resolution",
+      "message": "Synthetic explicit profile resolves Crocoburio advance.",
+      "ruleIds": [
+        "R-019"
+      ],
+      "data": {
+        "raceOutcome": "crocoburio_advance"
+      }
+    }
+  ],
+  "alternatives": [],
+  "warnings": [
+    "Synthetic example only."
+  ]
+}

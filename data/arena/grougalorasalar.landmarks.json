@@ -1,0 +1,195 @@
+{
+  "schemaVersion": "0.9.0",
+  "arenaModelId": "grougalorasalar-arena-canonical-0.9.0",
+  "logicalGridLandmarks": [
+    {
+      "id": "origin",
+      "cell": {
+        "x": 0,
+        "y": 0
+      },
+      "referencePixel": {
+        "x": 964.895,
+        "y": 441.7425
+      },
+      "role": "grid_origin"
+    },
+    {
+      "id": "min_x",
+      "cell": {
+        "x": -12,
+        "y": 1
+      },
+      "referencePixel": {
+        "x": 97.145,
+        "y": 74.6175
+      },
+      "role": "boundary_extreme"
+    },
+    {
+      "id": "max_x",
+      "cell": {
+        "x": 13,
+        "y": 0
+      },
+      "referencePixel": {
+        "x": 1832.645,
+        "y": 875.6175
+      },
+      "role": "boundary_extreme"
+    },
+    {
+      "id": "min_y",
+      "cell": {
+        "x": 1,
+        "y": -12
+      },
+      "referencePixel": {
+        "x": 1832.645,
+        "y": 74.6175
+      },
+      "role": "boundary_extreme"
+    },
+    {
+      "id": "max_y",
+      "cell": {
+        "x": 0,
+        "y": 13
+      },
+      "referencePixel": {
+        "x": 97.145,
+        "y": 875.6175
+      },
+      "role": "boundary_extreme"
+    },
+    {
+      "id": "min_sum_left",
+      "cell": {
+        "x": -12,
+        "y": 1
+      },
+      "referencePixel": {
+        "x": 97.145,
+        "y": 74.6175
+      },
+      "role": "minimum_x_plus_y_diagonal"
+    },
+    {
+      "id": "min_sum_right",
+      "cell": {
+        "x": 1,
+        "y": -12
+      },
+      "referencePixel": {
+        "x": 1832.645,
+        "y": 74.6175
+      },
+      "role": "minimum_x_plus_y_diagonal"
+    },
+    {
+      "id": "max_sum_left",
+      "cell": {
+        "x": 0,
+        "y": 13
+      },
+      "referencePixel": {
+        "x": 97.145,
+        "y": 875.6175
+      },
+      "role": "maximum_x_plus_y_diagonal"
+    },
+    {
+      "id": "max_sum_right",
+      "cell": {
+        "x": 13,
+        "y": 0
+      },
+      "referencePixel": {
+        "x": 1832.645,
+        "y": 875.6175
+      },
+      "role": "maximum_x_plus_y_diagonal"
+    },
+    {
+      "id": "min_diff",
+      "cell": {
+        "x": -6,
+        "y": 7
+      },
+      "referencePixel": {
+        "x": 97.145,
+        "y": 475.1175
+      },
+      "role": "minimum_x_minus_y_diagonal"
+    },
+    {
+      "id": "max_diff",
+      "cell": {
+        "x": 7,
+        "y": -6
+      },
+      "referencePixel": {
+        "x": 1832.645,
+        "y": 475.1175
+      },
+      "role": "maximum_x_minus_y_diagonal"
+    }
+  ],
+  "distributedStaticReferenceRegions": [
+    {
+      "id": "top_left_architecture",
+      "referenceRect": {
+        "x": 0,
+        "y": 0,
+        "width": 650,
+        "height": 360
+      }
+    },
+    {
+      "id": "top_centre_temple",
+      "referenceRect": {
+        "x": 650,
+        "y": 0,
+        "width": 650,
+        "height": 300
+      }
+    },
+    {
+      "id": "top_right_architecture",
+      "referenceRect": {
+        "x": 1300,
+        "y": 0,
+        "width": 651,
+        "height": 390
+      }
+    },
+    {
+      "id": "left_board_edge",
+      "referenceRect": {
+        "x": 100,
+        "y": 250,
+        "width": 500,
+        "height": 500
+      }
+    },
+    {
+      "id": "right_board_edge",
+      "referenceRect": {
+        "x": 1350,
+        "y": 250,
+        "width": 500,
+        "height": 500
+      }
+    },
+    {
+      "id": "lower_static_tracks",
+      "referenceRect": {
+        "x": 250,
+        "y": 720,
+        "width": 1450,
+        "height": 360
+      }
+    }
+  ],
+  "note": "Runtime registration uses distributed ORB features and grid-basis consistency; no single landmark is sufficient for acceptance."
+}

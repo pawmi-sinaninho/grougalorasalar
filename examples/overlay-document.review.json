@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "0.6.0",
+  "overlayId": "ov_demo01",
+  "analysisId": "ana_demo01",
+  "stateVersion": 7,
+  "coordinateSpace": "logical_grid",
+  "canvas": {
+    "imageWidth": 1951,
+    "imageHeight": 1267,
+    "originPixel": {
+      "x": 972.5,
+      "y": 501.0
+    },
+    "basisX": {
+      "x": 47.0,
+      "y": 23.0
+    },
+    "basisY": {
+      "x": -47.0,
+      "y": 23.0
+    }
+  },
+  "layers": [
+    {
+      "id": "observations",
+      "kind": "observations",
+      "visible": true,
+      "elements": [
+        {
+          "elementId": "player",
+          "type": "player",
+          "state": "manual_override",
+          "label": "Joueur",
+          "cell": {
+            "x": 7,
+            "y": -1
+          },
+          "reasonCodes": []
+        }
+      ]
+    }
+  ],
+  "recommendationValid": false,
+  "recommendationId": null
+}

@@ -1,0 +1,115 @@
+{
+  "schemaVersion": "0.9.0",
+  "schemas": [
+    {
+      "id": "https://example.invalid/grougalorasalar/analysis-event.schema.json",
+      "name": "analysis-event.schema.json",
+      "sha256": "82f92590663043686459605a847f7eecc9dc7d196de90946e337efc86a59b662"
+    },
+    {
+      "id": "https://example.invalid/grougalorasalar/analysis-session.schema.json",
+      "name": "analysis-session.schema.json",
+      "sha256": "bb076c7b1a0ecdcbe327129d2a9067bee406cb500b133ec5f14c8a01433b43e1"
+    },
+    {
+      "id": "https://example.invalid/grougalorasalar/annotation-record.schema.json",
+      "name": "annotation-record.schema.json",
+      "sha256": "faa2d8806bebd2fb4abc05c3a26d250c424f4d5ae62c1a1f6bc24372b37c76ce"
+    },
+    {
+      "id": "https://example.invalid/grougalorasalar/api-error.schema.json",
+      "name": "api-error.schema.json",
+      "sha256": "976bcc476efdd450000eb505a6320f801bb1b359eaed24620cc649e9ea3bc37e"
+    },
+    {
+      "id": "https://example.invalid/grougalorasalar/arena-model.schema.json",
+      "name": "arena-model.schema.json",
+      "sha256": "426a308d7e2a72acc6e5c386efadd0a8f59cd552c1cc232b3e13b9f9b27735bc"
+    },
+    {
+      "id": "https://example.invalid/grougalorasalar/canonical-arena-boundary.schema.json",
+      "name": "canonical-arena-boundary.schema.json",
+      "sha256": "7af11b03c2f9fc4436efe6a9609a24f2c658fa5c47bc238509bcf2daa47f2344"
+    },
+    {
+      "id": "https://example.invalid/grougalorasalar/canonical-arena-cells.schema.json",
+      "name": "canonical-arena-cells.schema.json",
+      "sha256": "1af9d73dec456742cce37e1c8116e290db105ebeaa81b0e372035fc4bddb4fea"
+    },
+    {
+      "id": "https://example.invalid/grougalorasalar/editor-command.schema.json",
+      "name": "editor-command.schema.json",
+      "sha256": "c3b7116434e37181b24d18aebb212c0181ec3604567e08ef91318d1610786fa7"
+    },
+    {
+      "id": "https://example.invalid/grougalorasalar/legal-action.schema.json",
+      "name": "legal-action.schema.json",
+      "sha256": "9a3b598a9b1df6aed494168d2bcd1bdeb5633832d294a45450f27472701c25bd"
+    },
+    {
+      "id": "https://example.invalid/grougalorasalar/manual-editor-session.schema.json",
+      "name": "manual-editor-session.schema.json",
+      "sha256": "2b1a3686b36456a2034e4980b3892810da2e813815b734db5ad8fe2c24ad7045"
+    },
+    {
+      "id": "https://example.invalid/grougalorasalar/overlay-document.schema.json",
+      "name": "overlay-document.schema.json",
+      "sha256": "4653414ef61eb8114fbb2a5574a7ee1b522c563d824efd5405dc0cb480723e90"
+    },
+    {
+      "id": "https://grougalorasalar.local/schemas/real-screenshot-fixture.schema.json",
+      "name": "real-screenshot-fixture.schema.json",
+      "sha256": "b7e11d8225e033f5190e5138deb96e8c5a57649a2f95fae0fb5ca3ce02108ad8"
+    },
+    {
+      "id": "https://example.invalid/grougalorasalar/recognition-result.schema.json",
+      "name": "recognition-result.schema.json",
+      "sha256": "7954b6c1e402626b91f59923960a39a215fd1d39c343094c591209fd17f22204"
+    },
+    {
+      "id": "https://example.invalid/grougalorasalar/recommendation.schema.json",
+      "name": "recommendation.schema.json",
+      "sha256": "ef4ec1a83a0ad54451e679f56a83bfac273c0f05258b6551c39aebe9b07bdd99"
+    },
+    {
+      "id": "https://example.invalid/grougalorasalar/resolution-trace.schema.json",
+      "name": "resolution-trace.schema.json",
+      "sha256": "74301afa377bb16177b26369969e597180ad716e47be3d712c3c11cea3766d82"
+    },
+    {
+      "id": "https://example.invalid/grougalorasalar/rules-profile.schema.json",
+      "name": "rules-profile.schema.json",
+      "sha256": "b766d2575738c1ea9a7563c770e069af4f70354d0d72f53d830ad62b159f5956"
+    },
+    {
+      "id": "https://example.invalid/grougalorasalar/solver-fixture-catalog.schema.json",
+      "name": "solver-fixture-catalog.schema.json",
+      "sha256": "8124573b1c62192274c4a1c5283b5987853ee7519f46926c7ddde3f47ec53544"
+    },
+    {
+      "id": "https://example.invalid/grougalorasalar/solver-request.schema.json",
+      "name": "solver-request.schema.json",
+      "sha256": "0cc0763ffe7eaae13395b56786ed87e798d52f0d66da9fe9dcb425c6d9b5ebc8"
+    },
+    {
+      "id": "https://example.invalid/grougalorasalar/turn-state.schema.json",
+      "name": "turn-state.schema.json",
+      "sha256": "8c35426e9bfbee9aad0aa4c0554a121b889b60775ade68826a7c872c37589075"
+    },
+    {
+      "id": "https://example.invalid/grougalorasalar/verification-observation.schema.json",
+      "name": "verification-observation.schema.json",
+      "sha256": "201196b03fe16f5caae9ec6243c93d08cf4c0e04eae36ec27252f0300c3cfedc"
+    },
+    {
+      "id": "https://example.invalid/grougalorasalar/visual-fixture-catalog.schema.json",
+      "name": "visual-fixture-catalog.schema.json",
+      "sha256": "2e1a988be50e5540bbb595e4909caa57f8a13ef21a5116697847c721098f373e"
+    },
+    {
+      "id": "https://example.invalid/grougalorasalar/visual-observation.schema.json",
+      "name": "visual-observation.schema.json",
+      "sha256": "fe2c4239dd528a18f3945ee0efdf20bc98fbcf18a29f0e426e0ae7ce43138566"
+    }
+  ]
+}

@@ -1,0 +1,439 @@
+{
+  "schemaVersion": "0.5.0",
+  "rulesProfileId": "hypothesis-current-0.5.0",
+  "arena": {
+    "arenaModelId": "grougalorasalar-arena-draft-0.5.0",
+    "calibrationStatus": "manual",
+    "calibrationConfidence": 0.98,
+    "calibrationConfirmed": true
+  },
+  "image": {
+    "width": 1951,
+    "height": 1267,
+    "canonicalTransformId": "user-reference-calibration-0.5.0",
+    "sourceRetained": true,
+    "arenaPresenceConfidence": 0.99,
+    "arenaPresenceConfirmed": true
+  },
+  "turnContext": {
+    "turnNumber": null,
+    "multiplayerDetected": false,
+    "actionBudgetVisible": false,
+    "multiplayerConfidence": 0.99,
+    "multiplayerConfirmed": true
+  },
+  "player": {
+    "currentCell": {
+      "x": 7,
+      "y": -1
+    },
+    "previousCell": null,
+    "confidence": 0.98,
+    "confirmed": true
+  },
+  "pillars": [
+    {
+      "id": "P01",
+      "cell": {
+        "x": -9,
+        "y": -1
+      },
+      "spellType": "indecision",
+      "confidence": 0.95,
+      "confirmed": true
+    },
+    {
+      "id": "P02",
+      "cell": {
+        "x": -6,
+        "y": -2
+      },
+      "spellType": "attraction",
+      "confidence": 0.95,
+      "confirmed": true
+    },
+    {
+      "id": "P03",
+      "cell": {
+        "x": -4,
+        "y": -2
+      },
+      "spellType": "repulsion",
+      "confidence": 0.98,
+      "confirmed": true
+    },
+    {
+      "id": "P04",
+      "cell": {
+        "x": -1,
+        "y": -5
+      },
+      "spellType": "indecision",
+      "confidence": 0.98,
+      "confirmed": true
+    },
+    {
+      "id": "P05",
+      "cell": {
+        "x": 0,
+        "y": -8
+      },
+      "spellType": "reflection",
+      "confidence": 0.94,
+      "confirmed": true
+    },
+    {
+      "id": "P06",
+      "cell": {
+        "x": 2,
+        "y": -9
+      },
+      "spellType": "attraction",
+      "confidence": 0.9,
+      "confirmed": true
+    },
+    {
+      "id": "P07",
+      "cell": {
+        "x": -7,
+        "y": 1
+      },
+      "spellType": "reflection",
+      "confidence": 0.98,
+      "confirmed": true
+    },
+    {
+      "id": "P08",
+      "cell": {
+        "x": -6,
+        "y": 4
+      },
+      "spellType": "repulsion",
+      "confidence": 0.94,
+      "confirmed": true
+    },
+    {
+      "id": "P09",
+      "cell": {
+        "x": -3,
+        "y": 1
+      },
+      "spellType": "attraction",
+      "confidence": 0.98,
+      "confirmed": true
+    },
+    {
+      "id": "P10",
+      "cell": {
+        "x": 2,
+        "y": -5
+      },
+      "spellType": "indecision",
+      "confidence": 0.96,
+      "confirmed": true
+    },
+    {
+      "id": "P11",
+      "cell": {
+        "x": 4,
+        "y": -5
+      },
+      "spellType": "attraction",
+      "confidence": 0.98,
+      "confirmed": true
+    },
+    {
+      "id": "P12",
+      "cell": {
+        "x": -1,
+        "y": 1
+      },
+      "spellType": "indecision",
+      "confidence": 0.96,
+      "confirmed": true
+    },
+    {
+      "id": "P13",
+      "cell": {
+        "x": 0,
+        "y": 1
+      },
+      "spellType": "reflection",
+      "confidence": 0.96,
+      "confirmed": true
+    },
+    {
+      "id": "P14",
+      "cell": {
+        "x": 2,
+        "y": -2
+      },
+      "spellType": "reflection",
+      "confidence": 0.98,
+      "confirmed": true
+    },
+    {
+      "id": "P15",
+      "cell": {
+        "x": -3,
+        "y": 6
+      },
+      "spellType": "reflection",
+      "confidence": 0.96,
+      "confirmed": true
+    },
+    {
+      "id": "P16",
+      "cell": {
+        "x": 0,
+        "y": 4
+      },
+      "spellType": "repulsion",
+      "confidence": 0.98,
+      "confirmed": true
+    },
+    {
+      "id": "P17",
+      "cell": {
+        "x": 2,
+        "y": 1
+      },
+      "spellType": "indecision",
+      "confidence": 0.97,
+      "confirmed": true
+    },
+    {
+      "id": "P18",
+      "cell": {
+        "x": 5,
+        "y": -2
+      },
+      "spellType": "reflection",
+      "confidence": 0.96,
+      "confirmed": true
+    },
+    {
+      "id": "P19",
+      "cell": {
+        "x": 8,
+        "y": -4
+      },
+      "spellType": "repulsion",
+      "confidence": 0.88,
+      "confirmed": true
+    },
+    {
+      "id": "P20",
+      "cell": {
+        "x": -1,
+        "y": 7
+      },
+      "spellType": "attraction",
+      "confidence": 0.98,
+      "confirmed": true
+    },
+    {
+      "id": "P21",
+      "cell": {
+        "x": 3,
+        "y": 4
+      },
+      "spellType": "indecision",
+      "confidence": 0.95,
+      "confirmed": true
+    },
+    {
+      "id": "P22",
+      "cell": {
+        "x": 6,
+        "y": 0
+      },
+      "spellType": "indecision",
+      "confidence": 0.98,
+      "confirmed": true
+    },
+    {
+      "id": "P23",
+      "cell": {
+        "x": 3,
+        "y": 7
+      },
+      "spellType": "repulsion",
+      "confidence": 0.97,
+      "confirmed": true
+    },
+    {
+      "id": "P24",
+      "cell": {
+        "x": 6,
+        "y": 3
+      },
+      "spellType": "repulsion",
+      "confidence": 0.97,
+      "confirmed": true
+    },
+    {
+      "id": "P25",
+      "cell": {
+        "x": 10,
+        "y": 0
+      },
+      "spellType": "attraction",
+      "confidence": 0.92,
+      "confirmed": true
+    },
+    {
+      "id": "P26",
+      "cell": {
+        "x": 1,
+        "y": 11
+      },
+      "spellType": "indecision",
+      "confidence": 0.95,
+      "confirmed": true
+    },
+    {
+      "id": "P27",
+      "cell": {
+        "x": 11,
+        "y": 2
+      },
+      "spellType": "attraction",
+      "confidence": 0.9,
+      "confirmed": true
+    }
+  ],
+  "glyphPattern": {
+    "anchorCell": {
+      "x": 0,
+      "y": 0
+    },
+    "blackOffsets": [
+      {
+        "dx": -1,
+        "dy": -1
+      },
+      {
+        "dx": 1,
+        "dy": -1
+      },
+      {
+        "dx": 1,
+        "dy": 1
+      }
+    ],
+    "whiteOffsets": [
+      {
+        "dx": 0,
+        "dy": -3
+      },
+      {
+        "dx": 0,
+        "dy": 2
+      },
+      {
+        "dx": 2,
+        "dy": -1
+      }
+    ],
+    "physicalBlackCells": [
+      {
+        "x": -1,
+        "y": -1
+      },
+      {
+        "x": 1,
+        "y": -1
+      },
+      {
+        "x": 1,
+        "y": 1
+      }
+    ],
+    "physicalWhiteCells": [
+      {
+        "x": 0,
+        "y": -3
+      },
+      {
+        "x": 0,
+        "y": 2
+      },
+      {
+        "x": 2,
+        "y": -1
+      }
+    ],
+    "confirmed": true,
+    "anchorConfirmed": false,
+    "blackConfidence": 0.98,
+    "whiteConfidence": 0.98,
+    "blackConfirmed": true,
+    "whiteConfirmed": true
+  },
+  "spellState": {
+    "actionBudget": null,
+    "spells": {
+      "indecision": {
+        "availability": "unknown",
+        "value": null,
+        "confidence": 0.0,
+        "confirmed": false
+      },
+      "reflection": {
+        "availability": "unknown",
+        "value": null,
+        "confidence": 0.0,
+        "confirmed": false
+      },
+      "repulsion": {
+        "availability": "unknown",
+        "value": null,
+        "confidence": 0.0,
+        "confirmed": false
+      },
+      "attraction": {
+        "availability": "unknown",
+        "value": null,
+        "confidence": 0.0,
+        "confirmed": false
+      }
+    },
+    "actionBudgetConfidence": 0.0,
+    "actionBudgetConfirmed": false
+  },
+  "progress": {
+    "crocoburio": {
+      "index": null,
+      "confidence": 0.0,
+      "confirmed": false
+    },
+    "dragon": {
+      "index": null,
+      "confidence": 0.0,
+      "confirmed": false
+    }
+  },
+  "confidence": {
+    "overall": 0.66,
+    "criticalFieldsConfirmed": false,
+    "warnings": [
+      "Reference board objects are manually encoded.",
+      "Action budget, spell resources and progress remain unconfirmed.",
+      "Projection anchor is provisional and blocks authoritative solving."
+    ]
+  },
+  "pillarSet": {
+    "confidence": 0.98,
+    "confirmed": true,
+    "completenessStatus": "complete"
+  },
+  "visualProvenance": {
+    "source": "manual",
+    "recognitionResultId": null,
+    "pipelineVersion": null,
+    "observationIds": [],
+    "manualOverrideCount": 0,
+    "gateStatus": "review_required"
+  }
+}

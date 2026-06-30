@@ -1,0 +1,145 @@
+{
+  "schemaVersion": "0.5.0",
+  "profileId": "review-explicit-hypothesis-0.5.0",
+  "purpose": "developer_review",
+  "authority": "hypothesis_only",
+  "sourceRuleIds": [
+    "R-001",
+    "R-002",
+    "R-003",
+    "R-004",
+    "R-005",
+    "R-006",
+    "R-007",
+    "R-008",
+    "R-009",
+    "R-010",
+    "R-011",
+    "R-012",
+    "R-013",
+    "R-014",
+    "R-015",
+    "R-016",
+    "R-017",
+    "R-018",
+    "R-019",
+    "R-020",
+    "R-021",
+    "R-025",
+    "R-026",
+    "R-027",
+    "R-028",
+    "R-029",
+    "R-030",
+    "R-031",
+    "R-032",
+    "R-033",
+    "R-034",
+    "R-035",
+    "R-038",
+    "R-039",
+    "R-040",
+    "R-041",
+    "R-042",
+    "R-043",
+    "R-044",
+    "R-045",
+    "R-046",
+    "R-047",
+    "R-048",
+    "R-049",
+    "R-050",
+    "R-051",
+    "R-053",
+    "R-054"
+  ],
+  "movement": {
+    "indecision": {
+      "contactMetric": "orthogonal",
+      "lineOfSight": "ignored",
+      "destinationOccupancy": "invalid"
+    },
+    "reflection": {
+      "targetPillarType": "matching_spell_type",
+      "rangeMetric": "aligned_steps",
+      "minRange": 2,
+      "maxRange": 2,
+      "alignment": "cardinal_or_diagonal",
+      "lineOfSight": "ignored",
+      "pathMode": "teleport_ignore_intermediate",
+      "destinationOccupancy": "invalid",
+      "edgeMode": "invalid"
+    },
+    "repulsion": {
+      "targetPillarType": "matching_spell_type",
+      "rangeMetric": "aligned_steps",
+      "minRange": 1,
+      "maxRange": 2,
+      "allowedAlignments": [
+        "cardinal",
+        "diagonal"
+      ],
+      "lineOfSight": "ignored",
+      "distance": 3,
+      "pathMode": "fail_if_blocked",
+      "destinationOccupancy": "invalid",
+      "edgeMode": "invalid"
+    },
+    "attraction": {
+      "targetPillarType": "matching_spell_type",
+      "rangeMetric": "aligned_steps",
+      "minRange": 1,
+      "maxRange": 6,
+      "alignment": "cardinal",
+      "lineOfSight": "ignored",
+      "distance": 3,
+      "pathMode": "fail_if_blocked",
+      "destinationOccupancy": "invalid",
+      "edgeMode": "invalid",
+      "shortRangeBehaviour": "stop_adjacent_to_pillar"
+    },
+    "pathBlockers": [
+      "pillars",
+      "permanent_blocked"
+    ],
+    "lineOfSightBlockers": [
+      "pillars",
+      "permanent_blocked"
+    ]
+  },
+  "resources": {
+    "actionBudgetPerTurn": 3,
+    "movementActionCost": 1,
+    "trackingMode": "availability_only",
+    "chargeCostPerCast": {
+      "indecision": null,
+      "reflection": null,
+      "repulsion": null,
+      "attraction": null
+    },
+    "maxCharges": {
+      "indecision": null,
+      "reflection": null,
+      "repulsion": null,
+      "attraction": null
+    },
+    "rechargePerMatchingPillar": 1,
+    "multipleWhiteHitsStack": true,
+    "centerWhiteRecharge": "all_spells_plus_one",
+    "rechargeTiming": "next_turn",
+    "rechargeWhenAdverse": "suppress"
+  },
+  "resolution": {
+    "blackPriority": true,
+    "stationaryReference": "turn_start_cell",
+    "stationaryOutcome": "dragon_advance",
+    "centerBlackOutcome": "dragon_advance",
+    "centerBlackPriority": "same_as_projected_black",
+    "noBlackNoWhiteOutcome": "crocoburio_advance",
+    "whiteWithoutBlackOutcome": "crocoburio_advance_and_recharge"
+  },
+  "progress": {
+    "dragonTrackLength": 8,
+    "crocoburioTrackLength": null
+  }
+}

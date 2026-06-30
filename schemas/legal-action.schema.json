@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/grougalorasalar/legal-action.schema.json",
+  "title": "LegalAction",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "actionId",
+    "actionType",
+    "canonicalSignature",
+    "legalityClass",
+    "sourceCell",
+    "dependencies"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "0.5.0"
+    },
+    "actionId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "actionType": {
+      "enum": [
+        "movement",
+        "end_turn"
+      ]
+    },
+    "spell": {
+      "anyOf": [
+        {
+          "enum": [
+            "indecision",
+            "reflection",
+            "repulsion",
+            "attraction"
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "canonicalSignature": {
+      "type": "string",
+      "minLength": 1
+    },
+    "legalityClass": {
+      "enum": [
+        "definite_legal",
+        "conditional",
+        "definite_illegal"
+      ]
+    },
+    "sourceCell": {
+      "$ref": "#/$defs/cell"
+    },
+    "targetKind": {
+      "enum": [
+        "cell",
+        "pillar",
+        "none"
+      ]
+    },
+    "targetCell": {
+      "$ref": "#/$defs/nullableCell"
+    },
+    "targetPillarId": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "rawDestinationCell": {
+      "$ref": "#/$defs/nullableCell"
+    },
+    "resolvedDestinationCell": {
+      "$ref": "#/$defs/nullableCell"
+    },
+    "cost": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "rejectionCode": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "ruleId",
+          "authority",
+          "effect"
+        ],
+        "properties": {
+          "ruleId": {
+            "type": "string",
+            "pattern": "^R-[0-9]{3}$"
+          },
+          "authority": {
+            "enum": [
+              "authoritative",
+              "confirmable",
+              "blocking"
+            ]
+          },
+          "effect": {
+            "enum": [
+              "legality",
+              "destination",
+              "resource",
+              "resolution",
+              "ranking"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "cell": {
+      "type": "object",
+      "required": [
+        "x",
+        "y"
+      ],
+      "properties": {
+        "x": {
+          "type": "integer"
+        },
+        "y": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false
+    },
+    "nullableCell": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/cell"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  }
+}

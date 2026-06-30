@@ -1,0 +1,1753 @@
+{
+  "schemaVersion": "0.8.0",
+  "catalogId": "real-screenshot-fixtures-0.8.0",
+  "fixtureCount": 4,
+  "distinctness": {
+    "allSha256Unique": true,
+    "allDimensionsEqual": true,
+    "duplicateGroups": []
+  },
+  "annotationPolicy": {
+    "unknownIsValid": true,
+    "noMechanicsInferredFromSingleFrame": true,
+    "automaticCriticalConfirmation": false
+  },
+  "fixtures": [
+    {
+      "fixtureId": "REAL-P7-01",
+      "captureSessionId": "user-real-capture-session-2026-06-28",
+      "source": {
+        "path": "packages/fixtures/real/phase7/round-01.png",
+        "originalUploadedName": "1.png",
+        "retainedUnmodified": true,
+        "width": 2048,
+        "height": 1151,
+        "format": "PNG",
+        "mode": "RGBA",
+        "byteSize": 3886066,
+        "sha256": "2cbeb481f3f543229f0600e308bdbf5f34fec23c79ca1d1169ed449e2ac57031",
+        "provenance": "User-supplied real current-version combat screenshot in project chat on 2026-06-28.",
+        "publicDisplayConsent": "not_granted",
+        "trainingConsent": "not_granted",
+        "possibleUploadScaling": {
+          "status": "unknown",
+          "isError": false,
+          "evidence": "The retained raster is 2048x1151 with no embedded source-resolution metadata. Equal dimensions across all four files do not prove whether an upstream client scaled them."
+        }
+      },
+      "regions": {
+        "arena": {
+          "x": 180,
+          "y": 0,
+          "width": 1660,
+          "height": 900
+        },
+        "lowerUi": {
+          "x": 0,
+          "y": 820,
+          "width": 2048,
+          "height": 331
+        },
+        "spellAndActionArea": {
+          "x": 520,
+          "y": 945,
+          "width": 850,
+          "height": 206
+        },
+        "crocoburioTrack": {
+          "x": 250,
+          "y": 620,
+          "width": 730,
+          "height": 270
+        },
+        "dragonTrack": {
+          "x": 1050,
+          "y": 620,
+          "width": 800,
+          "height": 270
+        }
+      },
+      "registrationGroundTruth": {
+        "referenceToImageAffine": [
+          [
+            0.7420495657547148,
+            -9.697821278088644e-05,
+            284.55700107928845
+          ],
+          [
+            9.697821278088644e-05,
+            0.7420495657547148,
+            13.80732405003328
+          ]
+        ],
+        "method": "offline_sift_annotation_only",
+        "inlierCount": 236,
+        "medianResidualPx": 0.3786767,
+        "p95ResidualPx": 1.2295936,
+        "status": "reproducible_reference_annotation"
+      },
+      "logicalAnnotation": {
+        "player": {
+          "cell": {
+            "x": 1,
+            "y": -1
+          },
+          "status": "visually_verified",
+          "confidence": 0.99
+        },
+        "pillars": [
+          {
+            "id": "R1P01",
+            "cell": {
+              "x": -2,
+              "y": -7
+            },
+            "spellType": "indecision",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R1P02",
+            "cell": {
+              "x": -3,
+              "y": -2
+            },
+            "spellType": "indecision",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R1P03",
+            "cell": {
+              "x": 1,
+              "y": 2
+            },
+            "spellType": "indecision",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R1P04",
+            "cell": {
+              "x": 4,
+              "y": 1
+            },
+            "spellType": "indecision",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R1P05",
+            "cell": {
+              "x": 3,
+              "y": 6
+            },
+            "spellType": "indecision",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R1P06",
+            "cell": {
+              "x": 11,
+              "y": -1
+            },
+            "spellType": "indecision",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R1P07",
+            "cell": {
+              "x": -7,
+              "y": 2
+            },
+            "spellType": "reflection",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R1P08",
+            "cell": {
+              "x": 0,
+              "y": -4
+            },
+            "spellType": "reflection",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R1P09",
+            "cell": {
+              "x": 2,
+              "y": -2
+            },
+            "spellType": "reflection",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R1P10",
+            "cell": {
+              "x": -5,
+              "y": 6
+            },
+            "spellType": "reflection",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R1P11",
+            "cell": {
+              "x": 2,
+              "y": 11
+            },
+            "spellType": "reflection",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R1P12",
+            "cell": {
+              "x": -3,
+              "y": -5
+            },
+            "spellType": "repulsion",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R1P13",
+            "cell": {
+              "x": -4,
+              "y": 1
+            },
+            "spellType": "repulsion",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R1P14",
+            "cell": {
+              "x": 3,
+              "y": -5
+            },
+            "spellType": "repulsion",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R1P15",
+            "cell": {
+              "x": -3,
+              "y": 3
+            },
+            "spellType": "repulsion",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R1P16",
+            "cell": {
+              "x": 6,
+              "y": -2
+            },
+            "spellType": "repulsion",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R1P17",
+            "cell": {
+              "x": 1,
+              "y": 5
+            },
+            "spellType": "repulsion",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R1P18",
+            "cell": {
+              "x": 8,
+              "y": 0
+            },
+            "spellType": "repulsion",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R1P19",
+            "cell": {
+              "x": 1,
+              "y": 9
+            },
+            "spellType": "repulsion",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R1P20",
+            "cell": {
+              "x": -6,
+              "y": -2
+            },
+            "spellType": "attraction",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R1P21",
+            "cell": {
+              "x": 1,
+              "y": -9
+            },
+            "spellType": "attraction",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R1P22",
+            "cell": {
+              "x": 2,
+              "y": -7
+            },
+            "spellType": "attraction",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R1P23",
+            "cell": {
+              "x": 0,
+              "y": -1
+            },
+            "spellType": "attraction",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R1P24",
+            "cell": {
+              "x": -1,
+              "y": 7
+            },
+            "spellType": "attraction",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          }
+        ],
+        "pillarSetCompleteness": "visually_verified_for_visible_arena",
+        "glyphPattern": {
+          "anchorCell": {
+            "x": 0,
+            "y": 0
+          },
+          "confirmedBlackCells": [
+            {
+              "x": -1,
+              "y": -1
+            },
+            {
+              "x": -1,
+              "y": 1
+            },
+            {
+              "x": 1,
+              "y": 1
+            }
+          ],
+          "confirmedWhiteCells": [
+            {
+              "x": -3,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": -3
+            },
+            {
+              "x": 0,
+              "y": 2
+            }
+          ],
+          "unknownCandidateCells": [
+            {
+              "x": 3,
+              "y": -1
+            }
+          ],
+          "completenessStatus": "provisional_complete",
+          "annotationNote": "Only visually clear cells are classified. Occluded or ambiguous cells remain unknown; no mechanic is inferred."
+        },
+        "resources": {
+          "actionBudget": {
+            "value": null,
+            "status": "unknown",
+            "reasonCode": "V-006"
+          },
+          "spells": {
+            "indecision": {
+              "availability": "unknown",
+              "value": null,
+              "status": "unknown"
+            },
+            "reflection": {
+              "availability": "unknown",
+              "value": null,
+              "status": "unknown"
+            },
+            "repulsion": {
+              "availability": "unknown",
+              "value": null,
+              "status": "unknown"
+            },
+            "attraction": {
+              "availability": "unknown",
+              "value": null,
+              "status": "unknown"
+            }
+          }
+        },
+        "progress": {
+          "crocoburio": {
+            "visible": true,
+            "index": null,
+            "status": "unknown",
+            "reasonCode": "V-001"
+          },
+          "dragon": {
+            "visible": true,
+            "index": null,
+            "status": "unknown",
+            "reasonCode": "V-001"
+          }
+        }
+      },
+      "tacticalAuthority": "fixture_only_review_required"
+    },
+    {
+      "fixtureId": "REAL-P7-02",
+      "captureSessionId": "user-real-capture-session-2026-06-28",
+      "source": {
+        "path": "packages/fixtures/real/phase7/round-02.png",
+        "originalUploadedName": "2.png",
+        "retainedUnmodified": true,
+        "width": 2048,
+        "height": 1151,
+        "format": "PNG",
+        "mode": "RGBA",
+        "byteSize": 3897662,
+        "sha256": "5af685c9f1ff97e2e77048d254e7d4ca77e0d014f11026b783fee3ee5a6463c0",
+        "provenance": "User-supplied real current-version combat screenshot in project chat on 2026-06-28.",
+        "publicDisplayConsent": "not_granted",
+        "trainingConsent": "not_granted",
+        "possibleUploadScaling": {
+          "status": "unknown",
+          "isError": false,
+          "evidence": "The retained raster is 2048x1151 with no embedded source-resolution metadata. Equal dimensions across all four files do not prove whether an upstream client scaled them."
+        }
+      },
+      "regions": {
+        "arena": {
+          "x": 180,
+          "y": 0,
+          "width": 1660,
+          "height": 900
+        },
+        "lowerUi": {
+          "x": 0,
+          "y": 820,
+          "width": 2048,
+          "height": 331
+        },
+        "spellAndActionArea": {
+          "x": 520,
+          "y": 945,
+          "width": 850,
+          "height": 206
+        },
+        "crocoburioTrack": {
+          "x": 250,
+          "y": 620,
+          "width": 730,
+          "height": 270
+        },
+        "dragonTrack": {
+          "x": 1050,
+          "y": 620,
+          "width": 800,
+          "height": 270
+        }
+      },
+      "registrationGroundTruth": {
+        "referenceToImageAffine": [
+          [
+            0.7420549301021004,
+            -8.683096372571224e-05,
+            284.5620075396671
+          ],
+          [
+            8.683096372571224e-05,
+            0.7420549301021004,
+            13.79218804783902
+          ]
+        ],
+        "method": "offline_sift_annotation_only",
+        "inlierCount": 237,
+        "medianResidualPx": 0.3611903,
+        "p95ResidualPx": 1.3725671,
+        "status": "reproducible_reference_annotation"
+      },
+      "logicalAnnotation": {
+        "player": {
+          "cell": {
+            "x": 1,
+            "y": -2
+          },
+          "status": "visually_verified",
+          "confidence": 0.99
+        },
+        "pillars": [
+          {
+            "id": "R2P01",
+            "cell": {
+              "x": -2,
+              "y": -7
+            },
+            "spellType": "indecision",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R2P02",
+            "cell": {
+              "x": -1,
+              "y": 1
+            },
+            "spellType": "indecision",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R2P03",
+            "cell": {
+              "x": 0,
+              "y": 5
+            },
+            "spellType": "indecision",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R2P04",
+            "cell": {
+              "x": 4,
+              "y": 1
+            },
+            "spellType": "indecision",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R2P05",
+            "cell": {
+              "x": 11,
+              "y": 0
+            },
+            "spellType": "indecision",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R2P06",
+            "cell": {
+              "x": 0,
+              "y": -11
+            },
+            "spellType": "reflection",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R2P07",
+            "cell": {
+              "x": -7,
+              "y": 1
+            },
+            "spellType": "reflection",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R2P08",
+            "cell": {
+              "x": 0,
+              "y": -4
+            },
+            "spellType": "reflection",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R2P09",
+            "cell": {
+              "x": 2,
+              "y": -2
+            },
+            "spellType": "reflection",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R2P10",
+            "cell": {
+              "x": 0,
+              "y": 1
+            },
+            "spellType": "reflection",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R2P11",
+            "cell": {
+              "x": 4,
+              "y": -1
+            },
+            "spellType": "reflection",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R2P12",
+            "cell": {
+              "x": 2,
+              "y": 6
+            },
+            "spellType": "reflection",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R2P13",
+            "cell": {
+              "x": -3,
+              "y": -5
+            },
+            "spellType": "repulsion",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R2P14",
+            "cell": {
+              "x": -4,
+              "y": -2
+            },
+            "spellType": "repulsion",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R2P15",
+            "cell": {
+              "x": -6,
+              "y": 4
+            },
+            "spellType": "repulsion",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R2P16",
+            "cell": {
+              "x": 3,
+              "y": -5
+            },
+            "spellType": "repulsion",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R2P17",
+            "cell": {
+              "x": -3,
+              "y": 6
+            },
+            "spellType": "repulsion",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R2P18",
+            "cell": {
+              "x": 2,
+              "y": 3
+            },
+            "spellType": "repulsion",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R2P19",
+            "cell": {
+              "x": 8,
+              "y": 0
+            },
+            "spellType": "repulsion",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R2P20",
+            "cell": {
+              "x": 6,
+              "y": 3
+            },
+            "spellType": "repulsion",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R2P21",
+            "cell": {
+              "x": -6,
+              "y": -2
+            },
+            "spellType": "attraction",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R2P22",
+            "cell": {
+              "x": 1,
+              "y": -9
+            },
+            "spellType": "attraction",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R2P23",
+            "cell": {
+              "x": 2,
+              "y": -7
+            },
+            "spellType": "attraction",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R2P24",
+            "cell": {
+              "x": -3,
+              "y": 1
+            },
+            "spellType": "attraction",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R2P25",
+            "cell": {
+              "x": 7,
+              "y": -4
+            },
+            "spellType": "attraction",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R2P26",
+            "cell": {
+              "x": 7,
+              "y": -2
+            },
+            "spellType": "attraction",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R2P27",
+            "cell": {
+              "x": -2,
+              "y": 9
+            },
+            "spellType": "attraction",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          }
+        ],
+        "pillarSetCompleteness": "visually_verified_for_visible_arena",
+        "glyphPattern": {
+          "anchorCell": {
+            "x": 0,
+            "y": 0
+          },
+          "confirmedBlackCells": [
+            {
+              "x": -1,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": -1
+            },
+            {
+              "x": 1,
+              "y": 0
+            }
+          ],
+          "confirmedWhiteCells": [],
+          "unknownCandidateCells": [
+            {
+              "x": -1,
+              "y": -2
+            },
+            {
+              "x": 1,
+              "y": -1
+            },
+            {
+              "x": 0,
+              "y": 1
+            },
+            {
+              "x": 2,
+              "y": 0
+            }
+          ],
+          "completenessStatus": "unknown",
+          "annotationNote": "Only visually clear cells are classified. Occluded or ambiguous cells remain unknown; no mechanic is inferred."
+        },
+        "resources": {
+          "actionBudget": {
+            "value": null,
+            "status": "unknown",
+            "reasonCode": "V-006"
+          },
+          "spells": {
+            "indecision": {
+              "availability": "unknown",
+              "value": null,
+              "status": "unknown"
+            },
+            "reflection": {
+              "availability": "unknown",
+              "value": null,
+              "status": "unknown"
+            },
+            "repulsion": {
+              "availability": "unknown",
+              "value": null,
+              "status": "unknown"
+            },
+            "attraction": {
+              "availability": "unknown",
+              "value": null,
+              "status": "unknown"
+            }
+          }
+        },
+        "progress": {
+          "crocoburio": {
+            "visible": true,
+            "index": null,
+            "status": "unknown",
+            "reasonCode": "V-001"
+          },
+          "dragon": {
+            "visible": true,
+            "index": null,
+            "status": "unknown",
+            "reasonCode": "V-001"
+          }
+        }
+      },
+      "tacticalAuthority": "fixture_only_review_required"
+    },
+    {
+      "fixtureId": "REAL-P7-03",
+      "captureSessionId": "user-real-capture-session-2026-06-28",
+      "source": {
+        "path": "packages/fixtures/real/phase7/round-03.png",
+        "originalUploadedName": "3.png",
+        "retainedUnmodified": true,
+        "width": 2048,
+        "height": 1151,
+        "format": "PNG",
+        "mode": "RGBA",
+        "byteSize": 3883083,
+        "sha256": "aa5f760f136cf74df8eff148e1d07c5dc77401740c052858b252c7571ad5549a",
+        "provenance": "User-supplied real current-version combat screenshot in project chat on 2026-06-28.",
+        "publicDisplayConsent": "not_granted",
+        "trainingConsent": "not_granted",
+        "possibleUploadScaling": {
+          "status": "unknown",
+          "isError": false,
+          "evidence": "The retained raster is 2048x1151 with no embedded source-resolution metadata. Equal dimensions across all four files do not prove whether an upstream client scaled them."
+        }
+      },
+      "regions": {
+        "arena": {
+          "x": 180,
+          "y": 0,
+          "width": 1660,
+          "height": 900
+        },
+        "lowerUi": {
+          "x": 0,
+          "y": 820,
+          "width": 2048,
+          "height": 331
+        },
+        "spellAndActionArea": {
+          "x": 520,
+          "y": 945,
+          "width": 850,
+          "height": 206
+        },
+        "crocoburioTrack": {
+          "x": 250,
+          "y": 620,
+          "width": 730,
+          "height": 270
+        },
+        "dragonTrack": {
+          "x": 1050,
+          "y": 620,
+          "width": 800,
+          "height": 270
+        }
+      },
+      "registrationGroundTruth": {
+        "referenceToImageAffine": [
+          [
+            0.7420804452832777,
+            -8.321361816246908e-05,
+            284.52064509360173
+          ],
+          [
+            8.321361816246908e-05,
+            0.7420804452832777,
+            13.786133185209053
+          ]
+        ],
+        "method": "offline_sift_annotation_only",
+        "inlierCount": 223,
+        "medianResidualPx": 0.3368048,
+        "p95ResidualPx": 1.2555227,
+        "status": "reproducible_reference_annotation"
+      },
+      "logicalAnnotation": {
+        "player": {
+          "cell": {
+            "x": 0,
+            "y": 0
+          },
+          "status": "visually_verified",
+          "confidence": 0.99
+        },
+        "pillars": [
+          {
+            "id": "R3P01",
+            "cell": {
+              "x": -7,
+              "y": 1
+            },
+            "spellType": "indecision",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R3P02",
+            "cell": {
+              "x": 1,
+              "y": -7
+            },
+            "spellType": "indecision",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R3P03",
+            "cell": {
+              "x": -2,
+              "y": -3
+            },
+            "spellType": "indecision",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R3P04",
+            "cell": {
+              "x": 0,
+              "y": 2
+            },
+            "spellType": "indecision",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R3P05",
+            "cell": {
+              "x": 6,
+              "y": 1
+            },
+            "spellType": "indecision",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R3P06",
+            "cell": {
+              "x": 1,
+              "y": 10
+            },
+            "spellType": "indecision",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R3P07",
+            "cell": {
+              "x": -3,
+              "y": -7
+            },
+            "spellType": "reflection",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R3P08",
+            "cell": {
+              "x": -6,
+              "y": -3
+            },
+            "spellType": "reflection",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R3P09",
+            "cell": {
+              "x": -5,
+              "y": 4
+            },
+            "spellType": "reflection",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R3P10",
+            "cell": {
+              "x": 5,
+              "y": -5
+            },
+            "spellType": "reflection",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R3P11",
+            "cell": {
+              "x": -4,
+              "y": 7
+            },
+            "spellType": "reflection",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R3P12",
+            "cell": {
+              "x": 3,
+              "y": 0
+            },
+            "spellType": "reflection",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R3P13",
+            "cell": {
+              "x": -2,
+              "y": 7
+            },
+            "spellType": "reflection",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R3P14",
+            "cell": {
+              "x": 2,
+              "y": -4
+            },
+            "spellType": "repulsion",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R3P15",
+            "cell": {
+              "x": -1,
+              "y": 0
+            },
+            "spellType": "repulsion",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R3P16",
+            "cell": {
+              "x": 2,
+              "y": -2
+            },
+            "spellType": "repulsion",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R3P17",
+            "cell": {
+              "x": -3,
+              "y": 4
+            },
+            "spellType": "repulsion",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R3P18",
+            "cell": {
+              "x": 3,
+              "y": 5
+            },
+            "spellType": "repulsion",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R3P19",
+            "cell": {
+              "x": 10,
+              "y": 1
+            },
+            "spellType": "repulsion",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R3P20",
+            "cell": {
+              "x": -9,
+              "y": -1
+            },
+            "spellType": "attraction",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R3P21",
+            "cell": {
+              "x": 0,
+              "y": -9
+            },
+            "spellType": "attraction",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R3P22",
+            "cell": {
+              "x": -1,
+              "y": -4
+            },
+            "spellType": "attraction",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R3P23",
+            "cell": {
+              "x": -3,
+              "y": 0
+            },
+            "spellType": "attraction",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R3P24",
+            "cell": {
+              "x": 0,
+              "y": 5
+            },
+            "spellType": "attraction",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R3P25",
+            "cell": {
+              "x": 7,
+              "y": -1
+            },
+            "spellType": "attraction",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          }
+        ],
+        "pillarSetCompleteness": "visually_verified_for_visible_arena",
+        "glyphPattern": {
+          "anchorCell": {
+            "x": 0,
+            "y": 0
+          },
+          "confirmedBlackCells": [],
+          "confirmedWhiteCells": [],
+          "unknownCandidateCells": [
+            {
+              "x": -3,
+              "y": 1
+            },
+            {
+              "x": -2,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": -3
+            },
+            {
+              "x": 0,
+              "y": -2
+            },
+            {
+              "x": 1,
+              "y": 1
+            },
+            {
+              "x": 2,
+              "y": 0
+            },
+            {
+              "x": 3,
+              "y": 0
+            },
+            {
+              "x": 4,
+              "y": 4
+            }
+          ],
+          "completenessStatus": "unknown",
+          "annotationNote": "Only visually clear cells are classified. Occluded or ambiguous cells remain unknown; no mechanic is inferred."
+        },
+        "resources": {
+          "actionBudget": {
+            "value": null,
+            "status": "unknown",
+            "reasonCode": "V-006"
+          },
+          "spells": {
+            "indecision": {
+              "availability": "unknown",
+              "value": null,
+              "status": "unknown"
+            },
+            "reflection": {
+              "availability": "unknown",
+              "value": null,
+              "status": "unknown"
+            },
+            "repulsion": {
+              "availability": "unknown",
+              "value": null,
+              "status": "unknown"
+            },
+            "attraction": {
+              "availability": "unknown",
+              "value": null,
+              "status": "unknown"
+            }
+          }
+        },
+        "progress": {
+          "crocoburio": {
+            "visible": true,
+            "index": null,
+            "status": "unknown",
+            "reasonCode": "V-001"
+          },
+          "dragon": {
+            "visible": true,
+            "index": null,
+            "status": "unknown",
+            "reasonCode": "V-001"
+          }
+        }
+      },
+      "tacticalAuthority": "fixture_only_review_required"
+    },
+    {
+      "fixtureId": "REAL-P7-04",
+      "captureSessionId": "user-real-capture-session-2026-06-28",
+      "source": {
+        "path": "packages/fixtures/real/phase7/round-04.png",
+        "originalUploadedName": "4.png",
+        "retainedUnmodified": true,
+        "width": 2048,
+        "height": 1151,
+        "format": "PNG",
+        "mode": "RGBA",
+        "byteSize": 3877954,
+        "sha256": "2dda0b22bca5eab6fb4fc0f3ddf80eb8542187847ad692aa5f06da950071c135",
+        "provenance": "User-supplied real current-version combat screenshot in project chat on 2026-06-28.",
+        "publicDisplayConsent": "not_granted",
+        "trainingConsent": "not_granted",
+        "possibleUploadScaling": {
+          "status": "unknown",
+          "isError": false,
+          "evidence": "The retained raster is 2048x1151 with no embedded source-resolution metadata. Equal dimensions across all four files do not prove whether an upstream client scaled them."
+        }
+      },
+      "regions": {
+        "arena": {
+          "x": 180,
+          "y": 0,
+          "width": 1660,
+          "height": 900
+        },
+        "lowerUi": {
+          "x": 0,
+          "y": 820,
+          "width": 2048,
+          "height": 331
+        },
+        "spellAndActionArea": {
+          "x": 520,
+          "y": 945,
+          "width": 850,
+          "height": 206
+        },
+        "crocoburioTrack": {
+          "x": 250,
+          "y": 620,
+          "width": 730,
+          "height": 270
+        },
+        "dragonTrack": {
+          "x": 1050,
+          "y": 620,
+          "width": 800,
+          "height": 270
+        }
+      },
+      "registrationGroundTruth": {
+        "referenceToImageAffine": [
+          [
+            0.7420867801862504,
+            -0.00011750535609296166,
+            284.52354296028506
+          ],
+          [
+            0.00011750535609296166,
+            0.7420867801862504,
+            13.695933055297349
+          ]
+        ],
+        "method": "offline_sift_annotation_only",
+        "inlierCount": 249,
+        "medianResidualPx": 0.3450352,
+        "p95ResidualPx": 1.2626652,
+        "status": "reproducible_reference_annotation"
+      },
+      "logicalAnnotation": {
+        "player": {
+          "cell": {
+            "x": 0,
+            "y": -3
+          },
+          "status": "visually_verified",
+          "confidence": 0.99
+        },
+        "pillars": [
+          {
+            "id": "R4P01",
+            "cell": {
+              "x": -2,
+              "y": -7
+            },
+            "spellType": "indecision",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R4P02",
+            "cell": {
+              "x": -5,
+              "y": -3
+            },
+            "spellType": "indecision",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R4P03",
+            "cell": {
+              "x": -2,
+              "y": 2
+            },
+            "spellType": "indecision",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R4P04",
+            "cell": {
+              "x": 0,
+              "y": 2
+            },
+            "spellType": "indecision",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R4P05",
+            "cell": {
+              "x": 4,
+              "y": 1
+            },
+            "spellType": "indecision",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R4P06",
+            "cell": {
+              "x": 1,
+              "y": 10
+            },
+            "spellType": "indecision",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R4P07",
+            "cell": {
+              "x": 11,
+              "y": 0
+            },
+            "spellType": "indecision",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R4P08",
+            "cell": {
+              "x": -7,
+              "y": 2
+            },
+            "spellType": "reflection",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R4P09",
+            "cell": {
+              "x": 0,
+              "y": -4
+            },
+            "spellType": "reflection",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R4P10",
+            "cell": {
+              "x": 2,
+              "y": -2
+            },
+            "spellType": "reflection",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R4P11",
+            "cell": {
+              "x": -4,
+              "y": 7
+            },
+            "spellType": "reflection",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R4P12",
+            "cell": {
+              "x": 4,
+              "y": -1
+            },
+            "spellType": "reflection",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R4P13",
+            "cell": {
+              "x": -2,
+              "y": 7
+            },
+            "spellType": "reflection",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R4P14",
+            "cell": {
+              "x": -3,
+              "y": -5
+            },
+            "spellType": "repulsion",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R4P15",
+            "cell": {
+              "x": -3,
+              "y": -3
+            },
+            "spellType": "repulsion",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R4P16",
+            "cell": {
+              "x": -4,
+              "y": 2
+            },
+            "spellType": "repulsion",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R4P17",
+            "cell": {
+              "x": 3,
+              "y": -5
+            },
+            "spellType": "repulsion",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R4P18",
+            "cell": {
+              "x": -3,
+              "y": 4
+            },
+            "spellType": "repulsion",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R4P19",
+            "cell": {
+              "x": 3,
+              "y": 5
+            },
+            "spellType": "repulsion",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R4P20",
+            "cell": {
+              "x": 8,
+              "y": 0
+            },
+            "spellType": "repulsion",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R4P21",
+            "cell": {
+              "x": 6,
+              "y": 3
+            },
+            "spellType": "repulsion",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R4P22",
+            "cell": {
+              "x": -8,
+              "y": -2
+            },
+            "spellType": "attraction",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R4P23",
+            "cell": {
+              "x": 1,
+              "y": -9
+            },
+            "spellType": "attraction",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R4P24",
+            "cell": {
+              "x": -5,
+              "y": -1
+            },
+            "spellType": "attraction",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R4P25",
+            "cell": {
+              "x": 2,
+              "y": -7
+            },
+            "spellType": "attraction",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R4P26",
+            "cell": {
+              "x": 7,
+              "y": -4
+            },
+            "spellType": "attraction",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R4P27",
+            "cell": {
+              "x": 0,
+              "y": 5
+            },
+            "spellType": "attraction",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          },
+          {
+            "id": "R4P28",
+            "cell": {
+              "x": 7,
+              "y": -2
+            },
+            "spellType": "attraction",
+            "annotationStatus": "visually_verified",
+            "confidence": 0.97
+          }
+        ],
+        "pillarSetCompleteness": "visually_verified_for_visible_arena",
+        "glyphPattern": {
+          "anchorCell": {
+            "x": 0,
+            "y": 0
+          },
+          "confirmedBlackCells": [
+            {
+              "x": -1,
+              "y": -1
+            },
+            {
+              "x": 1,
+              "y": -1
+            },
+            {
+              "x": -1,
+              "y": 1
+            },
+            {
+              "x": 1,
+              "y": 1
+            }
+          ],
+          "confirmedWhiteCells": [],
+          "unknownCandidateCells": [
+            {
+              "x": -3,
+              "y": 0
+            },
+            {
+              "x": 0,
+              "y": 2
+            },
+            {
+              "x": 2,
+              "y": 0
+            },
+            {
+              "x": 3,
+              "y": -1
+            }
+          ],
+          "completenessStatus": "unknown",
+          "annotationNote": "Only visually clear cells are classified. Occluded or ambiguous cells remain unknown; no mechanic is inferred."
+        },
+        "resources": {
+          "actionBudget": {
+            "value": null,
+            "status": "unknown",
+            "reasonCode": "V-006"
+          },
+          "spells": {
+            "indecision": {
+              "availability": "unknown",
+              "value": null,
+              "status": "unknown"
+            },
+            "reflection": {
+              "availability": "unknown",
+              "value": null,
+              "status": "unknown"
+            },
+            "repulsion": {
+              "availability": "unknown",
+              "value": null,
+              "status": "unknown"
+            },
+            "attraction": {
+              "availability": "unknown",
+              "value": null,
+              "status": "unknown"
+            }
+          }
+        },
+        "progress": {
+          "crocoburio": {
+            "visible": true,
+            "index": null,
+            "status": "unknown",
+            "reasonCode": "V-001"
+          },
+          "dragon": {
+            "visible": true,
+            "index": null,
+            "status": "unknown",
+            "reasonCode": "V-001"
+          }
+        }
+      },
+      "tacticalAuthority": "fixture_only_review_required"
+    }
+  ]
+}

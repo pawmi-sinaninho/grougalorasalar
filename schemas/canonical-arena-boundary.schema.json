@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/grougalorasalar/canonical-arena-boundary.schema.json",
+  "title": "CanonicalArenaBoundary",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "arenaModelId",
+    "status",
+    "validationPolicy",
+    "classificationSummary",
+    "totalBoundaryCells",
+    "totalBoundaryEdges",
+    "confirmedBoundaryCells",
+    "inferredBoundaryCells",
+    "unresolvedBoundaryCells",
+    "positionOutlierCells",
+    "boundaryCells",
+    "boundaryEdges",
+    "exteriorLogicalVertices",
+    "exteriorReferencePixels",
+    "regionFits",
+    "reviewList",
+    "holes"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "0.9.0" },
+    "arenaModelId": { "const": "grougalorasalar-arena-canonical-0.9.0" },
+    "status": { "const": "boundary_refinement_review_required" },
+    "validationPolicy": { "type": "object" },
+    "classificationSummary": {
+      "type": "object",
+      "required": ["confirmed", "inferred", "unresolved"],
+      "properties": {
+        "confirmed": { "type": "integer", "minimum": 0, "maximum": 50 },
+        "inferred": { "type": "integer", "minimum": 0, "maximum": 50 },
+        "unresolved": { "type": "integer", "minimum": 0, "maximum": 50 }
+      },
+      "additionalProperties": false
+    },
+    "totalBoundaryCells": { "const": 50 },
+    "totalBoundaryEdges": { "const": 104 },
+    "confirmedBoundaryCells": { "type": "array", "items": { "type": "integer", "minimum": 0, "maximum": 337 } },
+    "inferredBoundaryCells": { "type": "array", "items": { "type": "integer", "minimum": 0, "maximum": 337 } },
+    "unresolvedBoundaryCells": { "type": "array", "items": { "type": "integer", "minimum": 0, "maximum": 337 } },
+    "positionOutlierCells": { "type": "array", "items": { "type": "integer", "minimum": 0, "maximum": 337 } },
+    "boundaryCells": {
+      "type": "array",
+      "minItems": 50,
+      "maxItems": 50,
+      "items": {
+        "type": "object",
+        "required": ["id", "stableId", "x", "y", "classification", "displayCategory", "confidence", "evidenceCriteria", "evidenceCount", "sourceAuthority", "positionCheck", "reviewRequired", "reviewReasons"],
+        "properties": {
+          "id": { "type": "integer" },
+          "stableId": { "type": "string" },
+          "x": { "type": "integer" },
+          "y": { "type": "integer" },
+          "classification": { "enum": ["confirmed", "inferred", "unresolved"] },
+          "displayCategory": { "type": "string" },
+          "confidence": { "enum": ["high", "medium", "low"] },
+          "evidenceCriteria": { "type": "object" },
+          "evidenceCount": { "type": "integer", "minimum": 0, "maximum": 4 },
+          "sourceAuthority": { "type": "string" },
+          "positionCheck": { "type": "object" },
+          "reviewRequired": { "type": "boolean" },
+          "reviewReasons": { "type": "array", "items": { "type": "string" } }
+        },
+        "additionalProperties": false
+      }
+    },
+    "boundaryEdges": { "type": "array", "minItems": 104, "maxItems": 104 },
+    "exteriorLogicalVertices": { "type": "array", "minItems": 105, "maxItems": 105 },
+    "exteriorReferencePixels": { "type": "array", "minItems": 105, "maxItems": 105 },
+    "regionFits": { "type": "object", "minProperties": 8, "maxProperties": 8 },
+    "reviewList": { "type": "array" },
+    "holes": { "type": "array", "maxItems": 0 }
+  },
+  "additionalProperties": false
+}

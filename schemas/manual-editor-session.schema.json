@@ -1,0 +1,241 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/grougalorasalar/manual-editor-session.schema.json",
+  "title": "ManualEditorSession",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "sessionId",
+    "arenaModelId",
+    "sourceImage",
+    "stage",
+    "draft",
+    "validation",
+    "confirmations",
+    "audit",
+    "recognitionLink"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "0.5.0"
+    },
+    "sessionId": {
+      "type": "string"
+    },
+    "arenaModelId": {
+      "type": "string"
+    },
+    "sourceImage": {
+      "type": "object",
+      "required": [
+        "width",
+        "height",
+        "retained"
+      ],
+      "properties": {
+        "width": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "retained": {
+          "type": "boolean"
+        },
+        "sha256": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "stage": {
+      "enum": [
+        "calibration",
+        "board_objects",
+        "glyph_pattern",
+        "resources",
+        "progress",
+        "review",
+        "exported"
+      ]
+    },
+    "draft": {
+      "type": "object"
+    },
+    "validation": {
+      "type": "object",
+      "required": [
+        "status",
+        "issues"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "incomplete",
+            "invalid",
+            "confirmation_required",
+            "exportable"
+          ]
+        },
+        "issues": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/issue"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "confirmations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "kind",
+          "statement",
+          "confirmed"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "visual",
+              "mechanical",
+              "arena_boundary",
+              "projection_anchor"
+            ]
+          },
+          "statement": {
+            "type": "string"
+          },
+          "confirmed": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "audit": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "sequence",
+          "action",
+          "field"
+        ],
+        "properties": {
+          "sequence": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "action": {
+            "enum": [
+              "set",
+              "move",
+              "add",
+              "remove",
+              "reclassify",
+              "confirm",
+              "undo",
+              "redo",
+              "accept_detection",
+              "resolve_conflict"
+            ]
+          },
+          "field": {
+            "type": "string"
+          },
+          "before": {},
+          "after": {}
+        },
+        "additionalProperties": false
+      }
+    },
+    "recognitionLink": {
+      "type": "object",
+      "required": [
+        "resultId",
+        "acceptedObservationIds",
+        "overriddenObservationIds",
+        "openConflictIds"
+      ],
+      "properties": {
+        "resultId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "acceptedObservationIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "overriddenObservationIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "openConflictIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$defs": {
+    "issue": {
+      "type": "object",
+      "required": [
+        "code",
+        "severity",
+        "field",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "pattern": "^E-[0-9]{3}$"
+        },
+        "severity": {
+          "enum": [
+            "blocker",
+            "warning",
+            "info"
+          ]
+        },
+        "field": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "cell": {
+          "type": [
+            "object",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

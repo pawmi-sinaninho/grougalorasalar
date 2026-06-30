@@ -1,0 +1,247 @@
+{
+  "schemaVersion": "0.5.0",
+  "catalogId": "visual-contract-fixtures-v0.5.0",
+  "fixtureCount": 20,
+  "fixtures": [
+    {
+      "fixtureId": "VFX-001",
+      "category": "ingest",
+      "inputCondition": "unsupported file type",
+      "expectedGate": "rejected",
+      "expectedReasonCodes": [
+        "IMG-UNSUPPORTED"
+      ],
+      "criticalFields": [
+        "image"
+      ]
+    },
+    {
+      "fixtureId": "VFX-002",
+      "category": "ingest",
+      "inputCondition": "image below minimum dimensions",
+      "expectedGate": "rejected",
+      "expectedReasonCodes": [
+        "IMG-001"
+      ],
+      "criticalFields": [
+        "image"
+      ]
+    },
+    {
+      "fixtureId": "VFX-003",
+      "category": "ingest",
+      "inputCondition": "non-Grougalorasalar combat with superficially similar floor",
+      "expectedGate": "rejected",
+      "expectedReasonCodes": [
+        "IMG-002"
+      ],
+      "criticalFields": [
+        "image.arenaPresence"
+      ]
+    },
+    {
+      "fixtureId": "VFX-004",
+      "category": "ingest",
+      "inputCondition": "main board cropped but lower UI visible",
+      "expectedGate": "rejected",
+      "expectedReasonCodes": [
+        "IMG-003"
+      ],
+      "criticalFields": [
+        "image.arenaPresence"
+      ]
+    },
+    {
+      "fixtureId": "VFX-005",
+      "category": "registration",
+      "inputCondition": "single strong affine hypothesis with residuals inside accepted limits",
+      "expectedGate": "review_required",
+      "expectedReasonCodes": [
+        "MODEL-001"
+      ],
+      "criticalFields": [
+        "arena.calibration"
+      ]
+    },
+    {
+      "fixtureId": "VFX-006",
+      "category": "registration",
+      "inputCondition": "two near-equal transform hypotheses",
+      "expectedGate": "review_required",
+      "expectedReasonCodes": [
+        "REG-002"
+      ],
+      "criticalFields": [
+        "arena.calibration"
+      ]
+    },
+    {
+      "fixtureId": "VFX-007",
+      "category": "registration",
+      "inputCondition": "registration p95 residual above 0.16 cell",
+      "expectedGate": "rejected",
+      "expectedReasonCodes": [
+        "REG-001"
+      ],
+      "criticalFields": [
+        "arena.calibration"
+      ]
+    },
+    {
+      "fixtureId": "VFX-008",
+      "category": "player",
+      "inputCondition": "player candidate snaps clearly to one cell",
+      "expectedGate": "review_required",
+      "expectedReasonCodes": [
+        "MODEL-001"
+      ],
+      "criticalFields": [
+        "player.currentCell"
+      ]
+    },
+    {
+      "fixtureId": "VFX-009",
+      "category": "player",
+      "inputCondition": "two player-cell alternatives within snap margin",
+      "expectedGate": "review_required",
+      "expectedReasonCodes": [
+        "PLAYER-001"
+      ],
+      "criticalFields": [
+        "player.currentCell"
+      ]
+    },
+    {
+      "fixtureId": "VFX-010",
+      "category": "pillars",
+      "inputCondition": "all detected pillars agree with occupancy scan",
+      "expectedGate": "review_required",
+      "expectedReasonCodes": [
+        "MODEL-001"
+      ],
+      "criticalFields": [
+        "pillarSet",
+        "pillars.*"
+      ]
+    },
+    {
+      "fixtureId": "VFX-011",
+      "category": "pillars",
+      "inputCondition": "occupancy scan indicates one missed pillar",
+      "expectedGate": "review_required",
+      "expectedReasonCodes": [
+        "PILLAR-001"
+      ],
+      "criticalFields": [
+        "pillarSet"
+      ]
+    },
+    {
+      "fixtureId": "VFX-012",
+      "category": "pillars",
+      "inputCondition": "pillar cell certain but colour classifier conflicts with icon template",
+      "expectedGate": "review_required",
+      "expectedReasonCodes": [
+        "PILLAR-002"
+      ],
+      "criticalFields": [
+        "pillars.*.spellType"
+      ]
+    },
+    {
+      "fixtureId": "VFX-013",
+      "category": "glyph",
+      "inputCondition": "black set has one low-margin cell",
+      "expectedGate": "review_required",
+      "expectedReasonCodes": [
+        "GLYPH-001"
+      ],
+      "criticalFields": [
+        "glyphPattern.blackOffsets"
+      ]
+    },
+    {
+      "fixtureId": "VFX-014",
+      "category": "glyph",
+      "inputCondition": "black and white classifiers claim same physical cell",
+      "expectedGate": "review_required",
+      "expectedReasonCodes": [
+        "GLYPH-CONFLICT"
+      ],
+      "criticalFields": [
+        "glyphPattern.blackOffsets",
+        "glyphPattern.whiteOffsets"
+      ]
+    },
+    {
+      "fixtureId": "VFX-015",
+      "category": "resources",
+      "inputCondition": "action budget region absent",
+      "expectedGate": "review_required",
+      "expectedReasonCodes": [
+        "BUDGET-001"
+      ],
+      "criticalFields": [
+        "spellState.actionBudget"
+      ]
+    },
+    {
+      "fixtureId": "VFX-016",
+      "category": "resources",
+      "inputCondition": "one spell gauge is occluded",
+      "expectedGate": "review_required",
+      "expectedReasonCodes": [
+        "SPELL-001"
+      ],
+      "criticalFields": [
+        "spellState.spells.*"
+      ]
+    },
+    {
+      "fixtureId": "VFX-017",
+      "category": "progress",
+      "inputCondition": "both progress tracks absent but all solver-critical fields confirmed",
+      "expectedGate": "ready_for_solver",
+      "expectedReasonCodes": [
+        "PROGRESS-001"
+      ],
+      "criticalFields": [
+        "progress.*.index"
+      ]
+    },
+    {
+      "fixtureId": "VFX-018",
+      "category": "conflict",
+      "inputCondition": "multiple controlled characters detected",
+      "expectedGate": "rejected",
+      "expectedReasonCodes": [
+        "MULTI-001"
+      ],
+      "criticalFields": [
+        "turnContext.multiplayerDetected"
+      ]
+    },
+    {
+      "fixtureId": "VFX-019",
+      "category": "policy",
+      "inputCondition": "all critical fields high confidence but model is unvalidated",
+      "expectedGate": "review_required",
+      "expectedReasonCodes": [
+        "MODEL-001"
+      ],
+      "criticalFields": [
+        "all_solver_blocking"
+      ]
+    },
+    {
+      "fixtureId": "VFX-020",
+      "category": "policy",
+      "inputCondition": "validated model, all critical fields above thresholds and no conflicts",
+      "expectedGate": "ready_for_solver",
+      "expectedReasonCodes": [],
+      "criticalFields": [
+        "all_solver_blocking"
+      ]
+    }
+  ]
+}

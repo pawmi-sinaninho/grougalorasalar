@@ -1,0 +1,625 @@
+{
+  "schemaVersion": "0.5.0",
+  "resultId": "recognition-reference-manual-v0.5.0",
+  "sourceImage": {
+    "imageId": "user-reference",
+    "width": 1951,
+    "height": 1267,
+    "mimeType": "image/png",
+    "sha256": "2756a38a4451117001dedeab2e4da14423d4aa50978bc4549c9ff0cb1340f976",
+    "retentionConsent": true,
+    "captureSessionId": "reference-session"
+  },
+  "pipeline": {
+    "pipelineVersion": "spec-manual-0.5.0",
+    "policyId": "recognition-policy-v0.5.0",
+    "modelCalibrationStatus": "unvalidated",
+    "modelVersions": {
+      "registration": "manual-reference",
+      "objects": "not_implemented",
+      "gauges": "not_implemented"
+    }
+  },
+  "ingest": {
+    "status": "accepted",
+    "arenaPresenceConfidence": 0.99,
+    "reasonCodes": []
+  },
+  "registration": {
+    "status": "accepted",
+    "transformId": "user-reference-calibration-0.5.0",
+    "originPixel": {
+      "x": 964.895,
+      "y": 441.7425
+    },
+    "basisX": {
+      "x": 66.75,
+      "y": 33.375
+    },
+    "basisY": {
+      "x": -66.75,
+      "y": 33.375
+    },
+    "medianResidualCells": 0.0375,
+    "p95ResidualCells": 0.06,
+    "inlierCount": 6,
+    "candidateCount": 1,
+    "confidence": 0.98,
+    "reasonCodes": []
+  },
+  "observations": [
+    {
+      "schemaVersion": "0.5.0",
+      "observationId": "OBS-REF-ARENA",
+      "fieldPath": "image.arenaPresence",
+      "fieldType": "arena_presence",
+      "value": true,
+      "criticality": "solver_blocking",
+      "confidence": 0.99,
+      "decisionState": "user_confirmed",
+      "componentScores": {
+        "primary": 0.98,
+        "registration": 0.98,
+        "snapMargin": 0.98,
+        "visibility": 0.98,
+        "crossCheck": 0.95
+      },
+      "extractionMethods": [
+        {
+          "method": "manual_reference_encoding",
+          "version": "0.5.0",
+          "score": 0.98
+        }
+      ],
+      "crossChecks": [
+        {
+          "checkId": "reference-overlay-consistency",
+          "status": "pass",
+          "score": 0.95,
+          "detail": "Compared with retained manual overlay."
+        }
+      ],
+      "alternatives": [],
+      "reasonCodes": [],
+      "sourceRegion": {
+        "x": 0,
+        "y": 0,
+        "width": 1951,
+        "height": 930
+      },
+      "manuallyOverridden": false,
+      "confirmedByUser": true
+    },
+    {
+      "schemaVersion": "0.5.0",
+      "observationId": "OBS-REF-REG",
+      "fieldPath": "arena.calibration",
+      "fieldType": "registration",
+      "value": {
+        "transformId": "user-reference-calibration-0.5.0"
+      },
+      "criticality": "solver_blocking",
+      "confidence": 0.98,
+      "decisionState": "user_confirmed",
+      "componentScores": {
+        "primary": 0.98,
+        "registration": 0.98,
+        "snapMargin": 0.98,
+        "visibility": 0.98,
+        "crossCheck": 0.95
+      },
+      "extractionMethods": [
+        {
+          "method": "manual_reference_encoding",
+          "version": "0.5.0",
+          "score": 0.98
+        }
+      ],
+      "crossChecks": [
+        {
+          "checkId": "reference-overlay-consistency",
+          "status": "pass",
+          "score": 0.95,
+          "detail": "Compared with retained manual overlay."
+        }
+      ],
+      "alternatives": [],
+      "reasonCodes": [],
+      "sourceRegion": {
+        "x": 0,
+        "y": 0,
+        "width": 1951,
+        "height": 930
+      },
+      "manuallyOverridden": false,
+      "confirmedByUser": true
+    },
+    {
+      "schemaVersion": "0.5.0",
+      "observationId": "OBS-REF-MULTI",
+      "fieldPath": "turnContext.multiplayerDetected",
+      "fieldType": "multiplayer",
+      "value": false,
+      "criticality": "solver_blocking",
+      "confidence": 0.99,
+      "decisionState": "user_confirmed",
+      "componentScores": {
+        "primary": 0.98,
+        "registration": 0.98,
+        "snapMargin": 0.98,
+        "visibility": 0.98,
+        "crossCheck": 0.95
+      },
+      "extractionMethods": [
+        {
+          "method": "manual_reference_encoding",
+          "version": "0.5.0",
+          "score": 0.98
+        }
+      ],
+      "crossChecks": [
+        {
+          "checkId": "reference-overlay-consistency",
+          "status": "pass",
+          "score": 0.95,
+          "detail": "Compared with retained manual overlay."
+        }
+      ],
+      "alternatives": [],
+      "reasonCodes": [],
+      "sourceRegion": {
+        "x": 0,
+        "y": 0,
+        "width": 1951,
+        "height": 1267
+      },
+      "manuallyOverridden": false,
+      "confirmedByUser": true
+    },
+    {
+      "schemaVersion": "0.5.0",
+      "observationId": "OBS-REF-PLAYER",
+      "fieldPath": "player.currentCell",
+      "fieldType": "player_cell",
+      "value": {
+        "x": 7,
+        "y": -1
+      },
+      "criticality": "solver_blocking",
+      "confidence": 0.98,
+      "decisionState": "user_confirmed",
+      "componentScores": {
+        "primary": 0.98,
+        "registration": 0.98,
+        "snapMargin": 0.98,
+        "visibility": 0.98,
+        "crossCheck": 0.95
+      },
+      "extractionMethods": [
+        {
+          "method": "manual_reference_encoding",
+          "version": "0.5.0",
+          "score": 0.98
+        }
+      ],
+      "crossChecks": [
+        {
+          "checkId": "reference-overlay-consistency",
+          "status": "pass",
+          "score": 0.95,
+          "detail": "Compared with retained manual overlay."
+        }
+      ],
+      "alternatives": [],
+      "reasonCodes": [],
+      "sourceRegion": {
+        "x": 1370,
+        "y": 560,
+        "width": 260,
+        "height": 220
+      },
+      "manuallyOverridden": false,
+      "confirmedByUser": true
+    },
+    {
+      "schemaVersion": "0.5.0",
+      "observationId": "OBS-REF-PILLARS",
+      "fieldPath": "pillarSet",
+      "fieldType": "pillar_set",
+      "value": {
+        "count": 27,
+        "completenessStatus": "complete"
+      },
+      "criticality": "solver_blocking",
+      "confidence": 0.98,
+      "decisionState": "user_confirmed",
+      "componentScores": {
+        "primary": 0.98,
+        "registration": 0.98,
+        "snapMargin": 0.98,
+        "visibility": 0.98,
+        "crossCheck": 0.95
+      },
+      "extractionMethods": [
+        {
+          "method": "manual_reference_encoding",
+          "version": "0.5.0",
+          "score": 0.98
+        }
+      ],
+      "crossChecks": [
+        {
+          "checkId": "reference-overlay-consistency",
+          "status": "pass",
+          "score": 0.95,
+          "detail": "Compared with retained manual overlay."
+        }
+      ],
+      "alternatives": [],
+      "reasonCodes": [],
+      "sourceRegion": {
+        "x": 0,
+        "y": 0,
+        "width": 1951,
+        "height": 930
+      },
+      "manuallyOverridden": false,
+      "confirmedByUser": true
+    },
+    {
+      "schemaVersion": "0.5.0",
+      "observationId": "OBS-REF-BLACK",
+      "fieldPath": "glyphPattern.blackOffsets",
+      "fieldType": "glyph_black_set",
+      "value": [
+        {
+          "dx": -1,
+          "dy": -1
+        },
+        {
+          "dx": 1,
+          "dy": -1
+        },
+        {
+          "dx": 1,
+          "dy": 1
+        }
+      ],
+      "criticality": "solver_blocking",
+      "confidence": 0.98,
+      "decisionState": "user_confirmed",
+      "componentScores": {
+        "primary": 0.98,
+        "registration": 0.98,
+        "snapMargin": 0.98,
+        "visibility": 0.98,
+        "crossCheck": 0.95
+      },
+      "extractionMethods": [
+        {
+          "method": "manual_reference_encoding",
+          "version": "0.5.0",
+          "score": 0.98
+        }
+      ],
+      "crossChecks": [
+        {
+          "checkId": "reference-overlay-consistency",
+          "status": "pass",
+          "score": 0.95,
+          "detail": "Compared with retained manual overlay."
+        }
+      ],
+      "alternatives": [],
+      "reasonCodes": [],
+      "sourceRegion": {
+        "x": 700,
+        "y": 260,
+        "width": 650,
+        "height": 360
+      },
+      "manuallyOverridden": false,
+      "confirmedByUser": true
+    },
+    {
+      "schemaVersion": "0.5.0",
+      "observationId": "OBS-REF-WHITE",
+      "fieldPath": "glyphPattern.whiteOffsets",
+      "fieldType": "glyph_white_set",
+      "value": [
+        {
+          "dx": 0,
+          "dy": -3
+        },
+        {
+          "dx": 0,
+          "dy": 2
+        },
+        {
+          "dx": 2,
+          "dy": -1
+        }
+      ],
+      "criticality": "solver_blocking",
+      "confidence": 0.98,
+      "decisionState": "user_confirmed",
+      "componentScores": {
+        "primary": 0.98,
+        "registration": 0.98,
+        "snapMargin": 0.98,
+        "visibility": 0.98,
+        "crossCheck": 0.95
+      },
+      "extractionMethods": [
+        {
+          "method": "manual_reference_encoding",
+          "version": "0.5.0",
+          "score": 0.98
+        }
+      ],
+      "crossChecks": [
+        {
+          "checkId": "reference-overlay-consistency",
+          "status": "pass",
+          "score": 0.95,
+          "detail": "Compared with retained manual overlay."
+        }
+      ],
+      "alternatives": [],
+      "reasonCodes": [],
+      "sourceRegion": {
+        "x": 700,
+        "y": 260,
+        "width": 650,
+        "height": 360
+      },
+      "manuallyOverridden": false,
+      "confirmedByUser": true
+    },
+    {
+      "schemaVersion": "0.5.0",
+      "observationId": "OBS-REF-ANCHOR",
+      "fieldPath": "glyphPattern.anchorCell",
+      "fieldType": "projection_anchor",
+      "value": {
+        "x": 0,
+        "y": 0
+      },
+      "criticality": "solver_blocking",
+      "confidence": 0.6,
+      "decisionState": "review_required",
+      "componentScores": {
+        "primary": 0.6,
+        "registration": 0.98,
+        "snapMargin": 0.98,
+        "visibility": 0.98,
+        "crossCheck": 0.0
+      },
+      "extractionMethods": [
+        {
+          "method": "manual_reference_encoding",
+          "version": "0.5.0",
+          "score": 0.6
+        }
+      ],
+      "crossChecks": [
+        {
+          "checkId": "reference-overlay-consistency",
+          "status": "not_available",
+          "score": 0.0,
+          "detail": "Compared with retained manual overlay."
+        }
+      ],
+      "alternatives": [],
+      "reasonCodes": [
+        "ANCHOR-001"
+      ],
+      "sourceRegion": {
+        "x": 700,
+        "y": 260,
+        "width": 650,
+        "height": 360
+      },
+      "manuallyOverridden": false,
+      "confirmedByUser": false
+    },
+    {
+      "schemaVersion": "0.5.0",
+      "observationId": "OBS-REF-BUDGET",
+      "fieldPath": "spellState.actionBudget",
+      "fieldType": "action_budget",
+      "value": null,
+      "criticality": "solver_blocking",
+      "confidence": 0.0,
+      "decisionState": "not_visible",
+      "componentScores": {
+        "primary": 0.0,
+        "registration": 0.98,
+        "snapMargin": 0.98,
+        "visibility": 0.98,
+        "crossCheck": 0.0
+      },
+      "extractionMethods": [
+        {
+          "method": "manual_reference_encoding",
+          "version": "0.5.0",
+          "score": 0.0
+        }
+      ],
+      "crossChecks": [
+        {
+          "checkId": "reference-overlay-consistency",
+          "status": "not_available",
+          "score": 0.0,
+          "detail": "Compared with retained manual overlay."
+        }
+      ],
+      "alternatives": [],
+      "reasonCodes": [
+        "BUDGET-001"
+      ],
+      "sourceRegion": {
+        "x": 0,
+        "y": 850,
+        "width": 1951,
+        "height": 250
+      },
+      "manuallyOverridden": false,
+      "confirmedByUser": false
+    },
+    {
+      "schemaVersion": "0.5.0",
+      "observationId": "OBS-REF-SPELLS",
+      "fieldPath": "spellState.spells",
+      "fieldType": "spell_state",
+      "value": {
+        "indecision": "unknown",
+        "reflection": "unknown",
+        "repulsion": "unknown",
+        "attraction": "unknown"
+      },
+      "criticality": "solver_blocking",
+      "confidence": 0.0,
+      "decisionState": "not_visible",
+      "componentScores": {
+        "primary": 0.0,
+        "registration": 0.98,
+        "snapMargin": 0.98,
+        "visibility": 0.98,
+        "crossCheck": 0.0
+      },
+      "extractionMethods": [
+        {
+          "method": "manual_reference_encoding",
+          "version": "0.5.0",
+          "score": 0.0
+        }
+      ],
+      "crossChecks": [
+        {
+          "checkId": "reference-overlay-consistency",
+          "status": "not_available",
+          "score": 0.0,
+          "detail": "Compared with retained manual overlay."
+        }
+      ],
+      "alternatives": [],
+      "reasonCodes": [
+        "SPELL-001"
+      ],
+      "sourceRegion": {
+        "x": 0,
+        "y": 850,
+        "width": 1951,
+        "height": 250
+      },
+      "manuallyOverridden": false,
+      "confirmedByUser": false
+    },
+    {
+      "schemaVersion": "0.5.0",
+      "observationId": "OBS-REF-PROGRESS",
+      "fieldPath": "progress",
+      "fieldType": "progress_index",
+      "value": {
+        "crocoburio": null,
+        "dragon": null
+      },
+      "criticality": "terminal_only",
+      "confidence": 0.0,
+      "decisionState": "not_visible",
+      "componentScores": {
+        "primary": 0.0,
+        "registration": 0.98,
+        "snapMargin": 0.98,
+        "visibility": 0.98,
+        "crossCheck": 0.0
+      },
+      "extractionMethods": [
+        {
+          "method": "manual_reference_encoding",
+          "version": "0.5.0",
+          "score": 0.0
+        }
+      ],
+      "crossChecks": [
+        {
+          "checkId": "reference-overlay-consistency",
+          "status": "not_available",
+          "score": 0.0,
+          "detail": "Compared with retained manual overlay."
+        }
+      ],
+      "alternatives": [],
+      "reasonCodes": [
+        "PROGRESS-001"
+      ],
+      "sourceRegion": {
+        "x": 0,
+        "y": 920,
+        "width": 1951,
+        "height": 347
+      },
+      "manuallyOverridden": false,
+      "confirmedByUser": false
+    }
+  ],
+  "conflicts": [],
+  "gate": {
+    "status": "review_required",
+    "criticalFieldStatuses": [
+      {
+        "fieldPath": "image.arenaPresence",
+        "status": "confirmed"
+      },
+      {
+        "fieldPath": "arena.calibration",
+        "status": "confirmed"
+      },
+      {
+        "fieldPath": "turnContext.multiplayerDetected",
+        "status": "confirmed"
+      },
+      {
+        "fieldPath": "player.currentCell",
+        "status": "confirmed"
+      },
+      {
+        "fieldPath": "pillarSet",
+        "status": "confirmed"
+      },
+      {
+        "fieldPath": "glyphPattern.blackOffsets",
+        "status": "confirmed"
+      },
+      {
+        "fieldPath": "glyphPattern.whiteOffsets",
+        "status": "confirmed"
+      },
+      {
+        "fieldPath": "glyphPattern.anchorCell",
+        "status": "review_required"
+      },
+      {
+        "fieldPath": "spellState.actionBudget",
+        "status": "missing"
+      },
+      {
+        "fieldPath": "spellState.spells",
+        "status": "missing"
+      }
+    ],
+    "blockingReasonCodes": [
+      "ANCHOR-001",
+      "BUDGET-001",
+      "SPELL-001",
+      "MODEL-001"
+    ],
+    "autoConfirmationEnabled": false
+  },
+  "turnStateDraft": {
+    "schemaVersion": "0.5.0",
+    "turnStateRef": "data/arena/reference-turn.manual.json",
+    "exported": true
+  }
+}

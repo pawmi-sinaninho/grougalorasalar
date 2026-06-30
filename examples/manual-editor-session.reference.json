@@ -1,0 +1,103 @@
+{
+  "schemaVersion": "0.5.0",
+  "sessionId": "reference-manual-encoding",
+  "arenaModelId": "grougalorasalar-arena-draft-0.5.0",
+  "sourceImage": {
+    "width": 1951,
+    "height": 1267,
+    "retained": true,
+    "sha256": "2756a38a4451117001dedeab2e4da14423d4aa50978bc4549c9ff0cb1340f976"
+  },
+  "stage": "review",
+  "draft": {
+    "turnStatePath": "data/arena/reference-turn.manual.json"
+  },
+  "validation": {
+    "status": "confirmation_required",
+    "issues": [
+      {
+        "code": "E-041",
+        "severity": "blocker",
+        "field": "glyphPattern.anchorCell",
+        "message": "Projection anchor is provisional and must be confirmed from another clean reference.",
+        "cell": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "code": "E-061",
+        "severity": "blocker",
+        "field": "spellState.actionBudget",
+        "message": "Action budget is not visible or entered.",
+        "cell": null
+      },
+      {
+        "code": "E-071",
+        "severity": "warning",
+        "field": "progress",
+        "message": "Both progress indices are intentionally unset in the reference encoding.",
+        "cell": null
+      }
+    ]
+  },
+  "confirmations": [
+    {
+      "id": "C-ANCHOR-01",
+      "kind": "projection_anchor",
+      "statement": "Treat logical cell (0,0) as the central projection origin for this draft only.",
+      "confirmed": false
+    },
+    {
+      "id": "C-BOUNDARY-01",
+      "kind": "arena_boundary",
+      "statement": "Allow object placement on boundary_unverified cells for manual evidence capture.",
+      "confirmed": true
+    }
+  ],
+  "audit": [
+    {
+      "sequence": 1,
+      "action": "set",
+      "field": "player.currentCell",
+      "before": null,
+      "after": {
+        "x": 7,
+        "y": -1
+      }
+    },
+    {
+      "sequence": 2,
+      "action": "add",
+      "field": "pillars",
+      "before": null,
+      "after": {
+        "count": 27
+      }
+    },
+    {
+      "sequence": 3,
+      "action": "set",
+      "field": "glyphPattern",
+      "before": null,
+      "after": {
+        "black": 3,
+        "white": 3
+      }
+    }
+  ],
+  "recognitionLink": {
+    "resultId": "recognition-reference-manual-v0.5.0",
+    "acceptedObservationIds": [
+      "OBS-REF-ARENA",
+      "OBS-REF-REG",
+      "OBS-REF-MULTI",
+      "OBS-REF-PLAYER",
+      "OBS-REF-PILLARS",
+      "OBS-REF-BLACK",
+      "OBS-REF-WHITE"
+    ],
+    "overriddenObservationIds": [],
+    "openConflictIds": []
+  }
+}

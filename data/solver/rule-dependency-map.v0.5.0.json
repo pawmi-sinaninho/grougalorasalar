@@ -1,0 +1,179 @@
+{
+  "schemaVersion": "0.5.0",
+  "mapId": "rule-dependency-map-v0.5.0",
+  "dependencies": [
+    {
+      "path": "movement.indecision.contactMetric",
+      "ruleIds": [
+        "R-010",
+        "R-039"
+      ],
+      "effect": "legality"
+    },
+    {
+      "path": "movement.indecision.destinationOccupancy",
+      "ruleIds": [
+        "R-034",
+        "R-053"
+      ],
+      "effect": "legality"
+    },
+    {
+      "path": "movement.reflection.rangeMetric",
+      "ruleIds": [
+        "R-011",
+        "R-040"
+      ],
+      "effect": "legality"
+    },
+    {
+      "path": "movement.reflection.alignment",
+      "ruleIds": [
+        "R-041"
+      ],
+      "effect": "legality"
+    },
+    {
+      "path": "movement.reflection.pathMode",
+      "ruleIds": [
+        "R-054"
+      ],
+      "effect": "destination"
+    },
+    {
+      "path": "movement.repulsion.allowedAlignments",
+      "ruleIds": [
+        "R-013",
+        "R-014",
+        "R-042"
+      ],
+      "effect": "legality"
+    },
+    {
+      "path": "movement.attraction.rangeMetric",
+      "ruleIds": [
+        "R-015",
+        "R-016",
+        "R-043"
+      ],
+      "effect": "legality"
+    },
+    {
+      "path": "movement.*.targetPillarType",
+      "ruleIds": [
+        "R-044"
+      ],
+      "effect": "legality"
+    },
+    {
+      "path": "movement.*.lineOfSight",
+      "ruleIds": [
+        "R-045"
+      ],
+      "effect": "legality"
+    },
+    {
+      "path": "movement.*.pathMode",
+      "ruleIds": [
+        "R-033",
+        "R-049"
+      ],
+      "effect": "destination"
+    },
+    {
+      "path": "movement.*.destinationOccupancy",
+      "ruleIds": [
+        "R-034"
+      ],
+      "effect": "destination"
+    },
+    {
+      "path": "movement.*.edgeMode",
+      "ruleIds": [
+        "R-035"
+      ],
+      "effect": "destination"
+    },
+    {
+      "path": "resources.actionBudgetPerTurn",
+      "ruleIds": [
+        "R-027"
+      ],
+      "effect": "legality"
+    },
+    {
+      "path": "resources.movementActionCost",
+      "ruleIds": [
+        "R-026"
+      ],
+      "effect": "resource"
+    },
+    {
+      "path": "resources.trackingMode",
+      "ruleIds": [
+        "R-029",
+        "R-048"
+      ],
+      "effect": "resource"
+    },
+    {
+      "path": "resources.recharge*",
+      "ruleIds": [
+        "R-009",
+        "R-030",
+        "R-031",
+        "R-032",
+        "R-047"
+      ],
+      "effect": "resource"
+    },
+    {
+      "path": "resolution.blackPriority",
+      "ruleIds": [
+        "R-007",
+        "R-008"
+      ],
+      "effect": "resolution"
+    },
+    {
+      "path": "resolution.stationaryReference",
+      "ruleIds": [
+        "R-018",
+        "R-046"
+      ],
+      "effect": "resolution"
+    },
+    {
+      "path": "resolution.centerBlack*",
+      "ruleIds": [
+        "R-020",
+        "R-050"
+      ],
+      "effect": "resolution"
+    },
+    {
+      "path": "resolution.noBlackNoWhiteOutcome",
+      "ruleIds": [
+        "R-019"
+      ],
+      "effect": "resolution"
+    },
+    {
+      "path": "resolution.whiteWithoutBlackOutcome",
+      "ruleIds": [
+        "R-009",
+        "R-051"
+      ],
+      "effect": "resolution"
+    },
+    {
+      "path": "progress.*TrackLength",
+      "ruleIds": [
+        "R-022",
+        "R-023",
+        "R-024"
+      ],
+      "effect": "ranking"
+    }
+  ]
+}

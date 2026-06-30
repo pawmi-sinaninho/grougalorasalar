@@ -1,0 +1,2354 @@
+{
+  "schemaVersion": "0.9.0",
+  "phase": "boundary_refinement",
+  "status": "review_required",
+  "arenaModelId": "grougalorasalar-arena-canonical-0.9.0",
+  "workingCellCount": 338,
+  "cellCountDisposition": "retained_provisionally_pending_seven_boundary_reviews",
+  "evidencePolicy": {
+    "confirmedMinimumCriteria": 2,
+    "criteria": [
+      "user_boundary_annotation",
+      "user_hidden_cell_annotation",
+      "visible_empty_map",
+      "parity_geometric_consistency"
+    ],
+    "missingGreenAnnotationHandling": "not_counted_per_cell",
+    "shapeSmoothingAllowed": false,
+    "symmetrisationAllowed": false
+  },
+  "classificationSummary": {
+    "confirmed": 43,
+    "inferred": 0,
+    "unresolved": 7
+  },
+  "positionToleranceCells": 0.12,
+  "positionOutlierCells": [],
+  "reviewList": [
+    {
+      "id": 9,
+      "stableId": "C009",
+      "x": -2,
+      "y": -9,
+      "region": "right-top",
+      "reasons": [
+        "fewer_than_two_required_boundary_evidence_criteria"
+      ]
+    },
+    {
+      "id": 16,
+      "stableId": "C016",
+      "x": -3,
+      "y": -8,
+      "region": "right-top",
+      "reasons": [
+        "fewer_than_two_required_boundary_evidence_criteria"
+      ]
+    },
+    {
+      "id": 25,
+      "stableId": "C025",
+      "x": -4,
+      "y": -7,
+      "region": "right-top",
+      "reasons": [
+        "fewer_than_two_required_boundary_evidence_criteria"
+      ]
+    },
+    {
+      "id": 64,
+      "stableId": "C064",
+      "x": -7,
+      "y": -4,
+      "region": "left-top",
+      "reasons": [
+        "fewer_than_two_required_boundary_evidence_criteria"
+      ]
+    },
+    {
+      "id": 81,
+      "stableId": "C081",
+      "x": -8,
+      "y": -3,
+      "region": "left-top",
+      "reasons": [
+        "fewer_than_two_required_boundary_evidence_criteria"
+      ]
+    },
+    {
+      "id": 168,
+      "stableId": "C168",
+      "x": 13,
+      "y": 0,
+      "region": "right-middle",
+      "reasons": [
+        "fewer_than_two_required_boundary_evidence_criteria"
+      ]
+    },
+    {
+      "id": 193,
+      "stableId": "C193",
+      "x": 12,
+      "y": 1,
+      "region": "bottom-right",
+      "reasons": [
+        "fewer_than_two_required_boundary_evidence_criteria"
+      ]
+    }
+  ],
+  "regionFits": {
+    "left-top": {
+      "label": "links oben",
+      "referenceRect": {
+        "x": 320,
+        "y": 35,
+        "width": 580,
+        "height": 250
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0,
+      "distancePixels": 0.0,
+      "fitScore": 14.3919,
+      "baselineScore": 14.3919,
+      "scoreGain": 0.0,
+      "supportingCellCount": 56,
+      "method": "regional_visible_grid_line_fit"
+    },
+    "left-middle": {
+      "label": "links Mitte",
+      "referenceRect": {
+        "x": 315,
+        "y": 190,
+        "width": 335,
+        "height": 265
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0,
+      "distancePixels": 0.0,
+      "fitScore": 16.0585,
+      "baselineScore": 16.0585,
+      "scoreGain": 0.0,
+      "supportingCellCount": 33,
+      "method": "regional_visible_grid_line_fit"
+    },
+    "left-bottom": {
+      "label": "links unten",
+      "referenceRect": {
+        "x": 315,
+        "y": 350,
+        "width": 405,
+        "height": 315
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0,
+      "distancePixels": 0.0,
+      "fitScore": 15.8179,
+      "baselineScore": 15.8179,
+      "scoreGain": 0.0,
+      "supportingCellCount": 34,
+      "method": "regional_visible_grid_line_fit"
+    },
+    "bottom-left": {
+      "label": "unten links",
+      "referenceRect": {
+        "x": 360,
+        "y": 490,
+        "width": 460,
+        "height": 190
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0,
+      "distancePixels": 0.0,
+      "fitScore": 12.9142,
+      "baselineScore": 12.9142,
+      "scoreGain": 0.0,
+      "supportingCellCount": 15,
+      "method": "regional_visible_grid_line_fit"
+    },
+    "bottom-middle": {
+      "label": "unten Mitte",
+      "referenceRect": {
+        "x": 680,
+        "y": 490,
+        "width": 540,
+        "height": 190
+      },
+      "offsetX": 0.5,
+      "offsetY": 0.0,
+      "distancePixels": 0.5,
+      "fitScore": 14.7867,
+      "baselineScore": 14.5335,
+      "scoreGain": 0.2532,
+      "supportingCellCount": 11,
+      "method": "regional_visible_grid_line_fit"
+    },
+    "bottom-right": {
+      "label": "unten rechts",
+      "referenceRect": {
+        "x": 1080,
+        "y": 475,
+        "width": 465,
+        "height": 205
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0,
+      "distancePixels": 0.0,
+      "fitScore": 16.5307,
+      "baselineScore": 16.5307,
+      "scoreGain": 0.0,
+      "supportingCellCount": 14,
+      "method": "regional_visible_grid_line_fit"
+    },
+    "right-middle": {
+      "label": "rechts Mitte",
+      "referenceRect": {
+        "x": 1260,
+        "y": 190,
+        "width": 305,
+        "height": 350
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0,
+      "distancePixels": 0.0,
+      "fitScore": 18.5095,
+      "baselineScore": 18.5095,
+      "scoreGain": 0.0,
+      "supportingCellCount": 37,
+      "method": "regional_visible_grid_line_fit"
+    },
+    "right-top": {
+      "label": "rechts oben",
+      "referenceRect": {
+        "x": 900,
+        "y": 35,
+        "width": 665,
+        "height": 280
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0,
+      "distancePixels": 0.0,
+      "fitScore": 18.7962,
+      "baselineScore": 18.7962,
+      "scoreGain": 0.0,
+      "supportingCellCount": 66,
+      "method": "regional_visible_grid_line_fit"
+    }
+  },
+  "boundaryCells": [
+    {
+      "id": 0,
+      "stableId": "C000",
+      "x": 1,
+      "y": -12,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "high",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": true,
+        "visible_empty_map": true,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 3,
+      "sourceAuthority": "user_hidden_cell_annotation",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "right-top",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 1493.0633,
+          "y": 66.8143
+        },
+        "plausibleCenter": {
+          "x": 1493.0633,
+          "y": 66.8143
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": true
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 1,
+      "stableId": "C001",
+      "x": 0,
+      "y": -11,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "medium",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": false,
+        "visible_empty_map": true,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 2,
+      "sourceAuthority": "visible_empty_map",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "right-top",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 1407.0901,
+          "y": 66.8174
+        },
+        "plausibleCenter": {
+          "x": 1407.0901,
+          "y": 66.8174
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": true
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 3,
+      "stableId": "C003",
+      "x": 2,
+      "y": -11,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "high",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": true,
+        "visible_empty_map": true,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 3,
+      "sourceAuthority": "user_hidden_cell_annotation",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "right-top",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 1493.0648,
+          "y": 109.8009
+        },
+        "plausibleCenter": {
+          "x": 1493.0648,
+          "y": 109.8009
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": true
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 4,
+      "stableId": "C004",
+      "x": -1,
+      "y": -10,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "medium",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": false,
+        "visible_empty_map": true,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 2,
+      "sourceAuthority": "visible_empty_map",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "right-top",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 1321.1169,
+          "y": 66.8206
+        },
+        "plausibleCenter": {
+          "x": 1321.1169,
+          "y": 66.8206
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": true
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 8,
+      "stableId": "C008",
+      "x": 3,
+      "y": -10,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "medium",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": true,
+        "visible_empty_map": false,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 2,
+      "sourceAuthority": "user_hidden_cell_annotation",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "right-top",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 1493.0664,
+          "y": 152.7875
+        },
+        "plausibleCenter": {
+          "x": 1493.0664,
+          "y": 152.7875
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": false
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 9,
+      "stableId": "C009",
+      "x": -2,
+      "y": -9,
+      "classification": "unresolved",
+      "displayCategory": "geometric_inference_unresolved",
+      "confidence": "low",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": false,
+        "visible_empty_map": false,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 1,
+      "sourceAuthority": "unresolved",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "right-top",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 1235.1437,
+          "y": 66.8237
+        },
+        "plausibleCenter": {
+          "x": 1235.1437,
+          "y": 66.8237
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": false
+      },
+      "reviewRequired": true,
+      "reviewReasons": [
+        "fewer_than_two_required_boundary_evidence_criteria"
+      ]
+    },
+    {
+      "id": 15,
+      "stableId": "C015",
+      "x": 4,
+      "y": -9,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "medium",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": true,
+        "visible_empty_map": false,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 2,
+      "sourceAuthority": "user_hidden_cell_annotation",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "right-top",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 1493.068,
+          "y": 195.7741
+        },
+        "plausibleCenter": {
+          "x": 1493.068,
+          "y": 195.7741
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": false
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 16,
+      "stableId": "C016",
+      "x": -3,
+      "y": -8,
+      "classification": "unresolved",
+      "displayCategory": "geometric_inference_unresolved",
+      "confidence": "low",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": false,
+        "visible_empty_map": false,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 1,
+      "sourceAuthority": "unresolved",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "right-top",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 1149.1705,
+          "y": 66.8269
+        },
+        "plausibleCenter": {
+          "x": 1149.1705,
+          "y": 66.8269
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": false
+      },
+      "reviewRequired": true,
+      "reviewReasons": [
+        "fewer_than_two_required_boundary_evidence_criteria"
+      ]
+    },
+    {
+      "id": 24,
+      "stableId": "C024",
+      "x": 5,
+      "y": -8,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "high",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": true,
+        "visible_empty_map": true,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 3,
+      "sourceAuthority": "user_hidden_cell_annotation",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "right-top",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 1493.0696,
+          "y": 238.7607
+        },
+        "plausibleCenter": {
+          "x": 1493.0696,
+          "y": 238.7607
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": true
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 25,
+      "stableId": "C025",
+      "x": -4,
+      "y": -7,
+      "classification": "unresolved",
+      "displayCategory": "geometric_inference_unresolved",
+      "confidence": "low",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": false,
+        "visible_empty_map": false,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 1,
+      "sourceAuthority": "unresolved",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "right-top",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 1063.1973,
+          "y": 66.83
+        },
+        "plausibleCenter": {
+          "x": 1063.1973,
+          "y": 66.83
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": false
+      },
+      "reviewRequired": true,
+      "reviewReasons": [
+        "fewer_than_two_required_boundary_evidence_criteria"
+      ]
+    },
+    {
+      "id": 35,
+      "stableId": "C035",
+      "x": 6,
+      "y": -7,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "high",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": true,
+        "visible_empty_map": true,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 3,
+      "sourceAuthority": "user_hidden_cell_annotation",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "right-top",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 1493.0711,
+          "y": 281.7473
+        },
+        "plausibleCenter": {
+          "x": 1493.0711,
+          "y": 281.7473
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": true
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 36,
+      "stableId": "C036",
+      "x": -5,
+      "y": -6,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "high",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": true,
+        "visible_empty_map": true,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 3,
+      "sourceAuthority": "user_hidden_cell_annotation",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "right-top",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 977.2241,
+          "y": 66.8332
+        },
+        "plausibleCenter": {
+          "x": 977.2241,
+          "y": 66.8332
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": true
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 48,
+      "stableId": "C048",
+      "x": 7,
+      "y": -6,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "high",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": true,
+        "visible_empty_map": true,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 3,
+      "sourceAuthority": "user_hidden_cell_annotation",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "right-middle",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 1493.0727,
+          "y": 324.7339
+        },
+        "plausibleCenter": {
+          "x": 1493.0727,
+          "y": 324.7339
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": true
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 49,
+      "stableId": "C049",
+      "x": -6,
+      "y": -5,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "medium",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": false,
+        "visible_empty_map": true,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 2,
+      "sourceAuthority": "visible_empty_map",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "left-top",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 891.2509,
+          "y": 66.8363
+        },
+        "plausibleCenter": {
+          "x": 891.2509,
+          "y": 66.8363
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": true
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 63,
+      "stableId": "C063",
+      "x": 8,
+      "y": -5,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "medium",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": true,
+        "visible_empty_map": false,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 2,
+      "sourceAuthority": "user_hidden_cell_annotation",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "right-middle",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 1493.0743,
+          "y": 367.7205
+        },
+        "plausibleCenter": {
+          "x": 1493.0743,
+          "y": 367.7205
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": false
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 64,
+      "stableId": "C064",
+      "x": -7,
+      "y": -4,
+      "classification": "unresolved",
+      "displayCategory": "geometric_inference_unresolved",
+      "confidence": "low",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": false,
+        "visible_empty_map": false,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 1,
+      "sourceAuthority": "unresolved",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "left-top",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 805.2777,
+          "y": 66.8395
+        },
+        "plausibleCenter": {
+          "x": 805.2777,
+          "y": 66.8395
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": false
+      },
+      "reviewRequired": true,
+      "reviewReasons": [
+        "fewer_than_two_required_boundary_evidence_criteria"
+      ]
+    },
+    {
+      "id": 80,
+      "stableId": "C080",
+      "x": 9,
+      "y": -4,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "medium",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": true,
+        "visible_empty_map": false,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 2,
+      "sourceAuthority": "user_hidden_cell_annotation",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "right-middle",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 1493.0759,
+          "y": 410.7071
+        },
+        "plausibleCenter": {
+          "x": 1493.0759,
+          "y": 410.7071
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": false
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 81,
+      "stableId": "C081",
+      "x": -8,
+      "y": -3,
+      "classification": "unresolved",
+      "displayCategory": "geometric_inference_unresolved",
+      "confidence": "low",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": false,
+        "visible_empty_map": false,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 1,
+      "sourceAuthority": "unresolved",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "left-top",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 719.3045,
+          "y": 66.8426
+        },
+        "plausibleCenter": {
+          "x": 719.3045,
+          "y": 66.8426
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": false
+      },
+      "reviewRequired": true,
+      "reviewReasons": [
+        "fewer_than_two_required_boundary_evidence_criteria"
+      ]
+    },
+    {
+      "id": 99,
+      "stableId": "C099",
+      "x": 10,
+      "y": -3,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "medium",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": true,
+        "visible_empty_map": false,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 2,
+      "sourceAuthority": "user_hidden_cell_annotation",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "right-middle",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 1493.0774,
+          "y": 453.6937
+        },
+        "plausibleCenter": {
+          "x": 1493.0774,
+          "y": 453.6937
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": false
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 100,
+      "stableId": "C100",
+      "x": -9,
+      "y": -2,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "medium",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": false,
+        "visible_empty_map": true,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 2,
+      "sourceAuthority": "visible_empty_map",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "left-top",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 633.3313,
+          "y": 66.8458
+        },
+        "plausibleCenter": {
+          "x": 633.3313,
+          "y": 66.8458
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": true
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 120,
+      "stableId": "C120",
+      "x": 11,
+      "y": -2,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "medium",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": true,
+        "visible_empty_map": false,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 2,
+      "sourceAuthority": "user_hidden_cell_annotation",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "right-middle",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 1493.079,
+          "y": 496.6803
+        },
+        "plausibleCenter": {
+          "x": 1493.079,
+          "y": 496.6803
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": false
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 121,
+      "stableId": "C121",
+      "x": -10,
+      "y": -1,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "high",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": true,
+        "visible_empty_map": true,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 3,
+      "sourceAuthority": "user_hidden_cell_annotation",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "left-top",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 547.3581,
+          "y": 66.8489
+        },
+        "plausibleCenter": {
+          "x": 547.3581,
+          "y": 66.8489
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": true
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 143,
+      "stableId": "C143",
+      "x": 12,
+      "y": -1,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "medium",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": false,
+        "visible_empty_map": true,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 2,
+      "sourceAuthority": "visible_empty_map",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "right-middle",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 1493.0806,
+          "y": 539.6669
+        },
+        "plausibleCenter": {
+          "x": 1493.0806,
+          "y": 539.6669
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": true
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 144,
+      "stableId": "C144",
+      "x": -11,
+      "y": 0,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "high",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": true,
+        "visible_empty_map": true,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 3,
+      "sourceAuthority": "user_hidden_cell_annotation",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "left-top",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 461.3849,
+          "y": 66.8521
+        },
+        "plausibleCenter": {
+          "x": 461.3849,
+          "y": 66.8521
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": true
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 168,
+      "stableId": "C168",
+      "x": 13,
+      "y": 0,
+      "classification": "unresolved",
+      "displayCategory": "geometric_inference_unresolved",
+      "confidence": "low",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": false,
+        "visible_empty_map": false,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 1,
+      "sourceAuthority": "unresolved",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "right-middle",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 1493.0822,
+          "y": 582.6535
+        },
+        "plausibleCenter": {
+          "x": 1493.0822,
+          "y": 582.6535
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": false
+      },
+      "reviewRequired": true,
+      "reviewReasons": [
+        "fewer_than_two_required_boundary_evidence_criteria"
+      ]
+    },
+    {
+      "id": 169,
+      "stableId": "C169",
+      "x": -12,
+      "y": 1,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "high",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": true,
+        "visible_empty_map": true,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 3,
+      "sourceAuthority": "user_hidden_cell_annotation",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "left-top",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 375.4117,
+          "y": 66.8552
+        },
+        "plausibleCenter": {
+          "x": 375.4117,
+          "y": 66.8552
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": true
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 193,
+      "stableId": "C193",
+      "x": 12,
+      "y": 1,
+      "classification": "unresolved",
+      "displayCategory": "geometric_inference_unresolved",
+      "confidence": "low",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": false,
+        "visible_empty_map": false,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 1,
+      "sourceAuthority": "unresolved",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "bottom-right",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 1407.109,
+          "y": 582.6566
+        },
+        "plausibleCenter": {
+          "x": 1407.109,
+          "y": 582.6566
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": false
+      },
+      "reviewRequired": true,
+      "reviewReasons": [
+        "fewer_than_two_required_boundary_evidence_criteria"
+      ]
+    },
+    {
+      "id": 194,
+      "stableId": "C194",
+      "x": -11,
+      "y": 2,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "medium",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": true,
+        "visible_empty_map": false,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 2,
+      "sourceAuthority": "user_hidden_cell_annotation",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "left-top",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 375.4133,
+          "y": 109.8418
+        },
+        "plausibleCenter": {
+          "x": 375.4133,
+          "y": 109.8418
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": false
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 216,
+      "stableId": "C216",
+      "x": 11,
+      "y": 2,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "medium",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": false,
+        "visible_empty_map": true,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 2,
+      "sourceAuthority": "visible_empty_map",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "bottom-right",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 1321.1358,
+          "y": 582.6598
+        },
+        "plausibleCenter": {
+          "x": 1321.1358,
+          "y": 582.6598
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": true
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 217,
+      "stableId": "C217",
+      "x": -10,
+      "y": 3,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "medium",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": true,
+        "visible_empty_map": false,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 2,
+      "sourceAuthority": "user_hidden_cell_annotation",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "left-top",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 375.4148,
+          "y": 152.8284
+        },
+        "plausibleCenter": {
+          "x": 375.4148,
+          "y": 152.8284
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": false
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 237,
+      "stableId": "C237",
+      "x": 10,
+      "y": 3,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "high",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": true,
+        "visible_empty_map": true,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 3,
+      "sourceAuthority": "user_hidden_cell_annotation",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "bottom-right",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 1235.1626,
+          "y": 582.6629
+        },
+        "plausibleCenter": {
+          "x": 1235.1626,
+          "y": 582.6629
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": true
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 238,
+      "stableId": "C238",
+      "x": -9,
+      "y": 4,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "medium",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": true,
+        "visible_empty_map": false,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 2,
+      "sourceAuthority": "user_hidden_cell_annotation",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "left-top",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 375.4164,
+          "y": 195.815
+        },
+        "plausibleCenter": {
+          "x": 375.4164,
+          "y": 195.815
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": false
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 256,
+      "stableId": "C256",
+      "x": 9,
+      "y": 4,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "high",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": true,
+        "visible_empty_map": true,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 3,
+      "sourceAuthority": "user_hidden_cell_annotation",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "bottom-middle",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 1149.1894,
+          "y": 582.6661
+        },
+        "plausibleCenter": {
+          "x": 1149.6894,
+          "y": 582.6661
+        },
+        "delta": {
+          "x": 0.5,
+          "y": 0.0
+        },
+        "distancePixels": 0.5,
+        "distanceCells": 0.010404,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": true
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 257,
+      "stableId": "C257",
+      "x": -8,
+      "y": 5,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "medium",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": true,
+        "visible_empty_map": false,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 2,
+      "sourceAuthority": "user_hidden_cell_annotation",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "left-top",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 375.418,
+          "y": 238.8016
+        },
+        "plausibleCenter": {
+          "x": 375.418,
+          "y": 238.8016
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": false
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 273,
+      "stableId": "C273",
+      "x": 8,
+      "y": 5,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "high",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": true,
+        "visible_empty_map": true,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 3,
+      "sourceAuthority": "user_hidden_cell_annotation",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "bottom-middle",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 1063.2162,
+          "y": 582.6692
+        },
+        "plausibleCenter": {
+          "x": 1063.7162,
+          "y": 582.6692
+        },
+        "delta": {
+          "x": 0.5,
+          "y": 0.0
+        },
+        "distancePixels": 0.5,
+        "distanceCells": 0.010404,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": true
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 274,
+      "stableId": "C274",
+      "x": -7,
+      "y": 6,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "medium",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": true,
+        "visible_empty_map": false,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 2,
+      "sourceAuthority": "user_hidden_cell_annotation",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "left-middle",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 375.4196,
+          "y": 281.7882
+        },
+        "plausibleCenter": {
+          "x": 375.4196,
+          "y": 281.7882
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": false
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 288,
+      "stableId": "C288",
+      "x": 7,
+      "y": 6,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "high",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": true,
+        "visible_empty_map": true,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 3,
+      "sourceAuthority": "user_hidden_cell_annotation",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "bottom-middle",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 977.243,
+          "y": 582.6724
+        },
+        "plausibleCenter": {
+          "x": 977.743,
+          "y": 582.6724
+        },
+        "delta": {
+          "x": 0.5,
+          "y": 0.0
+        },
+        "distancePixels": 0.5,
+        "distanceCells": 0.010404,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": true
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 289,
+      "stableId": "C289",
+      "x": -6,
+      "y": 7,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "medium",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": true,
+        "visible_empty_map": false,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 2,
+      "sourceAuthority": "user_hidden_cell_annotation",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "left-middle",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 375.4211,
+          "y": 324.7748
+        },
+        "plausibleCenter": {
+          "x": 375.4211,
+          "y": 324.7748
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": false
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 301,
+      "stableId": "C301",
+      "x": 6,
+      "y": 7,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "high",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": true,
+        "visible_empty_map": true,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 3,
+      "sourceAuthority": "user_hidden_cell_annotation",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "bottom-middle",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 891.2698,
+          "y": 582.6755
+        },
+        "plausibleCenter": {
+          "x": 891.7698,
+          "y": 582.6755
+        },
+        "delta": {
+          "x": 0.5,
+          "y": 0.0
+        },
+        "distancePixels": 0.5,
+        "distanceCells": 0.010404,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": true
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 302,
+      "stableId": "C302",
+      "x": -5,
+      "y": 8,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "medium",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": true,
+        "visible_empty_map": false,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 2,
+      "sourceAuthority": "user_hidden_cell_annotation",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "left-middle",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 375.4227,
+          "y": 367.7614
+        },
+        "plausibleCenter": {
+          "x": 375.4227,
+          "y": 367.7614
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": false
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 312,
+      "stableId": "C312",
+      "x": 5,
+      "y": 8,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "medium",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": true,
+        "visible_empty_map": false,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 2,
+      "sourceAuthority": "user_hidden_cell_annotation",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "bottom-middle",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 805.2966,
+          "y": 582.6787
+        },
+        "plausibleCenter": {
+          "x": 805.7966,
+          "y": 582.6787
+        },
+        "delta": {
+          "x": 0.5,
+          "y": 0.0
+        },
+        "distancePixels": 0.5,
+        "distanceCells": 0.010404,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": false
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 313,
+      "stableId": "C313",
+      "x": -4,
+      "y": 9,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "medium",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": true,
+        "visible_empty_map": false,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 2,
+      "sourceAuthority": "user_hidden_cell_annotation",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "left-middle",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 375.4243,
+          "y": 410.748
+        },
+        "plausibleCenter": {
+          "x": 375.4243,
+          "y": 410.748
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": false
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 321,
+      "stableId": "C321",
+      "x": 4,
+      "y": 9,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "medium",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": true,
+        "visible_empty_map": false,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 2,
+      "sourceAuthority": "user_hidden_cell_annotation",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "bottom-left",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 719.3234,
+          "y": 582.6818
+        },
+        "plausibleCenter": {
+          "x": 719.3234,
+          "y": 582.6818
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": false
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 322,
+      "stableId": "C322",
+      "x": -3,
+      "y": 10,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "medium",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": true,
+        "visible_empty_map": false,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 2,
+      "sourceAuthority": "user_hidden_cell_annotation",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "left-bottom",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 375.4259,
+          "y": 453.7346
+        },
+        "plausibleCenter": {
+          "x": 375.4259,
+          "y": 453.7346
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": false
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 328,
+      "stableId": "C328",
+      "x": 3,
+      "y": 10,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "high",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": true,
+        "visible_empty_map": true,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 3,
+      "sourceAuthority": "user_hidden_cell_annotation",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "bottom-left",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 633.3502,
+          "y": 582.685
+        },
+        "plausibleCenter": {
+          "x": 633.3502,
+          "y": 582.685
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": true
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 329,
+      "stableId": "C329",
+      "x": -2,
+      "y": 11,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "medium",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": false,
+        "visible_empty_map": true,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 2,
+      "sourceAuthority": "visible_empty_map",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "left-bottom",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 375.4274,
+          "y": 496.7212
+        },
+        "plausibleCenter": {
+          "x": 375.4274,
+          "y": 496.7212
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": true
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 333,
+      "stableId": "C333",
+      "x": 2,
+      "y": 11,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "medium",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": false,
+        "visible_empty_map": true,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 2,
+      "sourceAuthority": "visible_empty_map",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "bottom-left",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 547.377,
+          "y": 582.6881
+        },
+        "plausibleCenter": {
+          "x": 547.377,
+          "y": 582.6881
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": true
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 334,
+      "stableId": "C334",
+      "x": -1,
+      "y": 12,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "medium",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": false,
+        "visible_empty_map": true,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 2,
+      "sourceAuthority": "visible_empty_map",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "left-bottom",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 375.429,
+          "y": 539.7078
+        },
+        "plausibleCenter": {
+          "x": 375.429,
+          "y": 539.7078
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": true
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 336,
+      "stableId": "C336",
+      "x": 1,
+      "y": 12,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "medium",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": false,
+        "visible_empty_map": true,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 2,
+      "sourceAuthority": "visible_empty_map",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "bottom-left",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 461.4038,
+          "y": 582.6913
+        },
+        "plausibleCenter": {
+          "x": 461.4038,
+          "y": 582.6913
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": true
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    },
+    {
+      "id": 337,
+      "stableId": "C337",
+      "x": 0,
+      "y": 13,
+      "classification": "confirmed",
+      "displayCategory": "confirmed_boundary_cell",
+      "confidence": "medium",
+      "evidenceCriteria": {
+        "user_boundary_annotation": false,
+        "user_hidden_cell_annotation": false,
+        "visible_empty_map": true,
+        "parity_geometric_consistency": true
+      },
+      "evidenceCount": 2,
+      "sourceAuthority": "visible_empty_map",
+      "positionCheck": {
+        "sourceImage": "assets/reference/empty_arena.jpeg",
+        "fitRegion": "bottom-left",
+        "method": "regional_visible_grid_line_fit",
+        "expectedCenter": {
+          "x": 375.4306,
+          "y": 582.6944
+        },
+        "plausibleCenter": {
+          "x": 375.4306,
+          "y": 582.6944
+        },
+        "delta": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "distancePixels": 0.0,
+        "distanceCells": 0.0,
+        "toleranceCells": 0.12,
+        "outlier": false,
+        "independentVisibleCellSurface": true
+      },
+      "reviewRequired": false,
+      "reviewReasons": []
+    }
+  ],
+  "zoomCrops": [
+    {
+      "region": "left-top",
+      "label": "links oben",
+      "path": "VALIDATION/edge-review-left-top.png"
+    },
+    {
+      "region": "left-middle",
+      "label": "links Mitte",
+      "path": "VALIDATION/edge-review-left-middle.png"
+    },
+    {
+      "region": "left-bottom",
+      "label": "links unten",
+      "path": "VALIDATION/edge-review-left-bottom.png"
+    },
+    {
+      "region": "bottom-left",
+      "label": "unten links",
+      "path": "VALIDATION/edge-review-bottom-left.png"
+    },
+    {
+      "region": "bottom-middle",
+      "label": "unten Mitte",
+      "path": "VALIDATION/edge-review-bottom-middle.png"
+    },
+    {
+      "region": "bottom-right",
+      "label": "unten rechts",
+      "path": "VALIDATION/edge-review-bottom-right.png"
+    },
+    {
+      "region": "right-middle",
+      "label": "rechts Mitte",
+      "path": "VALIDATION/edge-review-right-middle.png"
+    },
+    {
+      "region": "right-top",
+      "label": "rechts oben",
+      "path": "VALIDATION/edge-review-right-top.png"
+    }
+  ],
+  "acceptance": {
+    "problematicBoundaryCellsIdentified": true,
+    "unresolvedCentresVisiblyMarked": true,
+    "classificationsSeparated": true,
+    "positionOutlierListEmpty": true,
+    "fullyPositionVerified": false,
+    "phaseAccepted": false
+  },
+  "note": "No 100% correctness claim is permitted while the seven-cell evidence review list is non-empty."
+}

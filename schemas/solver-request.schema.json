@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/grougalorasalar/solver-request.schema.json",
+  "title": "SolverRequest",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "requestId",
+    "turnStateId",
+    "rulesProfileId",
+    "mode",
+    "confirmedSingleSourceRuleIds",
+    "maxAlternatives"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "0.5.0"
+    },
+    "requestId": {
+      "type": "string"
+    },
+    "turnStateId": {
+      "type": "string"
+    },
+    "rulesProfileId": {
+      "type": "string"
+    },
+    "mode": {
+      "enum": [
+        "authoritative",
+        "review"
+      ]
+    },
+    "confirmedSingleSourceRuleIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^R-[0-9]{3}$"
+      },
+      "uniqueItems": true
+    },
+    "maxAlternatives": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 2
+    },
+    "includeConditionalCandidates": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false
+}

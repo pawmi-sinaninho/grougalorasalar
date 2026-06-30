@@ -1,0 +1,365 @@
+{
+  "schemaVersion": "0.5.0",
+  "annotationId": "annotation-user-reference-v0.5.0",
+  "image": {
+    "imageId": "user-reference",
+    "width": 1951,
+    "height": 1267,
+    "sha256": "2756a38a4451117001dedeab2e4da14423d4aa50978bc4549c9ff0cb1340f976"
+  },
+  "consent": {
+    "retentionAllowed": true,
+    "trainingAllowed": false,
+    "publicDisplayAllowed": false,
+    "redactionStatus": "not_required",
+    "note": "Project-supplied reference; training permission not assumed."
+  },
+  "capture": {
+    "sessionId": "reference-session",
+    "resolutionFamily": "other",
+    "windowMode": "unknown",
+    "uiScale": null,
+    "language": "unknown",
+    "clientVersion": null,
+    "visualPreset": null,
+    "compression": "lossless"
+  },
+  "splitGroup": {
+    "groupId": "reference-session",
+    "recommendedSplit": "holdout_variant"
+  },
+  "labels": {
+    "arenaPresent": true,
+    "registration": {
+      "calibrationId": "user-reference-calibration-0.5.0",
+      "originPixel": {
+        "x": 964.895,
+        "y": 441.7425
+      },
+      "basisX": {
+        "x": 66.75,
+        "y": 33.375
+      },
+      "basisY": {
+        "x": -66.75,
+        "y": 33.375
+      }
+    },
+    "multiplayerDetected": false,
+    "playerCell": {
+      "x": 7,
+      "y": -1
+    },
+    "pillars": [
+      {
+        "id": "P01",
+        "cell": {
+          "x": -9,
+          "y": -1
+        },
+        "spellType": "indecision",
+        "visibility": "clear"
+      },
+      {
+        "id": "P02",
+        "cell": {
+          "x": -6,
+          "y": -2
+        },
+        "spellType": "attraction",
+        "visibility": "clear"
+      },
+      {
+        "id": "P03",
+        "cell": {
+          "x": -4,
+          "y": -2
+        },
+        "spellType": "repulsion",
+        "visibility": "clear"
+      },
+      {
+        "id": "P04",
+        "cell": {
+          "x": -1,
+          "y": -5
+        },
+        "spellType": "indecision",
+        "visibility": "clear"
+      },
+      {
+        "id": "P05",
+        "cell": {
+          "x": 0,
+          "y": -8
+        },
+        "spellType": "reflection",
+        "visibility": "clear"
+      },
+      {
+        "id": "P06",
+        "cell": {
+          "x": 2,
+          "y": -9
+        },
+        "spellType": "attraction",
+        "visibility": "clear"
+      },
+      {
+        "id": "P07",
+        "cell": {
+          "x": -7,
+          "y": 1
+        },
+        "spellType": "reflection",
+        "visibility": "clear"
+      },
+      {
+        "id": "P08",
+        "cell": {
+          "x": -6,
+          "y": 4
+        },
+        "spellType": "repulsion",
+        "visibility": "clear"
+      },
+      {
+        "id": "P09",
+        "cell": {
+          "x": -3,
+          "y": 1
+        },
+        "spellType": "attraction",
+        "visibility": "clear"
+      },
+      {
+        "id": "P10",
+        "cell": {
+          "x": 2,
+          "y": -5
+        },
+        "spellType": "indecision",
+        "visibility": "clear"
+      },
+      {
+        "id": "P11",
+        "cell": {
+          "x": 4,
+          "y": -5
+        },
+        "spellType": "attraction",
+        "visibility": "clear"
+      },
+      {
+        "id": "P12",
+        "cell": {
+          "x": -1,
+          "y": 1
+        },
+        "spellType": "indecision",
+        "visibility": "clear"
+      },
+      {
+        "id": "P13",
+        "cell": {
+          "x": 0,
+          "y": 1
+        },
+        "spellType": "reflection",
+        "visibility": "clear"
+      },
+      {
+        "id": "P14",
+        "cell": {
+          "x": 2,
+          "y": -2
+        },
+        "spellType": "reflection",
+        "visibility": "clear"
+      },
+      {
+        "id": "P15",
+        "cell": {
+          "x": -3,
+          "y": 6
+        },
+        "spellType": "reflection",
+        "visibility": "clear"
+      },
+      {
+        "id": "P16",
+        "cell": {
+          "x": 0,
+          "y": 4
+        },
+        "spellType": "repulsion",
+        "visibility": "clear"
+      },
+      {
+        "id": "P17",
+        "cell": {
+          "x": 2,
+          "y": 1
+        },
+        "spellType": "indecision",
+        "visibility": "clear"
+      },
+      {
+        "id": "P18",
+        "cell": {
+          "x": 5,
+          "y": -2
+        },
+        "spellType": "reflection",
+        "visibility": "clear"
+      },
+      {
+        "id": "P19",
+        "cell": {
+          "x": 8,
+          "y": -4
+        },
+        "spellType": "repulsion",
+        "visibility": "clear"
+      },
+      {
+        "id": "P20",
+        "cell": {
+          "x": -1,
+          "y": 7
+        },
+        "spellType": "attraction",
+        "visibility": "clear"
+      },
+      {
+        "id": "P21",
+        "cell": {
+          "x": 3,
+          "y": 4
+        },
+        "spellType": "indecision",
+        "visibility": "clear"
+      },
+      {
+        "id": "P22",
+        "cell": {
+          "x": 6,
+          "y": 0
+        },
+        "spellType": "indecision",
+        "visibility": "clear"
+      },
+      {
+        "id": "P23",
+        "cell": {
+          "x": 3,
+          "y": 7
+        },
+        "spellType": "repulsion",
+        "visibility": "clear"
+      },
+      {
+        "id": "P24",
+        "cell": {
+          "x": 6,
+          "y": 3
+        },
+        "spellType": "repulsion",
+        "visibility": "clear"
+      },
+      {
+        "id": "P25",
+        "cell": {
+          "x": 10,
+          "y": 0
+        },
+        "spellType": "attraction",
+        "visibility": "clear"
+      },
+      {
+        "id": "P26",
+        "cell": {
+          "x": 1,
+          "y": 11
+        },
+        "spellType": "indecision",
+        "visibility": "clear"
+      },
+      {
+        "id": "P27",
+        "cell": {
+          "x": 11,
+          "y": 2
+        },
+        "spellType": "attraction",
+        "visibility": "clear"
+      }
+    ],
+    "glyphPattern": {
+      "anchorCell": {
+        "x": 0,
+        "y": 0
+      },
+      "blackCells": [
+        {
+          "x": -1,
+          "y": -1
+        },
+        {
+          "x": 1,
+          "y": -1
+        },
+        {
+          "x": 1,
+          "y": 1
+        }
+      ],
+      "whiteCells": [
+        {
+          "x": 0,
+          "y": -3
+        },
+        {
+          "x": 0,
+          "y": 2
+        },
+        {
+          "x": 2,
+          "y": -1
+        }
+      ]
+    },
+    "actionBudget": null,
+    "spells": {
+      "indecision": {
+        "availability": "unknown",
+        "value": null
+      },
+      "reflection": {
+        "availability": "unknown",
+        "value": null
+      },
+      "repulsion": {
+        "availability": "unknown",
+        "value": null
+      },
+      "attraction": {
+        "availability": "unknown",
+        "value": null
+      }
+    },
+    "progress": {
+      "crocoburio": null,
+      "dragon": null
+    }
+  },
+  "quality": {
+    "annotationStatus": "provisional_single_annotation",
+    "annotatorCount": 1,
+    "adjudicated": false,
+    "issues": [
+      "Projection anchor is provisional.",
+      "Action budget, spell state and progress are not visible/confirmed."
+    ]
+  }
+}

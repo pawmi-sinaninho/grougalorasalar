@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "0.9.0",
+  "phase": "7B-R",
+  "releaseVersion": "0.9.0",
+  "status": "boundary_refinement_review_required",
+  "workingCellCount": 338,
+  "boundaryClassification": {
+    "confirmed": 43,
+    "inferred": 0,
+    "unresolved": 7
+  },
+  "completed": [
+    "stable interior grid retained",
+    "50-cell individual boundary evidence records",
+    "two-criterion boundary confirmation policy",
+    "regional centre-distance checks",
+    "boundary debug overlay and eight zoom crops",
+    "runtime gating for unresolved boundary cells",
+    "deterministic JSON CSV SVG and PNG generation",
+    "public screenshot-to-arena registration contract"
+  ],
+  "open": [
+    "C009 C016 C025 C064 C081 C168 C193 evidence review",
+    "green boundary annotation byte retention",
+    "final 338-cell position verification",
+    "locked-corpus detector metrics",
+    "browser E2E and accessibility validation",
+    "current gameplay evidence V-001 through V-010",
+    "projection-anchor verification",
+    "automatic critical-field confirmation"
+  ]
+}

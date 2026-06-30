@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://grougalorasalar.local/schemas/real-screenshot-fixture.schema.json",
+  "title": "Real screenshot fixture catalogue",
+  "type": "object",
+  "required": ["schemaVersion", "catalogId", "fixtureCount", "distinctness", "annotationPolicy", "fixtures"],
+  "properties": {
+    "schemaVersion": {"const": "0.8.0"},
+    "catalogId": {"type": "string"},
+    "fixtureCount": {"type": "integer", "minimum": 1},
+    "distinctness": {"type": "object"},
+    "annotationPolicy": {"type": "object"},
+    "fixtures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["fixtureId", "captureSessionId", "source", "regions", "registrationGroundTruth", "logicalAnnotation", "tacticalAuthority"],
+        "properties": {
+          "fixtureId": {"type": "string", "pattern": "^REAL-P7-[0-9]{2}$"},
+          "captureSessionId": {"type": "string"},
+          "source": {
+            "type": "object",
+            "required": ["path", "retainedUnmodified", "width", "height", "byteSize", "sha256", "provenance", "possibleUploadScaling"],
+            "properties": {
+              "path": {"type": "string"},
+              "retainedUnmodified": {"const": true},
+              "width": {"type": "integer", "minimum": 1280},
+              "height": {"type": "integer", "minimum": 720},
+              "byteSize": {"type": "integer", "minimum": 1},
+              "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+              "provenance": {"type": "string", "minLength": 10},
+              "possibleUploadScaling": {
+                "type": "object",
+                "required": ["status", "isError", "evidence"],
+                "properties": {
+                  "status": {"enum": ["unknown", "not_detected", "detected"]},
+                  "isError": {"type": "boolean"},
+                  "evidence": {"type": "string"}
+                }
+              }
+            },
+            "additionalProperties": true
+          },
+          "regions": {"type": "object"},
+          "registrationGroundTruth": {"type": "object"},
+          "logicalAnnotation": {
+            "type": "object",
+            "required": ["player", "pillars", "glyphPattern", "resources", "progress"],
+            "properties": {
+              "player": {"type": "object"},
+              "pillars": {"type": "array"},
+              "glyphPattern": {"type": "object"},
+              "resources": {"type": "object"},
+              "progress": {"type": "object"}
+            }
+          },
+          "tacticalAuthority": {"const": "fixture_only_review_required"}
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": false
+}

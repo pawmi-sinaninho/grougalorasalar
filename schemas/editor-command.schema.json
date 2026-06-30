@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/grougalorasalar/editor-command.schema.json",
+  "title": "EditorCommand",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "commandId",
+    "analysisId",
+    "expectedStateVersion",
+    "type",
+    "payload",
+    "issuedAt"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "0.6.0"
+    },
+    "commandId": {
+      "type": "string",
+      "pattern": "^cmd_[A-Za-z0-9_-]+$"
+    },
+    "analysisId": {
+      "type": "string",
+      "pattern": "^ana_[A-Za-z0-9_-]+$"
+    },
+    "expectedStateVersion": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "type": {
+      "enum": [
+        "accept_detection",
+        "set_registration_anchors",
+        "set_player_cell",
+        "add_pillar",
+        "move_pillar",
+        "set_pillar_type",
+        "delete_pillar",
+        "set_pillar_set_complete",
+        "paint_glyph_cell",
+        "erase_glyph_cell",
+        "set_projection_anchor_confirmation",
+        "set_action_budget",
+        "set_spell_state",
+        "set_progress",
+        "resolve_conflict",
+        "undo",
+        "redo"
+      ]
+    },
+    "payload": {
+      "type": "object"
+    },
+    "issuedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "observationIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    }
+  },
+  "additionalProperties": false
+}

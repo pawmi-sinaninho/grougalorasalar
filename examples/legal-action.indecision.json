@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "0.5.0",
+  "actionId": "A-EX-001",
+  "actionType": "movement",
+  "spell": "indecision",
+  "canonicalSignature": "indecision@cell:1,0:-",
+  "legalityClass": "definite_legal",
+  "sourceCell": {
+    "x": 0,
+    "y": 0
+  },
+  "targetKind": "cell",
+  "targetCell": {
+    "x": 1,
+    "y": 0
+  },
+  "targetPillarId": null,
+  "rawDestinationCell": {
+    "x": 1,
+    "y": 0
+  },
+  "resolvedDestinationCell": {
+    "x": 1,
+    "y": 0
+  },
+  "cost": 1,
+  "rejectionCode": null,
+  "dependencies": [
+    {
+      "ruleId": "R-010",
+      "authority": "authoritative",
+      "effect": "legality"
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "schemaVersion": "0.5.0",
+  "mapId": "visual-field-gating-v0.5.0",
+  "fields": [
+    {
+      "fieldPath": "image.arenaPresence",
+      "criticality": "solver_blocking",
+      "missingEffect": "reject",
+      "correction": "upload_complete_screenshot"
+    },
+    {
+      "fieldPath": "arena.calibration",
+      "criticality": "solver_blocking",
+      "missingEffect": "review_required",
+      "correction": "three_anchor_registration"
+    },
+    {
+      "fieldPath": "turnContext.multiplayerDetected",
+      "criticality": "solver_blocking",
+      "missingEffect": "reject",
+      "correction": "confirm_solo_or_upload_solo"
+    },
+    {
+      "fieldPath": "player.currentCell",
+      "criticality": "solver_blocking",
+      "missingEffect": "review_required",
+      "correction": "select_player_cell"
+    },
+    {
+      "fieldPath": "pillarSet",
+      "criticality": "solver_blocking",
+      "missingEffect": "review_required",
+      "correction": "review_missing_and_extra_pillars"
+    },
+    {
+      "fieldPath": "pillars.*.cell",
+      "criticality": "solver_blocking",
+      "missingEffect": "review_required",
+      "correction": "move_pillar"
+    },
+    {
+      "fieldPath": "pillars.*.spellType",
+      "criticality": "solver_blocking",
+      "missingEffect": "review_required",
+      "correction": "choose_pillar_type"
+    },
+    {
+      "fieldPath": "glyphPattern.blackOffsets",
+      "criticality": "solver_blocking",
+      "missingEffect": "review_required",
+      "correction": "paint_black_glyph_cells"
+    },
+    {
+      "fieldPath": "glyphPattern.whiteOffsets",
+      "criticality": "solver_blocking",
+      "missingEffect": "review_required",
+      "correction": "paint_white_glyph_cells"
+    },
+    {
+      "fieldPath": "glyphPattern.anchorCell",
+      "criticality": "solver_blocking",
+      "missingEffect": "review_required",
+      "correction": "confirm_projection_anchor"
+    },
+    {
+      "fieldPath": "spellState.actionBudget",
+      "criticality": "solver_blocking",
+      "missingEffect": "blocked_unverified_rule",
+      "correction": "enter_action_budget"
+    },
+    {
+      "fieldPath": "spellState.spells.*",
+      "criticality": "solver_blocking",
+      "missingEffect": "review_required",
+      "correction": "set_spell_availability_or_value"
+    },
+    {
+      "fieldPath": "progress.crocoburio.index",
+      "criticality": "terminal_only",
+      "missingEffect": "terminal_unknown",
+      "correction": "select_crocoburio_index"
+    },
+    {
+      "fieldPath": "progress.dragon.index",
+      "criticality": "terminal_only",
+      "missingEffect": "terminal_unknown",
+      "correction": "select_dragon_index"
+    },
+    {
+      "fieldPath": "turnContext.turnNumber",
+      "criticality": "advisory",
+      "missingEffect": "none",
+      "correction": "optional_entry"
+    }
+  ]
+}

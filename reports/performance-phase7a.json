@@ -1,0 +1,73 @@
+{
+  "schemaVersion": "0.8.0",
+  "measuredAt": "2026-06-28",
+  "environment": "shared container; engineering sample only",
+  "warmCache": true,
+  "coldEngineInitialisationMs": 1181.562,
+  "targets": {
+    "visibleFeedbackMs": 100,
+    "browserDecodeAndWorkingCopyP95Ms": 150,
+    "registrationP95Ms": 400,
+    "baselineRecognitionP95Ms": 900,
+    "solverP95Ms": 50,
+    "localScreenshotToResultP95Ms": 1200,
+    "serverFallbackP95Ms": 2500,
+    "hardTimeoutMs": 5000
+  },
+  "samples": {
+    "decode": {
+      "samples": 12,
+      "medianMs": 87.58,
+      "p95Ms": 98.083,
+      "maxMs": 101.936
+    },
+    "workingCopy": {
+      "samples": 12,
+      "medianMs": 93.773,
+      "p95Ms": 124.995,
+      "maxMs": 154.427
+    },
+    "registration": {
+      "samples": 12,
+      "medianMs": 120.93,
+      "p95Ms": 151.747,
+      "maxMs": 161.437
+    },
+    "canonicalWarp": {
+      "samples": 12,
+      "medianMs": 5.527,
+      "p95Ms": 7.196,
+      "maxMs": 7.523
+    },
+    "cellSampling": {
+      "samples": 12,
+      "medianMs": 48.749,
+      "p95Ms": 56.241,
+      "maxMs": 59.656
+    },
+    "baselineRecognition": {
+      "samples": 12,
+      "medianMs": 203.728,
+      "p95Ms": 221.546,
+      "maxMs": 229.607
+    },
+    "serverScreenshotToState": {
+      "samples": 12,
+      "medianMs": 737.048,
+      "p95Ms": 784.351,
+      "maxMs": 804.719
+    },
+    "solver": {
+      "samples": 130,
+      "medianMs": 0.76,
+      "p95Ms": 1.085,
+      "maxMs": 1.338
+    }
+  },
+  "claims": {
+    "engineeringTargetsOnly": true,
+    "browserLocalPathMeasured": false,
+    "productionHardwareMeasured": false,
+    "detectorAccuracyMeasured": false
+  }
+}

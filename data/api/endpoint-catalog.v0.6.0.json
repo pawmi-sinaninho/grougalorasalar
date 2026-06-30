@@ -1,0 +1,78 @@
+{
+  "schemaVersion": "0.6.0",
+  "catalogId": "endpoint-catalog-v0.6.0",
+  "basePath": "/api/v1",
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/health/live",
+      "operationId": "liveness",
+      "successStatus": 200
+    },
+    {
+      "method": "GET",
+      "path": "/health/ready",
+      "operationId": "readiness",
+      "successStatus": 200
+    },
+    {
+      "method": "GET",
+      "path": "/meta",
+      "operationId": "metadata",
+      "successStatus": 200
+    },
+    {
+      "method": "POST",
+      "path": "/analyses",
+      "operationId": "create_analysis",
+      "successStatus": 201
+    },
+    {
+      "method": "POST",
+      "path": "/analyses/{analysisId}/image",
+      "operationId": "upload_image",
+      "successStatus": 202
+    },
+    {
+      "method": "GET",
+      "path": "/analyses/{analysisId}",
+      "operationId": "get_analysis",
+      "successStatus": 200
+    },
+    {
+      "method": "GET",
+      "path": "/analyses/{analysisId}/asset/{assetKind}",
+      "operationId": "get_asset",
+      "successStatus": 200
+    },
+    {
+      "method": "POST",
+      "path": "/analyses/{analysisId}/commands",
+      "operationId": "apply_editor_command",
+      "successStatus": 200
+    },
+    {
+      "method": "POST",
+      "path": "/analyses/{analysisId}/solve",
+      "operationId": "solve",
+      "successStatus": 200
+    },
+    {
+      "method": "GET",
+      "path": "/analyses/{analysisId}/overlay",
+      "operationId": "get_overlay",
+      "successStatus": 200
+    },
+    {
+      "method": "DELETE",
+      "path": "/analyses/{analysisId}",
+      "operationId": "delete_analysis",
+      "successStatus": 204
+    }
+  ],
+  "developmentOnly": [
+    "GET /fixtures",
+    "POST /fixtures/{fixtureId}/load",
+    "GET /diagnostics/contracts"
+  ]
+}

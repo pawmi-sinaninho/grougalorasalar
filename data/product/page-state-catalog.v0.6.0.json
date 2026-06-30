@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "0.6.0",
+  "catalogId": "page-state-catalog-v0.6.0",
+  "routes": [
+    "/",
+    "/analyse/[analysisId]",
+    "/methode",
+    "/confidentialite",
+    "/diagnostic"
+  ],
+  "workspaceStates": [
+    {
+      "id": "created",
+      "terminal": false
+    },
+    {
+      "id": "uploading",
+      "terminal": false
+    },
+    {
+      "id": "ingesting",
+      "terminal": false
+    },
+    {
+      "id": "recognition_running",
+      "terminal": false
+    },
+    {
+      "id": "registration_review",
+      "terminal": false
+    },
+    {
+      "id": "board_review",
+      "terminal": false
+    },
+    {
+      "id": "resources_review",
+      "terminal": false
+    },
+    {
+      "id": "rules_blocked",
+      "terminal": false
+    },
+    {
+      "id": "ready_for_solver",
+      "terminal": false
+    },
+    {
+      "id": "solving",
+      "terminal": false
+    },
+    {
+      "id": "solved",
+      "terminal": false
+    },
+    {
+      "id": "confirmation_required",
+      "terminal": false
+    },
+    {
+      "id": "no_safe_solution",
+      "terminal": false
+    },
+    {
+      "id": "rejected",
+      "terminal": true
+    },
+    {
+      "id": "technical_failure",
+      "terminal": false
+    },
+    {
+      "id": "expired",
+      "terminal": true
+    },
+    {
+      "id": "deleted",
+      "terminal": true
+    }
+  ],
+  "breakpoints": {
+    "mobileMax": 767,
+    "tabletMax": 1179,
+    "desktopMin": 1180
+  },
+  "mobileCorrectionSupported": false
+}

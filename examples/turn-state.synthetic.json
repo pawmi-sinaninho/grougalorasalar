@@ -1,0 +1,135 @@
+{
+  "schemaVersion": "0.5.0",
+  "rulesProfileId": "phase1-hypothesis-profile",
+  "arena": {
+    "arenaModelId": "arena-unlocked",
+    "calibrationStatus": "manual",
+    "calibrationConfidence": 1.0,
+    "calibrationConfirmed": true
+  },
+  "image": {
+    "width": 1951,
+    "height": 1267,
+    "canonicalTransformId": null,
+    "sourceRetained": false,
+    "arenaPresenceConfidence": 1.0,
+    "arenaPresenceConfirmed": true
+  },
+  "turnContext": {
+    "turnNumber": null,
+    "multiplayerDetected": false,
+    "actionBudgetVisible": false,
+    "multiplayerConfidence": 1.0,
+    "multiplayerConfirmed": true
+  },
+  "player": {
+    "currentCell": {
+      "x": 0,
+      "y": 0
+    },
+    "previousCell": null,
+    "confidence": 1.0,
+    "confirmed": true
+  },
+  "pillars": [
+    {
+      "id": "p1",
+      "cell": {
+        "x": 2,
+        "y": 0
+      },
+      "spellType": "reflection",
+      "confidence": 1.0,
+      "confirmed": true
+    }
+  ],
+  "glyphPattern": {
+    "blackOffsets": [
+      {
+        "dx": 1,
+        "dy": 0
+      }
+    ],
+    "whiteOffsets": [
+      {
+        "dx": 1,
+        "dy": 1
+      }
+    ],
+    "physicalBlackCells": [],
+    "physicalWhiteCells": [],
+    "confirmed": true,
+    "anchorCell": {
+      "x": 0,
+      "y": 0
+    },
+    "anchorConfirmed": false,
+    "blackConfidence": 1.0,
+    "whiteConfidence": 1.0,
+    "blackConfirmed": true,
+    "whiteConfirmed": true
+  },
+  "spellState": {
+    "actionBudget": null,
+    "spells": {
+      "indecision": {
+        "availability": "unknown",
+        "value": null,
+        "confidence": 0.0,
+        "confirmed": false
+      },
+      "reflection": {
+        "availability": "unknown",
+        "value": null,
+        "confidence": 0.0,
+        "confirmed": false
+      },
+      "repulsion": {
+        "availability": "unknown",
+        "value": null,
+        "confidence": 0.0,
+        "confirmed": false
+      },
+      "attraction": {
+        "availability": "unknown",
+        "value": null,
+        "confidence": 0.0,
+        "confirmed": false
+      }
+    },
+    "actionBudgetConfidence": 0.0,
+    "actionBudgetConfirmed": false
+  },
+  "progress": {
+    "crocoburio": {
+      "index": null,
+      "confidence": 0.0,
+      "confirmed": false
+    },
+    "dragon": {
+      "index": null,
+      "confidence": 0.0,
+      "confirmed": false
+    }
+  },
+  "confidence": {
+    "overall": 0.4,
+    "criticalFieldsConfirmed": false,
+    "warnings": [
+      "Synthetic schema example; not a verified gameplay fixture."
+    ]
+  },
+  "pillarSet": {
+    "confidence": 1.0,
+    "confirmed": true,
+    "completenessStatus": "complete"
+  },
+  "visualProvenance": {
+    "source": "synthetic",
+    "recognitionResultId": null,
+    "pipelineVersion": null,
+    "observationIds": [],
+    "manualOverrideCount": 0,
+    "gateStatus": "review_required"
+  }
+}

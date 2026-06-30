@@ -1,0 +1,34 @@
+{
+  "files": [
+    {
+      "path": "data/rule-catalog.json",
+      "sha256": "4d5d1de66f8f40f03c6ac8d667cab99b962d7e1aa4134359a5fe141283fa1f53"
+    },
+    {
+      "path": "data/arena/arena-model.draft-v0.5.0.json",
+      "sha256": "d950bead302c47142cb8640718813cacb63be7e4475b2af0e99b6e5d07139721"
+    },
+    {
+      "path": "data/solver/ranking-policy.v0.5.0.json",
+      "sha256": "d9b668b69d98c41e7e998f28984f96388ce640d0912c9188ca0c4e996d7eb189"
+    },
+    {
+      "path": "data/solver/rule-dependency-map.v0.5.0.json",
+      "sha256": "7043166d3ef3167dd0776d7f016e13cc53f899c155904e7c72611b603301c1f1"
+    },
+    {
+      "path": "data/solver/status-precedence.v0.5.0.json",
+      "sha256": "d5bbb28aee830a9d44f694e4678a16ed7b605b07852bd93a6c8758603f511a42"
+    },
+    {
+      "path": "data/vision/recognition-policy.v0.5.0.json",
+      "sha256": "3e6aff8ba38f0747efd9fa0450882a850f19bb15e0ba3960525981f56a5f075f"
+    },
+    {
+      "path": "packages/contracts/schema-manifest.json",
+      "sha256": "0a91c2e3e39e2a06b71b7dd078d063926ec566500d1f3ba74d416047c816b4e6"
+    }
+  ],
+  "releaseVersion": "0.7.0",
+  "schemaVersion": "0.7.0"
+}

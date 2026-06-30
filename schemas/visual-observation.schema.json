@@ -1,0 +1,232 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/grougalorasalar/visual-observation.schema.json",
+  "title": "VisualObservation",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "observationId",
+    "fieldPath",
+    "fieldType",
+    "value",
+    "criticality",
+    "confidence",
+    "decisionState",
+    "componentScores",
+    "extractionMethods",
+    "crossChecks",
+    "alternatives",
+    "reasonCodes",
+    "sourceRegion"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "0.5.0"
+    },
+    "observationId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "fieldPath": {
+      "type": "string",
+      "minLength": 1
+    },
+    "fieldType": {
+      "enum": [
+        "arena_presence",
+        "registration",
+        "multiplayer",
+        "player_cell",
+        "pillar_set",
+        "pillar_instance",
+        "pillar_type",
+        "glyph_black_set",
+        "glyph_white_set",
+        "projection_anchor",
+        "action_budget",
+        "spell_state",
+        "progress_index",
+        "turn_number",
+        "other"
+      ]
+    },
+    "value": {},
+    "criticality": {
+      "enum": [
+        "solver_blocking",
+        "terminal_only",
+        "advisory"
+      ]
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "decisionState": {
+      "enum": [
+        "auto_confirmed",
+        "review_required",
+        "user_confirmed",
+        "rejected",
+        "not_visible",
+        "conflict"
+      ]
+    },
+    "componentScores": {
+      "type": "object",
+      "required": [
+        "primary",
+        "registration",
+        "snapMargin",
+        "visibility",
+        "crossCheck"
+      ],
+      "properties": {
+        "primary": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "registration": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "snapMargin": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "visibility": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "crossCheck": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "extractionMethods": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "method",
+          "version",
+          "score"
+        ],
+        "properties": {
+          "method": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "crossChecks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "checkId",
+          "status",
+          "score"
+        ],
+        "properties": {
+          "checkId": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "pass",
+              "fail",
+              "not_available"
+            ]
+          },
+          "score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "detail": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "alternatives": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "value",
+          "confidence"
+        ],
+        "properties": {
+          "value": {},
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "reasonCodes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "sourceRegion": {
+      "type": "object",
+      "required": [
+        "x",
+        "y",
+        "width",
+        "height"
+      ],
+      "properties": {
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        },
+        "width": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "height": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "manuallyOverridden": {
+      "type": "boolean"
+    },
+    "confirmedByUser": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false
+}

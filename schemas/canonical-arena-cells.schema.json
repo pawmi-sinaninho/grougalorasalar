@@ -1,0 +1,175 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/grougalorasalar/canonical-arena-cells.schema.json",
+  "title": "CanonicalArenaCells",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "arenaModelId",
+    "status",
+    "sourceOfTruth",
+    "totalCells",
+    "coordinateSystem",
+    "footprint",
+    "parityRule",
+    "countVerification",
+    "boundaryValidationSummary",
+    "sourceReferences",
+    "cells"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "0.9.0" },
+    "arenaModelId": { "const": "grougalorasalar-arena-canonical-0.9.0" },
+    "status": { "const": "boundary_refinement_review_required" },
+    "sourceOfTruth": { "const": true },
+    "totalCells": { "const": 338 },
+    "coordinateSystem": { "type": "object" },
+    "footprint": {
+      "type": "object",
+      "required": ["verificationStatus"],
+      "properties": {
+        "verificationStatus": { "const": "provisional_338_boundary_review" }
+      }
+    },
+    "parityRule": { "type": "object" },
+    "countVerification": {
+      "type": "object",
+      "required": [
+        "directUniqueCoordinateCount",
+        "byXPlusY",
+        "byXPlusYTotal",
+        "byXMinusY",
+        "byXMinusYTotal",
+        "allMethodsAgree",
+        "countRetainedAsProvisional",
+        "positionVerificationComplete"
+      ],
+      "properties": {
+        "directUniqueCoordinateCount": { "const": 338 },
+        "byXPlusY": { "type": "object", "additionalProperties": { "type": "integer", "minimum": 1 } },
+        "byXPlusYTotal": { "const": 338 },
+        "byXMinusY": { "type": "object", "additionalProperties": { "type": "integer", "minimum": 1 } },
+        "byXMinusYTotal": { "const": 338 },
+        "allMethodsAgree": { "const": true },
+        "countRetainedAsProvisional": { "const": true },
+        "positionVerificationComplete": { "const": false }
+      },
+      "additionalProperties": false
+    },
+    "boundaryValidationSummary": {
+      "type": "object",
+      "required": ["policy", "totalBoundaryCells", "confirmed", "inferred", "unresolved", "positionOutliers", "reviewListCount", "fullyPositionVerified"],
+      "properties": {
+        "policy": { "const": "confirmed_requires_two_of_four_evidence_criteria" },
+        "totalBoundaryCells": { "const": 50 },
+        "confirmed": { "type": "integer", "minimum": 0, "maximum": 50 },
+        "inferred": { "type": "integer", "minimum": 0, "maximum": 50 },
+        "unresolved": { "type": "integer", "minimum": 0, "maximum": 50 },
+        "positionOutliers": { "type": "integer", "minimum": 0, "maximum": 50 },
+        "reviewListCount": { "type": "integer", "minimum": 0, "maximum": 50 },
+        "fullyPositionVerified": { "const": false }
+      },
+      "additionalProperties": false
+    },
+    "sourceReferences": { "type": "array", "minItems": 4 },
+    "cells": {
+      "type": "array",
+      "minItems": 338,
+      "maxItems": 338,
+      "items": { "$ref": "#/$defs/cell" }
+    }
+  },
+  "$defs": {
+    "point": {
+      "type": "object",
+      "required": ["x", "y"],
+      "properties": { "x": { "type": "number" }, "y": { "type": "number" } },
+      "additionalProperties": false
+    },
+    "neighbor": {
+      "type": "object",
+      "required": ["direction", "id", "x", "y"],
+      "properties": {
+        "direction": { "enum": ["negative_x", "positive_x", "negative_y", "positive_y"] },
+        "id": { "type": "integer", "minimum": 0, "maximum": 337 },
+        "x": { "type": "integer" },
+        "y": { "type": "integer" }
+      },
+      "additionalProperties": false
+    },
+    "evidenceCriteria": {
+      "type": "object",
+      "required": ["user_boundary_annotation", "user_hidden_cell_annotation", "visible_empty_map", "parity_geometric_consistency"],
+      "properties": {
+        "user_boundary_annotation": { "type": "boolean" },
+        "user_hidden_cell_annotation": { "type": "boolean" },
+        "visible_empty_map": { "type": "boolean" },
+        "parity_geometric_consistency": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "positionCheck": {
+      "type": "object",
+      "required": ["sourceImage", "fitRegion", "method", "expectedCenter", "plausibleCenter", "delta", "distancePixels", "distanceCells", "toleranceCells", "outlier", "independentVisibleCellSurface"],
+      "properties": {
+        "sourceImage": { "const": "assets/reference/empty_arena.jpeg" },
+        "fitRegion": { "type": "string" },
+        "method": { "const": "regional_visible_grid_line_fit" },
+        "expectedCenter": { "$ref": "#/$defs/point" },
+        "plausibleCenter": { "$ref": "#/$defs/point" },
+        "delta": { "$ref": "#/$defs/point" },
+        "distancePixels": { "type": "number", "minimum": 0 },
+        "distanceCells": { "type": "number", "minimum": 0 },
+        "toleranceCells": { "const": 0.12 },
+        "outlier": { "type": "boolean" },
+        "independentVisibleCellSurface": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "boundaryValidation": {
+      "type": "object",
+      "required": ["classification", "displayCategory", "confidence", "evidenceCriteria", "evidenceCount", "sourceAuthority", "positionCheck", "reviewRequired", "reviewReasons"],
+      "properties": {
+        "classification": { "enum": ["confirmed", "inferred", "unresolved"] },
+        "displayCategory": { "enum": ["confirmed_boundary_cell", "geometric_inference", "geometric_inference_unresolved"] },
+        "confidence": { "enum": ["high", "medium", "low"] },
+        "evidenceCriteria": { "$ref": "#/$defs/evidenceCriteria" },
+        "evidenceCount": { "type": "integer", "minimum": 0, "maximum": 4 },
+        "sourceAuthority": { "enum": ["visible_empty_map", "user_boundary_annotation", "user_hidden_cell_annotation", "geometric_inference", "unresolved"] },
+        "positionCheck": { "$ref": "#/$defs/positionCheck" },
+        "reviewRequired": { "type": "boolean" },
+        "reviewReasons": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": false
+    },
+    "cell": {
+      "type": "object",
+      "required": ["id", "stableId", "x", "y", "parity", "sourceAuthority", "confidence", "boundary", "occlusion", "referencePixelCenter", "referencePolygon", "neighbors", "provenance", "supersededDraftClass"],
+      "properties": {
+        "id": { "type": "integer", "minimum": 0, "maximum": 337 },
+        "stableId": { "type": "string", "pattern": "^C[0-9]{3}$" },
+        "x": { "type": "integer" },
+        "y": { "type": "integer" },
+        "parity": { "enum": ["light", "dark"] },
+        "sourceAuthority": { "enum": ["visible_empty_map", "visible_combat_screenshot", "user_boundary_annotation", "user_hidden_cell_annotation", "geometric_inference", "parity_inference", "unresolved"] },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "boundary": { "type": "boolean" },
+        "occlusion": { "enum": ["none", "partial_edge", "architecture_or_foreground"] },
+        "referencePixelCenter": { "$ref": "#/$defs/point" },
+        "referencePolygon": { "type": "array", "minItems": 4, "maxItems": 4, "items": { "$ref": "#/$defs/point" } },
+        "neighbors": { "type": "array", "minItems": 1, "maxItems": 4, "items": { "$ref": "#/$defs/neighbor" } },
+        "provenance": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+        "supersededDraftClass": { "type": "string" },
+        "boundaryValidation": { "$ref": "#/$defs/boundaryValidation" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "boundary": { "const": true } }, "required": ["boundary"] },
+          "then": { "required": ["boundaryValidation"] }
+        }
+      ],
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

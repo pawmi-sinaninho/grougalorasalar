@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "0.6.0",
+  "analysisId": "ana_demo01",
+  "state": "board_review",
+  "stateVersion": 7,
+  "locale": "fr",
+  "consent": {
+    "retention": "ephemeral_only",
+    "qualityImprovement": false
+  },
+  "createdAt": "2026-06-28T10:00:00Z",
+  "lastActivityAt": "2026-06-28T10:05:00Z",
+  "expiresAt": "2026-06-28T11:05:00Z",
+  "gate": {
+    "status": "review_required",
+    "blockingReasonCodes": [
+      "MODEL-001",
+      "ANCHOR-001"
+    ]
+  },
+  "assets": [
+    {
+      "kind": "normalised",
+      "available": true
+    },
+    {
+      "kind": "thumbnail",
+      "available": true
+    },
+    {
+      "kind": "annotated",
+      "available": false
+    }
+  ],
+  "review": {
+    "unresolvedCount": 4,
+    "conflictCount": 0,
+    "recommendationInvalidated": false
+  },
+  "recognitionResultId": "rec_demo01",
+  "manualEditorSessionId": "edit_demo01",
+  "recommendation": null
+}

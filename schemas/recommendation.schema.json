@@ -1,0 +1,394 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/grougalorasalar/recommendation.schema.json",
+  "title": "TurnRecommendation",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "status",
+    "statusReasonCodes",
+    "rulesProfileId",
+    "rankingPolicyId",
+    "actions",
+    "expected",
+    "confidence",
+    "assumptions",
+    "searchSummary",
+    "trace"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "0.5.0"
+    },
+    "status": {
+      "enum": [
+        "solved",
+        "confirmation_required",
+        "blocked_unverified_rule",
+        "no_safe_solution",
+        "invalid_state"
+      ]
+    },
+    "statusReasonCodes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "rulesProfileId": {
+      "type": "string"
+    },
+    "rankingPolicyId": {
+      "const": "ranking-lexicographic-v0.5.0"
+    },
+    "candidateId": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "sequenceKey": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "order",
+          "actionId",
+          "spell",
+          "sourceCell",
+          "destinationCell",
+          "targetKind",
+          "canonicalSignature",
+          "instruction"
+        ],
+        "properties": {
+          "order": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "actionId": {
+            "type": "string"
+          },
+          "spell": {
+            "enum": [
+              "indecision",
+              "reflection",
+              "repulsion",
+              "attraction"
+            ]
+          },
+          "sourceCell": {
+            "$ref": "#/$defs/cell"
+          },
+          "destinationCell": {
+            "$ref": "#/$defs/cell"
+          },
+          "targetKind": {
+            "enum": [
+              "cell",
+              "pillar"
+            ]
+          },
+          "targetCell": {
+            "$ref": "#/$defs/nullableCell"
+          },
+          "targetPillarId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "canonicalSignature": {
+            "type": "string"
+          },
+          "instruction": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "expected": {
+      "type": "object",
+      "required": [
+        "finalCell",
+        "raceOutcome",
+        "terminalFightState",
+        "blackPillarIds",
+        "whitePillarIds",
+        "rechargedSpells",
+        "directCenterEffect",
+        "nextSpellState"
+      ],
+      "properties": {
+        "finalCell": {
+          "$ref": "#/$defs/nullableCell"
+        },
+        "raceOutcome": {
+          "enum": [
+            "crocoburio_advance",
+            "dragon_advance",
+            "neutral",
+            "unknown"
+          ]
+        },
+        "terminalFightState": {
+          "enum": [
+            "crocoburio_win",
+            "dragon_win",
+            "nonterminal",
+            "unknown"
+          ]
+        },
+        "blackPillarIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "whitePillarIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "rechargedSpells": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "indecision",
+              "reflection",
+              "repulsion",
+              "attraction"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "directCenterEffect": {
+          "enum": [
+            "none",
+            "black_adverse",
+            "white_recharge",
+            "both_impossible",
+            "unknown"
+          ]
+        },
+        "nextSpellState": {
+          "type": [
+            "object",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "confidence": {
+      "type": "object",
+      "required": [
+        "visual",
+        "mechanical",
+        "overall"
+      ],
+      "properties": {
+        "visual": {
+          "$ref": "#/$defs/confidence"
+        },
+        "mechanical": {
+          "$ref": "#/$defs/confidence"
+        },
+        "overall": {
+          "$ref": "#/$defs/confidence"
+        }
+      },
+      "additionalProperties": false
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "ruleId",
+          "statement",
+          "authority",
+          "confirmedByUser"
+        ],
+        "properties": {
+          "ruleId": {
+            "type": "string",
+            "pattern": "^R-[0-9]{3}$"
+          },
+          "statement": {
+            "type": "string"
+          },
+          "authority": {
+            "enum": [
+              "single_source_supported",
+              "screenshot_observed",
+              "hypothesis",
+              "unknown"
+            ]
+          },
+          "confirmedByUser": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "searchSummary": {
+      "type": "object",
+      "required": [
+        "definiteRootActions",
+        "conditionalRootActions",
+        "definiteTerminalCandidates",
+        "conditionalTerminalCandidates",
+        "adverseDefiniteCandidates",
+        "safeDefiniteCandidates"
+      ],
+      "properties": {
+        "definiteRootActions": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "conditionalRootActions": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "definiteTerminalCandidates": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "conditionalTerminalCandidates": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "adverseDefiniteCandidates": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "safeDefiniteCandidates": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "rankingKey": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {}
+    },
+    "trace": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "index",
+          "type",
+          "message",
+          "ruleIds",
+          "data"
+        ],
+        "properties": {
+          "index": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "type": {
+            "enum": [
+              "preflight",
+              "root_enumeration",
+              "cast_cost",
+              "charge_cost",
+              "movement_formula",
+              "path_resolution",
+              "destination_validation",
+              "end_turn",
+              "stationary_check",
+              "center_check",
+              "glyph_projection",
+              "collision_collection",
+              "race_resolution",
+              "recharge_resolution",
+              "next_state",
+              "candidate_ranking",
+              "final_status"
+            ]
+          },
+          "message": {
+            "type": "string"
+          },
+          "ruleIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^R-[0-9]{3}$"
+            },
+            "uniqueItems": true
+          },
+          "data": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "alternatives": {
+      "type": "array",
+      "maxItems": 2,
+      "items": {
+        "type": "object"
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "cell": {
+      "type": "object",
+      "required": [
+        "x",
+        "y"
+      ],
+      "properties": {
+        "x": {
+          "type": "integer"
+        },
+        "y": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false
+    },
+    "nullableCell": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/cell"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    }
+  }
+}

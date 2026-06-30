@@ -1,0 +1,78 @@
+{
+  "files": [
+    {
+      "path": "data/rule-catalog.json",
+      "sha256": "4d5d1de66f8f40f03c6ac8d667cab99b962d7e1aa4134359a5fe141283fa1f53"
+    },
+    {
+      "path": "data/arena/grougalorasalar.cells.json",
+      "sha256": "b3eae3251574ad2ebebdf1a9119b19da4c514ee29be7127759f6a8bc586e61d7"
+    },
+    {
+      "path": "data/arena/grougalorasalar.boundary.json",
+      "sha256": "4c5bacf82dc7ac74c0993d4c5e0c9ed99af2cb794189a7b04d12bcf880342dcb"
+    },
+    {
+      "path": "data/arena/grougalorasalar.registration.json",
+      "sha256": "bf3e1a77f57f11867ad756be81041c2dd42937f73aa840e0913bf1446808895b"
+    },
+    {
+      "path": "data/arena/grougalorasalar.landmarks.json",
+      "sha256": "ed4ec2925c04de1e6b244d6caf945f8b59161fea5c83838d2bb14e61ee3360e9"
+    },
+    {
+      "path": "data/solver/ranking-policy.v0.5.0.json",
+      "sha256": "d9b668b69d98c41e7e998f28984f96388ce640d0912c9188ca0c4e996d7eb189"
+    },
+    {
+      "path": "data/solver/rule-dependency-map.v0.5.0.json",
+      "sha256": "7043166d3ef3167dd0776d7f016e13cc53f899c155904e7c72611b603301c1f1"
+    },
+    {
+      "path": "data/solver/status-precedence.v0.5.0.json",
+      "sha256": "d5bbb28aee830a9d44f694e4678a16ed7b605b07852bd93a6c8758603f511a42"
+    },
+    {
+      "path": "data/vision/recognition-policy.v0.5.0.json",
+      "sha256": "3e6aff8ba38f0747efd9fa0450882a850f19bb15e0ba3960525981f56a5f075f"
+    },
+    {
+      "path": "data/vision/real-screenshot-fixtures.v0.8.0.json",
+      "sha256": "6df38e7effed06957e30de67bb23655e080aa7bfb6d4ef401e2b4b1653c583e7"
+    },
+    {
+      "path": "schemas/real-screenshot-fixture.schema.json",
+      "sha256": "b7e11d8225e033f5190e5138deb96e8c5a57649a2f95fae0fb5ca3ce02108ad8"
+    },
+    {
+      "path": "packages/contracts/schema-manifest.json",
+      "sha256": "0a91c2e3e39e2a06b71b7dd078d063926ec566500d1f3ba74d416047c816b4e6"
+    },
+    {
+      "path": "assets/reference/empty_arena.jpeg",
+      "sha256": "cf2dba5c69e13df9c1cfaa9d59beeb2ee22bb15ca8d264af8ba2b42db5f6c81c"
+    },
+    {
+      "path": "assets/reference/user_hidden_cells_annotation.png",
+      "sha256": "f1011df15c6df30a5a6cd087365ae15b163a0c7c81c241dcbe4e487ade6895cd"
+    },
+    {
+      "path": "packages/fixtures/real/phase7/round-01.png",
+      "sha256": "2cbeb481f3f543229f0600e308bdbf5f34fec23c79ca1d1169ed449e2ac57031"
+    },
+    {
+      "path": "packages/fixtures/real/phase7/round-02.png",
+      "sha256": "5af685c9f1ff97e2e77048d254e7d4ca77e0d014f11026b783fee3ee5a6463c0"
+    },
+    {
+      "path": "packages/fixtures/real/phase7/round-03.png",
+      "sha256": "aa5f760f136cf74df8eff148e1d07c5dc77401740c052858b252c7571ad5549a"
+    },
+    {
+      "path": "packages/fixtures/real/phase7/round-04.png",
+      "sha256": "2dda0b22bca5eab6fb4fc0f3ddf80eb8542187847ad692aa5f06da950071c135"
+    }
+  ],
+  "releaseVersion": "0.9.0",
+  "schemaVersion": "0.9.0"
+}

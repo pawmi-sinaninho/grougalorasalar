@@ -1,0 +1,10 @@
+fastapi>=0.128,<1
+uvicorn[standard]>=0.48,<1
+pydantic>=2.13,<3
+pillow>=12,<13
+python-multipart>=0.0.20,<1
+jsonschema>=4.26,<5
+pytest>=9,<10
+httpx>=0.28,<1
+numpy>=2.2,<3
+opencv-python-headless>=4.11,<5

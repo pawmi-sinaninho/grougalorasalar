@@ -1,0 +1,110 @@
+{
+  "schemaVersion": "0.5.0",
+  "evaluationId": "vision-evaluation-targets-v0.5.0",
+  "status": "targets_not_measured",
+  "autoConfirmationEntryGate": {
+    "minimumLockedTestScreenshots": 150,
+    "minimumIndependentCaptureSessions": 15,
+    "minimumSupportedResolutionFamilyCount": 20,
+    "criticalFalseSafeCountMax": 0
+  },
+  "metrics": [
+    {
+      "id": "M-ARENA-FAR",
+      "name": "arena false-accept rate",
+      "scope": "locked negative corpus",
+      "target": 0.0,
+      "unit": "rate"
+    },
+    {
+      "id": "M-REG-P95",
+      "name": "registration p95 residual",
+      "scope": "accepted registrations",
+      "target": 0.1,
+      "unit": "logical_cells_max"
+    },
+    {
+      "id": "M-PLAYER",
+      "name": "player exact-cell accuracy",
+      "scope": "supported locked test",
+      "target": 0.995,
+      "unit": "accuracy_min"
+    },
+    {
+      "id": "M-PILLAR-SET",
+      "name": "pillar set exact match",
+      "scope": "supported locked test",
+      "target": 0.98,
+      "unit": "rate_min"
+    },
+    {
+      "id": "M-PILLAR-CELL",
+      "name": "pillar cell precision and recall",
+      "scope": "supported locked test",
+      "target": 0.995,
+      "unit": "each_min"
+    },
+    {
+      "id": "M-PILLAR-TYPE",
+      "name": "pillar type accuracy",
+      "scope": "matched pillar instances",
+      "target": 0.995,
+      "unit": "accuracy_min"
+    },
+    {
+      "id": "M-BLACK-SET",
+      "name": "black glyph exact-set accuracy",
+      "scope": "supported locked test",
+      "target": 1.0,
+      "unit": "rate_min"
+    },
+    {
+      "id": "M-WHITE-SET",
+      "name": "white glyph exact-set accuracy",
+      "scope": "supported locked test",
+      "target": 0.995,
+      "unit": "rate_min"
+    },
+    {
+      "id": "M-BUDGET",
+      "name": "action budget exact accuracy",
+      "scope": "auto-confirmed subset",
+      "target": 0.995,
+      "unit": "accuracy_min"
+    },
+    {
+      "id": "M-SPELL",
+      "name": "spell state exact accuracy",
+      "scope": "auto-confirmed subset",
+      "target": 0.995,
+      "unit": "accuracy_min"
+    },
+    {
+      "id": "M-CONF-ECE",
+      "name": "expected calibration error",
+      "scope": "all auto-confirmable fields",
+      "target": 0.03,
+      "unit": "max"
+    },
+    {
+      "id": "M-FALSE-SAFE",
+      "name": "critical false-safe recommendation count",
+      "scope": "end-to-end locked corpus",
+      "target": 0,
+      "unit": "count_max"
+    },
+    {
+      "id": "M-REVIEW-RECALL",
+      "name": "uncertain critical case review recall",
+      "scope": "known ambiguous cases",
+      "target": 1.0,
+      "unit": "rate_min"
+    }
+  ],
+  "reportingRules": [
+    "report coverage together with accuracy",
+    "never improve accuracy by silently rejecting without reporting rejection rate",
+    "show results per resolution, UI scale, language, window mode and client version",
+    "keep synthetic and real-image results separate"
+  ]
+}

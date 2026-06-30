@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "0.6.0",
+  "catalogId": "ui-copy-v0.6.0",
+  "defaultLocale": "fr",
+  "supportedLocales": [
+    "fr",
+    "de",
+    "en"
+  ],
+  "messages": {
+    "landing.headline": {
+      "fr": "Une capture d’écran. Un tour vérifié, étape par étape.",
+      "de": "Ein Screenshot. Ein geprüfter Zug, Schritt für Schritt.",
+      "en": "One screenshot. One verified turn, step by step."
+    },
+    "landing.upload": {
+      "fr": "Ajouter une capture",
+      "de": "Screenshot hinzufügen",
+      "en": "Add screenshot"
+    },
+    "workflow.review": {
+      "fr": "Vérifier l’analyse",
+      "de": "Analyse prüfen",
+      "en": "Review analysis"
+    },
+    "workflow.solve": {
+      "fr": "Calculer le tour",
+      "de": "Zug berechnen",
+      "en": "Calculate turn"
+    },
+    "workflow.rulesBlocked": {
+      "fr": "Règles non vérifiées",
+      "de": "Regeln ungeklärt",
+      "en": "Rules unverified"
+    },
+    "result.copy": {
+      "fr": "Copier les étapes",
+      "de": "Schritte kopieren",
+      "en": "Copy steps"
+    },
+    "privacy.delete": {
+      "fr": "Supprimer cette analyse",
+      "de": "Diese Analyse löschen",
+      "en": "Delete this analysis"
+    },
+    "errors.mobileCorrection": {
+      "fr": "La correction précise nécessite un écran d’au moins 768 px.",
+      "de": "Die präzise Korrektur benötigt einen Bildschirm ab 768 px.",
+      "en": "Precise correction requires a screen at least 768 px wide."
+    },
+    "errors.stateVersionConflict": {
+      "fr": "L’analyse a été modifiée ailleurs. Rechargez l’état actuel.",
+      "de": "Die Analyse wurde inzwischen geändert. Lade den aktuellen Stand neu.",
+      "en": "The analysis changed elsewhere. Reload the current state."
+    },
+    "result.capacity": {
+      "fr": "La recherche a atteint sa limite technique. Cela ne prouve pas qu’aucune solution existe.",
+      "de": "Die Suche hat ihre technische Grenze erreicht. Das beweist nicht, dass keine Lösung existiert.",
+      "en": "The search reached its technical limit. This does not prove that no solution exists."
+    }
+  }
+}

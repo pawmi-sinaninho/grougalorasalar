@@ -1,0 +1,72 @@
+{
+  "schemaVersion": "0.5.0",
+  "rankingPolicyId": "ranking-lexicographic-v0.5.0",
+  "direction": "lexicographic_ascending",
+  "principle": "A later key is evaluated only when every earlier key is equal and fully known for both candidates.",
+  "keys": [
+    {
+      "index": 1,
+      "id": "race_safety",
+      "expression": "0 if crocoburio_advance, 1 if neutral, 2 if dragon_advance, null if unknown",
+      "unknownEffect": "ranking_blocked"
+    },
+    {
+      "index": 2,
+      "id": "terminal_fight_state",
+      "expression": "0 if crocoburio_win, 1 if nonterminal, 2 if unknown, 3 if dragon_win",
+      "unknownEffect": "value_is_2"
+    },
+    {
+      "index": 3,
+      "id": "resource_resilience",
+      "expression": "negative of the ascending per-spell post-turn resource vector; numeric values are capped at known max, availability-only maps available=1 unavailable=0",
+      "unknownEffect": "ranking_blocked_if_reached"
+    },
+    {
+      "index": 4,
+      "id": "verified_local_degree",
+      "expression": "negative count of orthogonally adjacent walkable_confirmed or walkable_observed cells at finalCell",
+      "unknownEffect": "exclude uncertain cells from count"
+    },
+    {
+      "index": 5,
+      "id": "cast_count",
+      "expression": "number of movement casts",
+      "unknownEffect": "never_unknown"
+    },
+    {
+      "index": 6,
+      "id": "target_confidence",
+      "expression": "negative minimum confidence of player, used pillars/cells, glyph pattern and calibration",
+      "unknownEffect": "ranking_blocked_if_reached"
+    },
+    {
+      "index": 7,
+      "id": "sequence_key",
+      "expression": "lexicographic comparison of action tuples [spellOrdinal,targetKindOrdinal,x,y,pillarId], repeated per action; empty sequence is []",
+      "unknownEffect": "never_unknown"
+    }
+  ],
+  "canonicalSpellOrder": [
+    "indecision",
+    "reflection",
+    "repulsion",
+    "attraction"
+  ],
+  "canonicalCellOrder": "ascending x, then ascending y",
+  "sequenceKeyFormat": "Display signature remains <spell>@<target-kind>:<x>,<y>:<pillar-id-or-dash>; comparison uses parsed typed tuples, not raw string ordering.",
+  "notes": [
+    "Pillar-based next-turn mobility is not ranked because pillar positions change each turn.",
+    "Unknown future resources block only when the resource key is reached after all earlier keys tie."
+  ],
+  "canonicalSpellOrdinals": {
+    "indecision": 0,
+    "reflection": 1,
+    "repulsion": 2,
+    "attraction": 3
+  },
+  "canonicalTargetKindOrdinals": {
+    "cell": 0,
+    "pillar": 1
+  }
+}

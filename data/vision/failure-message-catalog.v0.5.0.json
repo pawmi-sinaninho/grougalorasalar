@@ -1,0 +1,119 @@
+{
+  "schemaVersion": "0.5.0",
+  "catalogId": "recognition-messages-v0.5.0",
+  "defaultLanguage": "fr",
+  "messages": [
+    {
+      "id": "IMG-001",
+      "severity": "blocker",
+      "fr": "Capture trop petite. Utilise une capture complète du combat.",
+      "de": "Screenshot zu klein. Lade eine vollständige Kampfaufnahme hoch.",
+      "en": "Screenshot too small. Upload a complete combat screenshot."
+    },
+    {
+      "id": "IMG-002",
+      "severity": "blocker",
+      "fr": "L’arène de Grougalorasalar n’est pas reconnue.",
+      "de": "Die Grougalorasalar-Arena wurde nicht erkannt.",
+      "en": "The Grougalorasalar arena was not recognised."
+    },
+    {
+      "id": "IMG-003",
+      "severity": "blocker",
+      "fr": "Une partie critique de l’arène est coupée.",
+      "de": "Ein kritischer Teil der Arena fehlt im Bild.",
+      "en": "A critical arena region is cropped out."
+    },
+    {
+      "id": "REG-001",
+      "severity": "blocker",
+      "fr": "La grille ne peut pas être alignée de façon fiable. Place trois repères.",
+      "de": "Das Raster kann nicht zuverlässig ausgerichtet werden. Setze drei Referenzpunkte.",
+      "en": "The grid cannot be aligned reliably. Place three anchors."
+    },
+    {
+      "id": "REG-002",
+      "severity": "warning",
+      "fr": "Deux alignements sont possibles. Confirme la grille correcte.",
+      "de": "Zwei Ausrichtungen sind möglich. Bestätige das richtige Raster.",
+      "en": "Two registrations are plausible. Confirm the correct grid."
+    },
+    {
+      "id": "MULTI-001",
+      "severity": "blocker",
+      "fr": "Plusieurs personnages contrôlés semblent présents. La version solo ne peut pas résoudre ce tour.",
+      "de": "Mehrere kontrollierte Figuren erkannt. Die Solo-Version kann diesen Zug nicht lösen.",
+      "en": "Multiple controlled characters appear present. The solo version cannot solve this turn."
+    },
+    {
+      "id": "PLAYER-001",
+      "severity": "blocker",
+      "fr": "La case du joueur est incertaine. Sélectionne la case correcte.",
+      "de": "Die Spielerzelle ist unsicher. Wähle die richtige Zelle.",
+      "en": "The player cell is uncertain. Select the correct cell."
+    },
+    {
+      "id": "PILLAR-001",
+      "severity": "blocker",
+      "fr": "La liste des piliers peut être incomplète. Vérifie les piliers marqués.",
+      "de": "Die Säulenliste könnte unvollständig sein. Prüfe die markierten Säulen.",
+      "en": "The pillar set may be incomplete. Review the marked pillars."
+    },
+    {
+      "id": "PILLAR-002",
+      "severity": "blocker",
+      "fr": "Le type d’un pilier est incertain. Choisis sa couleur.",
+      "de": "Der Typ einer Säule ist unsicher. Wähle ihre Farbe.",
+      "en": "A pillar type is uncertain. Choose its colour."
+    },
+    {
+      "id": "GLYPH-001",
+      "severity": "blocker",
+      "fr": "Le motif noir est incertain. Confirme chaque case noire.",
+      "de": "Das schwarze Muster ist unsicher. Bestätige jede schwarze Zelle.",
+      "en": "The black pattern is uncertain. Confirm every black cell."
+    },
+    {
+      "id": "GLYPH-002",
+      "severity": "blocker",
+      "fr": "Le motif blanc est incertain. Confirme chaque case blanche.",
+      "de": "Das weisse Muster ist unsicher. Bestätige jede weisse Zelle.",
+      "en": "The white pattern is uncertain. Confirm every white cell."
+    },
+    {
+      "id": "ANCHOR-001",
+      "severity": "blocker",
+      "fr": "L’origine du motif central n’est pas confirmée.",
+      "de": "Der Ursprung des Zentralmusters ist nicht bestätigt.",
+      "en": "The central-pattern origin is not confirmed."
+    },
+    {
+      "id": "BUDGET-001",
+      "severity": "blocker",
+      "fr": "Le nombre d’actions disponibles n’est pas lisible. Saisis-le manuellement.",
+      "de": "Die verfügbare Aktionszahl ist nicht lesbar. Trage sie manuell ein.",
+      "en": "The available action budget is not readable. Enter it manually."
+    },
+    {
+      "id": "SPELL-001",
+      "severity": "blocker",
+      "fr": "L’état d’au moins un sort est inconnu.",
+      "de": "Der Zustand mindestens eines Zaubers ist unbekannt.",
+      "en": "At least one spell state is unknown."
+    },
+    {
+      "id": "PROGRESS-001",
+      "severity": "warning",
+      "fr": "La progression n’est pas lisible. Le déplacement peut être conseillé, mais pas une victoire ou défaite immédiate.",
+      "de": "Der Fortschritt ist nicht lesbar. Eine Zugempfehlung ist möglich, aber keine sichere Sofort-Sieg-/Niederlage-Aussage.",
+      "en": "Progress is unreadable. Movement may still be advised, but not an immediate win/loss claim."
+    },
+    {
+      "id": "MODEL-001",
+      "severity": "blocker",
+      "fr": "Le détecteur n’est pas encore validé. Confirme les champs critiques avant le calcul.",
+      "de": "Der Detektor ist noch nicht validiert. Bestätige die kritischen Felder vor der Berechnung.",
+      "en": "The detector is not yet validated. Confirm critical fields before solving."
+    }
+  ]
+}

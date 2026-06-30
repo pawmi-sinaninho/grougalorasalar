@@ -1,0 +1,57 @@
+{
+  "schemaVersion": "0.5.0",
+  "traceId": "TRACE-EX-001",
+  "candidateId": "C-EX-001",
+  "events": [
+    {
+      "index": 0,
+      "type": "preflight",
+      "message": "Synthetic example input accepted.",
+      "ruleIds": [],
+      "data": {}
+    },
+    {
+      "index": 1,
+      "type": "movement_formula",
+      "message": "Indécision destination equals target.",
+      "ruleIds": [
+        "R-010"
+      ],
+      "data": {
+        "destination": {
+          "x": 1,
+          "y": 0
+        }
+      }
+    },
+    {
+      "index": 2,
+      "type": "end_turn",
+      "message": "Turn ended.",
+      "ruleIds": [],
+      "data": {}
+    },
+    {
+      "index": 3,
+      "type": "race_resolution",
+      "message": "Synthetic explicit profile resolves Crocoburio advance.",
+      "ruleIds": [
+        "R-019"
+      ],
+      "data": {
+        "raceOutcome": "crocoburio_advance"
+      }
+    }
+  ],
+  "result": {
+    "classification": "definite",
+    "finalCell": {
+      "x": 1,
+      "y": 0
+    },
+    "raceOutcome": "crocoburio_advance",
+    "statusDependencies": [
+      "R-019"
+    ]
+  }
+}
