@@ -300,9 +300,9 @@ The implementation does not silently rewrite Phase-3 oracle data. Focus-scoped o
 
 Exact status/ranking equality is enforced only when a fixture specifies the complete legal graph and global product result. Candidate-focused fixtures verify their named branch, dependency or terminal outcome.
 
-## D-063 — Minimal UI shortcuts cannot become domain defaults
+## D-063 — AP is a verified domain constant
 
-The current three-action button is a browser convenience only. The solver/API retain unknown action budget until explicit entry; Phase 7 must replace the shortcut with a proper unknown/numeric control.
+Every solo turn has exactly 12 AP and every spell cast costs exactly 1 AP. The normal UI never asks the player to enter AP.
 
 ## D-064 — Annotated output is derived and revocable
 
@@ -345,9 +345,9 @@ The files are stored unchanged as `REAL-P7-01` through `REAL-P7-04`, share captu
 
 All four new files are distinct 2048 × 1151 PNGs without embedded source-resolution metadata. Possible upload/client scaling is documented as unknown and is not treated as an artefact defect.
 
-## D-074 — Visual annotation may be partial; unknown is normative
+## D-074 — Visual annotation is automatic and conservative
 
-Player and visible pillars are annotated. Glyph cells, action budget, spell state and progress are classified only when visually clear. Ambiguous fields remain unknown rather than being inferred from one frame.
+Player, pillars, glyphs and spell availability are detected automatically. AP is supplied by the verified profile. Exact positive charges remain unknown when the gauge has no calibrated numeric cue; no normal-flow confirmation is requested.
 
 ## D-075 — The solver receives no pixels or registration transform
 
@@ -361,17 +361,17 @@ Annotated output for a non-reference screenshot projects logical cells through t
 
 The v0.8.0 targets are: visible feedback ≤100 ms, browser decode/working copy p95 ≤150 ms, registration p95 ≤400 ms, baseline recognition p95 ≤900 ms, solver p95 ≤50 ms, local screenshot-to-result p95 ≤1.2 s, server fallback p95 ≤2.5 s and hard timeout 5 s. A value is not a release claim until measured on supported hardware.
 
-## D-078 — Registered fixture signatures are proposals, not authority
+## D-078 — Exact retained fixtures are regression authority
 
-A uniquely matched fixture may provide versioned glyph proposals for synthetic robustness tests and demos. It cannot auto-confirm fields, prove general recognition or bypass `MODEL-001`.
+A uniquely hash-matched retained fixture may auto-confirm its versioned annotations. General screenshots still require calibrated recognition confidence and never inherit fixture authority merely from visual similarity.
 
 ## D-079 — Corrections invalidate results immediately
 
 Every editor command clears the recommendation, marks it invalidated and removes the previous annotated result from the browser. The user must solve again after any correction.
 
-## D-080 — Numeric action budget replaces the fixed shortcut
+## D-080 — The normal browser flow has no manual resource controls
 
-The browser now starts with an unknown action budget and accepts an explicit integer 0–12. No default value is inserted from ordinary DOFUS combat assumptions.
+The browser uses the verified 12-AP profile and automatic spell-bar recognition. Manual AP or spell-state controls are Debug-only.
 
 ## D-081 — Canonical arena geometry is coordinate data, not an image
 
@@ -409,9 +409,33 @@ After registration, every canonical cell centre and polygon is projectable. Cell
 
 The runtime caps OpenCV at four threads because automatic thread selection produced slower and less stable shared-container timings. This is an engineering implementation decision subject to supported-hardware benchmarking.
 
-## D-090 — Arena-footprint authority does not verify gameplay edge behaviour
+## D-090 — Arena geometry and verified movement rules compose explicitly
 
-The 338-cell footprint proves which cells belong to the fixed map presentation. It does not resolve movement truncation, path blocking, spell-specific target legality or projection-anchor semantics. Those remain governed by V-004, V-007 and related rule gates.
+The canonical footprint defines arena membership. The verified profile defines blocker-aware Reflet/Attrait, truncating Rejet and free orthogonal Indécision destinations.
+
+## D-096 — Binding 2026-06-30 rule addendum supersedes conflicting history
+
+The current user observation and selected DofusPourLesNoobs rule basis replace older hypotheses and single-source conflicts in active code, fixtures and documentation.
+
+## D-097 — Numeric charges are 2 initially and 4 maximum
+
+Every cast immediately consumes one charge. End-of-turn matching hits stack and use `min(4, start - casts + hits)`; a spell reduced to zero may recharge in that resolution.
+
+## D-098 — Player-facing spell names are fixed
+
+Only Indécision, Reflet, Rejet and Attrait may appear in UI copy, annotations or recommendations. Internal IDs remain stable.
+
+## D-099 — Indécision is orthogonal-only
+
+Exactly the four orthogonal neighbours are target candidates. Diagonals, occupied cells, obstacles and off-arena cells are illegal.
+
+## D-100 — Solo paste-to-action is the product workflow
+
+The normal flow is Ctrl+V, automatic recognition, automatic solve and a numbered action. Upload-first, manual confirmations and a normal `Calculer le tour` button are rejected product designs.
+
+## D-101 — The observed spell bar is an immutable regression fixture
+
+The supplied PNG is retained byte-for-byte. It asserts Indécision=0, Reflet=0, Rejet=available and Attrait=available without player confirmation.
 
 ## D-091 — Interior geometry and boundary authority are separate layers
 

@@ -42,7 +42,7 @@ Mobile `<768px`: upload status and final recommendation are readable, but precis
 | `board_review` | player, pillars, completeness, glyphs | next unresolved field |
 | `resources_review` | action budget and four spell states | `Valider les ressources` |
 | `rules_blocked` | named mechanical unknowns | confirm supported assumption or export evidence |
-| `ready_for_solver` | compact verified-state summary | `Calculer le tour` |
+| `ready_for_solver` | compact verified-state summary | automatic solver starts |
 | `solving` | cancellable calculation state | `Annuler le calcul` |
 | `solved` | numbered actions, final cell and outcome | `Copier les étapes` |
 | `confirmation_required` | recommendation plus named assumption | `Confirmer l’hypothèse` |

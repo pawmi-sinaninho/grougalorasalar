@@ -1,50 +1,13 @@
 # END-OF-TURN RESOLUTION ORDER
 
-## Proposed state machine
+1. Validate the state and the verified rules profile.
+2. Apply each cast immediately: subtract 1 AP and 1 charge; neither may become negative.
+3. Determine the final player cell.
+4. Resolve a physical central black/white cell according to the guide.
+5. Project all black and white offsets relative to the final player cell.
+6. Collect projected pillar collisions.
+7. A black collision has priority for race progress; without projected black, Crocoburio advances.
+8. Apply every matching white hit, including stacked hits, after progress resolution.
+9. Produce next-turn charges with `min(4, chargesAtTurnStart - castsThisTurn + matchingWhiteHits)`.
 
-```text
-TURN_INPUT
-  -> validate state
-  -> validate rule profile
-  -> apply action sequence
-  -> determine final cell
-  -> stationary check
-  -> direct centre-glyph check
-  -> project reference glyph offsets
-  -> collect black collisions
-  -> collect white collisions
-  -> determine race outcome
-  -> apply recharge timing
-  -> produce next-turn resource state
-```
-
-## Known priority
-
-When projected black and white glyphs both touch pillars, Grougalorasalar advances. This is explicitly stated by JeuxOnLine and is compatible with DofusPourLesNoobs.
-
-## Direct centre glyphs
-
-DofusPourLesNoobs states:
-
-- finishing on the physical central black glyph advances the dragon;
-- finishing on a physical central white glyph recharges the spells by one.
-
-Still to verify:
-
-- whether central black overrides projected white recharge completely or only race progress;
-- whether central white restores all four spells or each active cursor;
-- whether central white also advances Crocoburio when no black condition exists;
-- whether recharge occurs before or after spell depletion is committed.
-
-## No-collision case
-
-DofusPourLesNoobs explicitly shows Crocoburio advancing when neither black nor white projected glyph touches a pillar. JeuxOnLine phrases the rule around white hits and is less explicit. The current status is `single_source_supported`, not multi-source verified.
-
-## Stationary case
-
-Both guides warn that remaining in place advances Grougalorasalar. The exact comparison point must be verified:
-
-- same cell as turn start;
-- same cell as previous resolution;
-- no spell cast;
-- or any combination.
+White recharge can restore a spell brought to zero during the same turn and is not suppressed merely because black determined race progress.

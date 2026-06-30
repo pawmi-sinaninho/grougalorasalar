@@ -95,8 +95,9 @@ def test_all_five_real_screenshots_enter_the_pipeline_without_pixel_data_reachin
         assert "affine" not in serialized
         assert recognition["registration"]["referenceToImageAffine"] is not None
         blockers = validate_turn_state(state)
-        assert "MODEL-001" in blockers
-        assert state["flags"]["criticalFieldsConfirmed"] is False
+        assert blockers == []
+        assert state["flags"]["criticalFieldsConfirmed"] is True
+        assert recognition["automaticCriticalConfirmation"] is True
 
 
 @pytest.mark.parametrize("size", [(1920, 1080), (2560, 1440), (3840, 2160)])

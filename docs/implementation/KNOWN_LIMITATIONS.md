@@ -23,7 +23,7 @@
 
 - Numeric/form correction remains; direct isometric click editing is incomplete.
 - The browser does not expose every API command, notably move/delete/reclassify, undo/redo and progress entry.
-- Action budget now supports unknown/numeric entry with no default.
+- Action budget is fixed at the verified 12 AP and is not entered manually.
 - Spell availability is exposed; full numeric charge editing is incomplete.
 - Runtime locale switching for German/English is not wired.
 - Tablet/mobile correction has not passed browser acceptance tests.

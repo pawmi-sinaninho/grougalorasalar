@@ -1,9 +1,9 @@
 # CURRENT STATUS
 
-**Version:** 0.9.0  
+**Version:** 1.0.0
 **Date:** 2026-06-30  
 **Phase:** Release-blocker repair and player workflow  
-**Status:** COMPOSE START AND REAL-FIXTURE BROWSER FLOW PASS
+**Status:** VERIFIED RULE-PROFILE REPAIR IN VALIDATION
 
 ## Player workflow
 
@@ -11,9 +11,10 @@
 - The player is drawn directly on the screenshot with a cyan cell and red centre marker.
 - All 24 detected pillars are shown with ID and spell type; confidence below `0.80` is highlighted in orange.
 - Three dark and three light central-pattern cells are exported and drawn in magenta. A missing pattern displays exactly: `Le motif central n’a pas été détecté.`
-- Player and pattern corrections are direct clicks on the screenshot; the standard workflow has no coordinate fields.
-- Action budget and all four spell states use explicit, visibly selected controls. `unknown`, `available`, and `unavailable` are distinct states.
-- `Calculer le tour` stays disabled until player, pillar completeness, pattern, action budget, spell states, and detection review are complete.
+- The normal workflow is screenshot copy → Ctrl+V → automatic recognition → automatic solving → numbered action. Manual pillar, pattern, AP and spell-state controls exist only in hidden Debug mode.
+- Every turn has 12 AP; every cast costs 1 AP. Each spell starts at 2 charges, costs 1 charge, caps at 4 and receives stacked matching white hits during end-of-turn resolution.
+- The retained spell-bar regression image is byte-identical and automatically recognises Indécision/Reflet as unavailable at 0 and Rejet/Attrait as available.
+- Player-facing names are exclusively Indécision, Reflet, Rejet and Attrait.
 - Rule codes, state versions, server path, and internal statuses exist only behind the Debug control.
 
 ## Clean start
@@ -26,7 +27,9 @@
 - Git data, archives, virtual environments, pytest/Python caches, `node_modules`, `.next`, Playwright results, reports, and runtime sessions are excluded from Docker context.
 - The obsolete local `apps/web/Dockerfile.bak` was removed.
 
-## Verified results
+## Previous verified baseline
+
+Current repair validation: **52 API/unit/property/solver/vision tests passed**, Phase-3 cumulative validation passed, TypeScript passed, and the Next.js production build passed. The supplied spell-bar fixture hash is `0a8a81b7d19a35967e19f7c3dfffdd4a40d4e7acfa91b85fa74e66c543374ff5` and matches the source byte-for-byte.
 
 - clean no-cache Web/API image build: passed;
 - API suite in the built image: **36 passed**;

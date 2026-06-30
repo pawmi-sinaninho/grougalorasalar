@@ -90,7 +90,7 @@ This detector does not inspect lower-track combat-order numbers as action points
 
 ## Glyph and UI fields
 
-The four new fixtures contain conservative glyph annotations. Only visually clear cells are classified; ambiguous or occluded cells are stored in `unknownCandidateCells`. Action budget, spell availability/charge and exact progress indices remain unknown because the current screenshots do not resolve V-001, V-002 or V-006.
+The four arena fixtures contain conservative glyph annotations; ambiguous or occluded cells stay in `unknownCandidateCells`. The verified profile supplies 12 AP, while calibrated toolbar recognition supplies spell availability and exact zero charges. Positive exact counts and progress indices remain unknown unless a calibrated cue resolves them.
 
 OCR is not imported or invoked in the standard path.
 

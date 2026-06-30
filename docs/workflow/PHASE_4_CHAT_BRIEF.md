@@ -11,7 +11,7 @@ Read completely:
 5. `data/solver/ranking-policy.v0.5.0.json`
 6. `data/solver/status-precedence.v0.5.0.json`
 7. `data/solver/rule-dependency-map.v0.5.0.json`
-8. `data/solver/fixture-catalog.v0.5.0.json`
+8. `data/solver/verified-rules-fixtures.v1.0.0.json`
 9. `NEXT_STEP.md`
 
 ## Exclusive task

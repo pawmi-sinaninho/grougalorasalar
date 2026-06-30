@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## 1.0.0 — Verified gameplay-rule repair
+
+- Replaced the hypothesis profile with the binding DofusPourLesNoobs/observed profile: 12 AP, 1 AP/cast, 2 initial charges, maximum 4 and immediate 1-charge cost.
+- Implemented stacked end-of-turn matching recharge with the normative formula and same-turn zero-to-available recovery.
+- Locked Indécision to four free orthogonal neighbours and rejected all diagonals.
+- Implemented any-colour exact-range-2 Reflet, blocker-aware movement, truncating Rejet and stop-before-pillar Attrait.
+- Fixed player-facing names to Indécision, Reflet, Rejet and Attrait.
+- Retained the supplied spell-bar image byte-for-byte and added automatic availability regression recognition.
+- Changed the normal web flow to Ctrl+V and automatic calculation; manual controls are Debug-only.
+- Updated the rule catalogue, decisions, status and automated Unit/Property/Solver/Vision coverage.
+
 ## 0.9.0 — Clean-start and player-flow release repair
 
 - Reproduced and removed the nondeterministic Web `npm install` build path.

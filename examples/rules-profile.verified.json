@@ -1,8 +1,8 @@
 {
   "schemaVersion": "0.5.0",
-  "profileId": "review-explicit-hypothesis-0.5.0",
-  "purpose": "developer_review",
-  "authority": "hypothesis_only",
+  "profileId": "dofuspourlesnoobs-observed-v1.0.0",
+  "purpose": "production",
+  "authority": "verified",
   "sourceRuleIds": [
     "R-001",
     "R-002",
@@ -60,18 +60,18 @@
       "destinationOccupancy": "invalid"
     },
     "reflection": {
-      "targetPillarType": "matching_spell_type",
+      "targetPillarType": "any_pillar",
       "rangeMetric": "aligned_steps",
       "minRange": 2,
       "maxRange": 2,
       "alignment": "cardinal_or_diagonal",
-      "lineOfSight": "ignored",
-      "pathMode": "teleport_ignore_intermediate",
+      "lineOfSight": "required_clear",
+      "pathMode": "fail_if_blocked",
       "destinationOccupancy": "invalid",
       "edgeMode": "invalid"
     },
     "repulsion": {
-      "targetPillarType": "matching_spell_type",
+      "targetPillarType": "any_pillar",
       "rangeMetric": "aligned_steps",
       "minRange": 1,
       "maxRange": 2,
@@ -81,16 +81,16 @@
       ],
       "lineOfSight": "ignored",
       "distance": 3,
-      "pathMode": "fail_if_blocked",
+      "pathMode": "truncate_before_blocker",
       "destinationOccupancy": "invalid",
-      "edgeMode": "invalid"
+      "edgeMode": "truncate_to_last_walkable"
     },
     "attraction": {
-      "targetPillarType": "matching_spell_type",
+      "targetPillarType": "any_pillar",
       "rangeMetric": "aligned_steps",
       "minRange": 1,
       "maxRange": 6,
-      "alignment": "cardinal",
+      "alignment": "cardinal_or_diagonal",
       "lineOfSight": "ignored",
       "distance": 3,
       "pathMode": "fail_if_blocked",
@@ -108,31 +108,37 @@
     ]
   },
   "resources": {
-    "actionBudgetPerTurn": 3,
+    "actionBudgetPerTurn": 12,
     "movementActionCost": 1,
-    "trackingMode": "availability_only",
+    "trackingMode": "numeric",
+    "initialCharges": {
+      "indecision": 2,
+      "reflection": 2,
+      "repulsion": 2,
+      "attraction": 2
+    },
     "chargeCostPerCast": {
-      "indecision": null,
-      "reflection": null,
-      "repulsion": null,
-      "attraction": null
+      "indecision": 1,
+      "reflection": 1,
+      "repulsion": 1,
+      "attraction": 1
     },
     "maxCharges": {
-      "indecision": null,
-      "reflection": null,
-      "repulsion": null,
-      "attraction": null
+      "indecision": 4,
+      "reflection": 4,
+      "repulsion": 4,
+      "attraction": 4
     },
     "rechargePerMatchingPillar": 1,
     "multipleWhiteHitsStack": true,
     "centerWhiteRecharge": "all_spells_plus_one",
-    "rechargeTiming": "next_turn",
-    "rechargeWhenAdverse": "suppress"
+    "rechargeTiming": "after_progress_same_turn",
+    "rechargeWhenAdverse": "apply"
   },
   "resolution": {
     "blackPriority": true,
     "stationaryReference": "turn_start_cell",
-    "stationaryOutcome": "dragon_advance",
+    "stationaryOutcome": "neutral",
     "centerBlackOutcome": "dragon_advance",
     "centerBlackPriority": "same_as_projected_black",
     "noBlackNoWhiteOutcome": "crocoburio_advance",
@@ -140,6 +146,6 @@
   },
   "progress": {
     "dragonTrackLength": 8,
-    "crocoburioTrackLength": null
+    "crocoburioTrackLength": 14
   }
 }

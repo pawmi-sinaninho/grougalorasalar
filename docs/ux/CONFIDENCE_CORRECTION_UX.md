@@ -75,7 +75,7 @@ Use black, white and erase tools on the physical centre cells. Black and white c
 
 ### Resources
 
-Select availability or enter numeric value per spell. Action budget is an explicit integer/unknown control.
+Normal mode recognises availability automatically and uses the verified 12 AP. Resource editing is available only in hidden Debug mode.
 
 ### Progress
 

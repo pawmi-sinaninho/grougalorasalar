@@ -73,7 +73,7 @@ def test_reference_upload_manual_review_solve_annotate_delete(tmp_path: Path) ->
         ("accept_detection", {}),
         ("set_projection_anchor_confirmation", {"confirmed": True}),
         ("set_pillar_set_complete", {"complete": True}),
-        ("set_action_budget", {"value": 3}),
+            ("set_action_budget", {"value": 12}),
     ]:
         envelope = _command(client, analysis_id, token, version, kind, payload)
         version = envelope["session"]["stateVersion"]
@@ -200,7 +200,7 @@ def test_real_round_confirmed_player_flow_returns_concrete_recommendation(tmp_pa
         ("accept_detection", {}),
         ("set_projection_anchor_confirmation", {"confirmed": True}),
         ("set_pillar_set_complete", {"complete": True}),
-        ("set_action_budget", {"value": 1}),
+            ("set_action_budget", {"value": 12}),
     ]:
         uploaded = _command(client, analysis_id, token, version, kind, payload)
         version = uploaded["session"]["stateVersion"]

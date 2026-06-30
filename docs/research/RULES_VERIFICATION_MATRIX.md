@@ -33,7 +33,6 @@
 | R-020 | Physical central black cell is adverse | SS | DofusPourLesNoobs note | Direct replay |
 | R-021 | Physical central white cell recharges spells by 1 | SS | DofusPourLesNoobs note | Scope and timing |
 | R-022 | Dragon loses race after 8 advances | VM | Both guides | Visual track index check |
-| R-023 | Crocoburio needs 13 cells | SS | JeuxOnLine | Current full run |
 | R-024 | Crocoburio needs 14 cells | SS | DofusPourLesNoobs | Current full run |
 | R-025 | Spell gauges can make spells unavailable | VM + OB | Both guides + screenshot | Exact thresholds |
 | R-026 | Each cast consumes one AP | SS | Phase-0 guide interpretation | Current tooltips/log |

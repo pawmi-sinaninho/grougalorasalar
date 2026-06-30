@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "1.0.0",
+  "catalogId": "verified-rules-2026-06-30",
+  "fixtureCount": 1,
+  "fixtures": [
+    {
+      "fixtureId": "F-101",
+      "title": "Verified orthogonal Indécision with numeric charges",
+      "focusRuleIds": [],
+      "given": {
+        "summary": "Verified compact solver fixture",
+        "profileMode": "real_authority_profile",
+        "profileId": "dofuspourlesnoobs-observed-v1.0.0",
+        "arena": {
+          "walkable": [{"x": -1, "y": 0}, {"x": 0, "y": -1}, {"x": 0, "y": 0}, {"x": 0, "y": 1}, {"x": 1, "y": 0}],
+          "boundaryUnverified": [], "occludedUnknown": [], "permanentBlocked": []
+        },
+        "player": {"current": {"x": 0, "y": 0}, "previous": null},
+        "pillars": [],
+        "glyphs": {"blackOffsets": [], "whiteOffsets": [], "physicalBlackCells": [], "physicalWhiteCells": []},
+        "resources": {
+          "actionBudget": 12,
+          "spells": {
+            "indecision": {"availability": "available", "value": 2, "confirmed": true},
+            "reflection": {"availability": "unavailable", "value": 0, "confirmed": true},
+            "repulsion": {"availability": "unavailable", "value": 0, "confirmed": true},
+            "attraction": {"availability": "unavailable", "value": 0, "confirmed": true}
+          }
+        },
+        "flags": {"anchorConfirmed": true, "criticalFieldsConfirmed": true, "multiplayerDetected": false, "pillarSetComplete": true},
+        "profileOverrides": {}
+      }
+    }
+  ],
+  "resourceTransitions": [
+    {"start": 2, "casts": 2, "matchingWhiteHits": 0, "next": 0},
+    {"start": 2, "casts": 0, "matchingWhiteHits": 1, "next": 3},
+    {"start": 2, "casts": 0, "matchingWhiteHits": 2, "next": 4},
+    {"start": 3, "casts": 0, "matchingWhiteHits": 2, "next": 4},
+    {"start": 2, "casts": 2, "matchingWhiteHits": 1, "next": 1}
+  ],
+  "indecision": {
+    "source": {"x": 0, "y": 0},
+    "legalOffsets": [{"dx": -1, "dy": 0}, {"dx": 0, "dy": -1}, {"dx": 0, "dy": 1}, {"dx": 1, "dy": 0}],
+    "illegalDiagonalOffsets": [{"dx": -1, "dy": -1}, {"dx": -1, "dy": 1}, {"dx": 1, "dy": -1}, {"dx": 1, "dy": 1}]
+  },
+  "movement": {
+    "refletExactRange": 2,
+    "refletAlignments": ["cardinal", "diagonal"],
+    "rejetDistance": 3,
+    "rejetBlockedThirdStepDestination": 2,
+    "attraitMaximumDistance": 3,
+    "attraitStopsBeforePillar": true
+  }
+}

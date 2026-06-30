@@ -11,7 +11,7 @@ type Point = { x: number; y: number };
 type CorrectionMode = 'player' | 'glyph-black' | 'glyph-white' | null;
 
 const spellLabels: Record<SpellKey, string> = {
-  indecision: 'Indécision', reflection: 'Réflexion', repulsion: 'Répulsion', attraction: 'Attirance',
+  indecision: 'Indécision', reflection: 'Reflet', repulsion: 'Rejet', attraction: 'Attrait',
 };
 
 type TurnState = {
@@ -93,6 +93,7 @@ export default function Home() {
   const [pillarOverlayReviewed, setPillarOverlayReviewed] = useState(false);
   const [debug, setDebug] = useState(false);
   const startedAt = useRef<number | null>(null);
+  const lastAutoSolvedVersion = useRef<number | null>(null);
 
   const turn = (data?.turnState ?? {}) as TurnState;
   const recognition = (data?.recognition ?? {}) as Recognition;
@@ -123,6 +124,23 @@ export default function Home() {
   }, [busy]);
 
   useEffect(() => () => { if (imageUrl.startsWith('blob:')) URL.revokeObjectURL(imageUrl); }, [imageUrl]);
+
+  useEffect(() => {
+    const paste = (event: ClipboardEvent) => {
+      const image = Array.from(event.clipboardData?.items ?? []).find(item => item.type.startsWith('image/'))?.getAsFile();
+      if (!image) return;
+      event.preventDefault();
+      void begin(new File([image], image.name || 'capture-collee.png', { type: image.type }));
+    };
+    window.addEventListener('paste', paste);
+    return () => window.removeEventListener('paste', paste);
+  });
+
+  useEffect(() => {
+    if (!data || !ready || busy || data.recommendation || lastAutoSolvedVersion.current === data.session.stateVersion) return;
+    lastAutoSolvedVersion.current = data.session.stateVersion;
+    void runSolver();
+  }, [busy, data, ready]);
 
   function startLocalWorker(file: File) {
     if (typeof Worker === 'undefined') return;
@@ -199,10 +217,10 @@ export default function Home() {
       <header>
         <p className="eyebrow">ASSISTANT DE TOUR · VERSION 0.9.0</p>
         <h1>Grougalorasalar Solver</h1>
-        <p>Importez une capture, vérifiez les repères dessinés dessus, puis calculez votre tour.</p>
+        <p>Copiez votre capture de combat puis collez-la ici avec Ctrl+V. La détection et le calcul démarrent automatiquement.</p>
       </header>
 
-      {!imageUrl && <section className="upload"><label>Choisir une capture du combat<input aria-label="Capture du combat" type="file" accept="image/png,image/jpeg,image/webp" disabled={busy} onChange={event => event.target.files?.[0] && begin(event.target.files[0])} /></label></section>}
+      {!imageUrl && <section className="upload"><h2>Collez la capture avec Ctrl+V</h2><p>Aucune saisie manuelle n’est nécessaire.</p><button className="debug-toggle" aria-pressed={debug} onClick={() => setDebug(value => !value)}>Debug</button>{debug && <label>Fixture locale<input aria-label="Capture du combat (debug)" type="file" accept="image/png,image/jpeg,image/webp" disabled={busy} onChange={event => event.target.files?.[0] && begin(event.target.files[0])} /></label>}</section>}
 
       {imageUrl && <div className={data ? 'workspace' : 'workspace preview-only'}>
         <section className="board-card">
@@ -233,7 +251,9 @@ export default function Home() {
           {correctionMode && <p className="click-hint">Cliquez directement sur la bonne case de la capture.</p>}
         </section>
 
-        {data && <aside>
+        {data && !debug && <aside><div className="aside-heading"><div><p className="step">AUTOMATIQUE</p><h2>{ready ? 'Calcul du tour en cours' : 'Analyse de la capture'}</h2></div><button className="debug-toggle" aria-pressed={debug} onClick={() => setDebug(true)}>Debug</button></div><p>Les piliers, le motif, les 12 PA et l’état des sorts sont traités sans confirmation manuelle.</p></aside>}
+
+        {data && debug && <aside>
           <div className="aside-heading"><div><p className="step">VÉRIFICATION</p><h2>Ce qu’il reste à faire</h2></div><button className="debug-toggle" aria-pressed={debug} onClick={() => setDebug(value => !value)}>Debug</button></div>
 
           <section className="review-block">
@@ -262,7 +282,7 @@ export default function Home() {
           <button disabled={busy} className={turn.flags?.criticalFieldsConfirmed ? 'confirmed-detection' : ''} onClick={() => send('accept_detection', {})}>{turn.flags?.criticalFieldsConfirmed ? '✓ Détections vérifiées' : 'Valider les éléments détectés'}</button>
 
           <div className="readiness"><h3>Prêt pour le calcul ?</h3><ul>{checks.map(item => <li key={item.label} className={item.ok ? 'done' : ''}><span>{item.ok ? '✓' : '○'}</span>{item.label}</li>)}</ul>{!turn.flags?.criticalFieldsConfirmed && <p>Validez aussi les éléments détectés.</p>}</div>
-          <button className="solve" onClick={runSolver} disabled={busy || !ready}>Calculer le tour</button>
+          <button className="solve" onClick={runSolver} disabled={busy || !ready}>Debug · lancer le solveur</button>
 
           {debug && <section className="debug-panel"><h3>Informations de diagnostic</h3><dl><dt>État</dt><dd>{data.session.state}</dd><dt>Version</dt><dd>{data.session.stateVersion}</dd><dt>Analyse</dt><dd>{data.recognition?.metrics?.path ?? 'inconnue'}</dd><dt>Blocages</dt><dd>{data.session.gate.blockingReasonCodes.join(', ') || 'aucun'}</dd></dl></section>}
         </aside>}

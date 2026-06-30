@@ -49,7 +49,7 @@ def main() -> None:
     validate_instance("data/arena/arena-model.draft-v0.5.0.json", "schemas/arena-model.schema.json")
     validate_instance("data/arena/reference-turn.manual.json", "schemas/turn-state.schema.json")
     validate_instance("examples/turn-state.synthetic.json", "schemas/turn-state.schema.json")
-    validate_instance("examples/rules-profile.hypothesis.json", "schemas/rules-profile.schema.json")
+    validate_instance("examples/rules-profile.verified.json", "schemas/rules-profile.schema.json")
     validate_instance("examples/manual-editor-session.reference.json", "schemas/manual-editor-session.schema.json")
 
     image_path = ROOT / "assets/reference/user_reference.png"

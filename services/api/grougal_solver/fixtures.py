@@ -8,7 +8,7 @@ from .util import load_json
 
 
 def load_fixture_catalog(project_root: Path) -> dict[str, Any]:
-    return load_json(project_root / "data" / "solver" / "fixture-catalog.v0.5.0.json")
+    return load_json(project_root / "data" / "solver" / "verified-rules-fixtures.v1.0.0.json")
 
 
 def get_fixture(project_root: Path, fixture_id: str) -> dict[str, Any]:

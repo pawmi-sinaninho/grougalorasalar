@@ -11,7 +11,7 @@ This is a manual reconstruction of the retained screenshot. It is a Phase-2 acce
 - projection anchor: `(0,0)` — provisional
 - black offsets: `(-1,-1)`, `(1,-1)`, `(1,1)`
 - white offsets: `(0,-3)`, `(0,2)`, `(2,-1)`
-- action budget: unknown
+- action budget: 12 from the verified rules profile
 - spell availability/charge: unknown
 - both progress indices: unknown
 

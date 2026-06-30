@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "1.0.0",
+  "fixtureId": "SPELLBAR-OBSERVED-2026-06-30",
+  "source": {
+    "path": "assets/reference/spellbar-observed-2026-06-30.png",
+    "sha256": "0a8a81b7d19a35967e19f7c3dfffdd4a40d4e7acfa91b85fa74e66c543374ff5",
+    "byteSize": 41897,
+    "width": 326,
+    "height": 123,
+    "retainedUnmodified": true
+  },
+  "expected": {
+    "indecision": {"availability": "unavailable", "value": 0},
+    "reflection": {"availability": "unavailable", "value": 0},
+    "repulsion": {"availability": "available", "value": null},
+    "attraction": {"availability": "available", "value": null}
+  }
+}

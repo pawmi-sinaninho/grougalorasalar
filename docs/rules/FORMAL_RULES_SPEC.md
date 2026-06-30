@@ -2,7 +2,7 @@
 
 ## 1. Scope
 
-This document defines the logical combat model without claiming that every game mechanic is already verified. Exact unknowns are represented in `RulesProfile`.
+This document defines the binding `dofuspourlesnoobs-observed-v1.0.0` combat model. Older conflicting hypotheses are superseded.
 
 ## 2. Coordinate system
 
@@ -52,27 +52,18 @@ All four movement spells are treated as state transitions. Each action records s
 
 ### R-010 — Indécision
 
-Supported description: target one contact cell and teleport to it.
-
-Candidate contract:
+Contract:
 
 ```text
 target is orthogonally adjacent to source
 candidate destination = target
 ```
 
-Unresolved:
-
-- whether diagonal contact is legal under the fight's range metric;
-- whether line of sight is checked;
-- whether a pillar-occupied target is rejected;
-- whether the spell is restricted by visual facing.
-
-The current product assumption is **not** allowed to silently choose among these.
+The target must be inside the arena and free. Diagonal, pillar-occupied and obstacle cells are illegal.
 
 ### R-020 — Reflet
 
-Supported description: target a pillar at exact range 2 and teleport symmetrically across it.
+Target any-colour pillar at exact aligned range 2, cardinal or diagonal, and move symmetrically across it.
 
 Base formula:
 
@@ -82,13 +73,7 @@ target pillar = T
 destination = 2*T - P
 ```
 
-Unresolved:
-
-- which range metric defines “2 PO”;
-- whether the target must be axis-aligned;
-- whether line of sight is required;
-- path relevance;
-- destination occupancy behaviour.
+The movement may not cross another pillar or obstacle. The destination must be free and inside the arena.
 
 ### R-030 — Rejet
 
@@ -101,35 +86,24 @@ u = normalise_cardinal_or_diagonal(P - T)
 destination = P + 3*u
 ```
 
-Unresolved:
-
-- permitted alignments;
-- path blocking;
-- map-edge truncation;
-- collision with pillars;
-- whether movement is displacement or teleportation.
+Cardinal and diagonal alignment are legal. At a blocker or arena edge, stop at the last free cell; the destination is never occupied.
 
 ### R-040 — Attrait
 
-Supported description: target a pillar at range 1–6, normally in line, and move three cells toward it.
+Target any-colour pillar at range 1–6 on a cardinal or diagonal alignment and move up to three cells toward it.
 
 For an allowed alignment, let `u` be the unit vector from player to pillar:
 
 ```text
-u = normalise_cardinal(P -> T)
+u = normalise_cardinal_or_diagonal(P -> T)
 raw_destination = P + 3*u
 ```
 
-The raw formula is insufficient when the pillar is one or two cells away. `RulesProfile.movement.attraction.shortRangeBehaviour` must therefore be one of:
-
-- `stop_adjacent_to_pillar`;
-- `overshoot_pillar`;
-- `action_invalid`;
-- `unknown`.
+When the pillar is closer than three steps, stop on the free cell immediately before it. Movement may not cross a pillar or obstacle.
 
 ## 5. Occupancy and paths
 
-A destination is always checked against the arena mask. Pillar collision and intermediate-path behaviour remain profile-controlled until observed.
+A destination is always checked against the arena mask and must be free. Pillars and permanent obstacles block intermediate movement; only Rejet truncates before a blocker or edge.
 
 Typed rejection reasons include:
 
@@ -166,29 +140,25 @@ A white hit recharges the spell represented by the struck pillar, subject to the
 The following precedence is safe and supported enough to specify, but individual entries still carry authority levels:
 
 1. Reject an invalid or unresolved state before tactical evaluation.
-2. If the final cell equals the previous turn's cell, mark adverse stationary resolution.
-3. Evaluate direct physical centre-glyph effects.
-4. Evaluate projected black and white pillar collisions.
-5. Any black adverse condition takes priority over positive white effects for race progress.
-6. If no adverse condition exists, resolve Crocoburio progress according to the configured no-black rule.
-7. Resolve recharge according to the configured timing.
+2. Evaluate direct physical centre-glyph effects at the final cell.
+3. Evaluate black and white offsets relative to the final player position.
+4. Any projected black collision takes priority for race progress.
+5. If no projected black collision exists, Crocoburio advances.
+6. Resolve every matching white recharge after cast depletion, including during a black-priority result.
+7. Cap every spell at four charges.
 8. Generate the next-turn resource state.
 
 The solver trace must show which condition decided the outcome.
 
 ## 8. Resource model
 
-Each spell has:
+Every turn starts with 12 AP and every cast immediately costs 1 AP. Every spell starts combat with 2 charges, costs 1 charge per cast and has maximum 4. A spell at 0 is unusable. End-of-turn state is:
 
-- `availability`: available, unavailable or unknown;
-- optional numeric charge value;
-- maximum charge, when known;
-- cost per cast;
-- recharge per matching white-pillar hit;
-- recharge from a direct white centre glyph;
-- recharge timing.
+```text
+nextCharges = min(4, chargesAtTurnStart - castsThisTurn + matchingWhiteHits)
+```
 
-A boolean-only availability model may be used for the first pre-live version if numeric charge counts cannot be reliably read. Numeric values must never be fabricated from gauge position.
+Charges may never become negative during the action sequence. Automatic vision may report positive availability without fabricating an exact positive count when the gauge is not numerically calibrated.
 
 ## 9. Search contract
 
@@ -200,7 +170,7 @@ The search enumerates sequences until:
 
 Candidate ranking is lexicographic:
 
-1. no adverse black or stationary outcome;
+1. no adverse black outcome;
 2. Crocoburio advances;
 3. required low-resource spells are recharged;
 4. next-turn resource resilience;

@@ -1,80 +1,10 @@
 # MOVEMENT GEOMETRY
 
-## Purpose
+This document is the verified DofusPourLesNoobs/observed movement contract.
 
-Define implementation-neutral formulas and list exactly what still needs gameplay evidence.
+- **Indécision:** destination is exactly one orthogonal neighbour. Diagonals, off-arena cells, pillars, obstacles and occupied destinations are illegal.
+- **Reflet:** target any-colour pillar at exactly two aligned logical steps, cardinal or diagonal. Destination is `2*T-P`. Another pillar or obstacle may not be crossed; destination must be free and in the arena.
+- **Rejet:** target cardinally or diagonally; move up to three cells away. Stop at the last free cell before a pillar, obstacle or arena edge. The destination must be free.
+- **Attrait:** target cardinally or diagonally; move up to three cells toward the pillar and stop immediately before it when closer. Pillars/obstacles may not be crossed and the destination must be free.
 
-## Direction vectors
-
-Use these candidate unit directions:
-
-```text
-cardinal = {(1,0), (-1,0), (0,1), (0,-1)}
-diagonal = {(1,1), (1,-1), (-1,1), (-1,-1)}
-```
-
-The final allowed direction set for each spell is a rules-profile value.
-
-## Indécision
-
-```text
-D = target cell
-```
-
-Minimum observation required:
-
-- one successful orthogonal cast;
-- one attempted diagonal-contact cast;
-- one attempted cast onto an occupied pillar cell.
-
-## Reflet
-
-```text
-D.x = 2*T.x - P.x
-D.y = 2*T.y - P.y
-```
-
-Minimum observation required:
-
-- one axis-aligned successful cast;
-- one non-axis range-2 attempt;
-- one reflection whose destination is near the edge;
-- one reflection whose destination would contain a pillar, if the generated board permits it.
-
-## Rejet
-
-```text
-D = P + 3*u
-```
-
-Minimum observation required:
-
-- pillar at distance 1;
-- pillar at distance 2;
-- obstacle on intermediate cell;
-- blocked destination;
-- board-edge interaction.
-
-## Attrait
-
-```text
-raw D = P + 3*u toward pillar
-```
-
-Minimum observation required:
-
-- pillar at distances 1, 2, 3, 4, 5 and 6 where possible;
-- a blocked intermediate cell;
-- target not in line;
-- board-edge interaction.
-
-## Path interpretation modes
-
-Every displacement spell must explicitly select one mode:
-
-- `teleport_ignore_intermediate`;
-- `move_fail_if_path_blocked`;
-- `move_truncate_before_blocker`;
-- `unknown`.
-
-No implementation may infer this from generic DOFUS behaviour without direct evidence from this fight.
+Internal spell IDs remain `indecision`, `reflection`, `repulsion`, `attraction`; player-facing names are Indécision, Reflet, Rejet and Attrait.

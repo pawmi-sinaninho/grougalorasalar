@@ -8,7 +8,7 @@
 </style>
 </head>
 <body><main>
-<header><div class="tag">PRÉ-LIVE · MODEL-001 ACTIF</div><h1>Grougalorasalar Solver</h1><p>Chargement, correction manuelle, moteur déterministe, annotation et suppression éphémère.</p></header>
+<header><div class="tag">OUTIL DEBUG PRÉ-LIVE</div><h1>Grougalorasalar Solver</h1><p>Interface technique hors du parcours utilisateur normal.</p></header>
 <section id="uploadPanel" class="panel upload"><label>Capture PNG/JPEG/WebP (min. 1280×720)<input id="file" type="file" accept="image/png,image/jpeg,image/webp"></label><button id="upload" class="primary">Créer l’analyse et charger</button><p id="status"></p></section>
 <section id="workspace" class="hidden">
 <div class="grid"><div class="panel"><img id="shot" alt="Capture protégée"><p id="session"></p></div>
@@ -17,11 +17,11 @@
 <button data-cmd="set_projection_anchor_confirmation" data-payload='{"confirmed":true}'>Confirmer l’ancrage</button>
 <button data-cmd="set_pillar_set_complete" data-payload='{"complete":true}'>Confirmer la liste des piliers</button>
 <div class="row"><input id="px" type="number" value="7" aria-label="Joueur x"><input id="py" type="number" value="-1" aria-label="Joueur y"></div><button id="player">Définir la case du joueur</button>
-<input id="budget" type="number" min="0" max="12" value="3"><button id="setBudget">Définir le budget d’actions</button>
+<input id="budget" type="number" min="12" max="12" value="12"><button id="setBudget">Définir le budget d’actions</button>
 <div id="spellButtons"></div>
 <hr><h3>Ajouter un pilier</h3><div class="row"><input id="pillarX" type="number" value="0"><input id="pillarY" type="number" value="0"></div><select id="pillarSpell"><option>indecision</option><option>reflection</option><option>repulsion</option><option>attraction</option></select><button id="addPillar">Ajouter</button>
 <h3>Peindre un glyphe relatif</h3><div class="row"><input id="glyphX" type="number" value="0"><input id="glyphY" type="number" value="0"></div><select id="glyphColour"><option value="black">noir</option><option value="white">blanc</option></select><button id="paintGlyph">Peindre</button>
-<button id="solve" class="primary">Calculer le tour</button><button id="delete">Supprimer immédiatement</button></aside></div>
+<button id="solve" class="primary">Debug · lancer le solveur</button><button id="delete">Supprimer immédiatement</button></aside></div>
 <section id="result" class="panel result hidden"><h2>Résultat</h2><div id="instructions"></div><img id="annotated" alt="Capture annotée"><details><summary>État technique</summary><pre id="debug"></pre></details></section>
 </section>
 </main><script>
@@ -34,7 +34,7 @@ async function command(type,payload={}){const body={schemaVersion:'0.6.0',comman
 $('#upload').onclick=async()=>{try{const f=$('#file').files[0];if(!f)throw new Error('Sélectionner une capture');$('#status').textContent='Chargement…';const c=await json(await fetch(`${API}/analyses`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({schemaVersion:'0.8.0',locale:'fr',retentionConsent:'ephemeral_only',qualityImprovementConsent:false})}));id=c.session.analysisId;token=c.accessToken;version=c.session.stateVersion;const fd=new FormData();fd.append('file',f);fd.append('expectedStateVersion',version);const d=await json(await fetch(`${API}/analyses/${id}/image`,{method:'POST',headers:auth(),body:fd}));$('#uploadPanel').classList.add('hidden');$('#workspace').classList.remove('hidden');render(d);refreshImage('normalised',$('#shot'))}catch(e){$('#status').textContent=e.message}}
 document.querySelectorAll('[data-cmd]').forEach(b=>b.onclick=()=>command(b.dataset.cmd,JSON.parse(b.dataset.payload||'{}')));
 $('#player').onclick=()=>command('set_player_cell',{cell:{x:+$('#px').value,y:+$('#py').value}});$('#setBudget').onclick=()=>command('set_action_budget',{value:+$('#budget').value});
-for(const spell of ['indecision','reflection','repulsion','attraction']){const b=document.createElement('button');b.textContent=`${spell}: disponible`;b.onclick=()=>command('set_spell_state',{spell,availability:'available',value:null,confirmed:true});$('#spellButtons').appendChild(b)}
+for(const [spell,label] of Object.entries({indecision:'Indécision',reflection:'Reflet',repulsion:'Rejet',attraction:'Attrait'})){const b=document.createElement('button');b.textContent=`${label}: disponible`;b.onclick=()=>command('set_spell_state',{spell,availability:'available',value:null,confirmed:true});$('#spellButtons').appendChild(b)}
 $('#addPillar').onclick=()=>command('add_pillar',{id:'P'+Date.now(),cell:{x:+$('#pillarX').value,y:+$('#pillarY').value},spellType:$('#pillarSpell').value});
 $('#paintGlyph').onclick=()=>command('paint_glyph_cell',{colour:$('#glyphColour').value,offset:{dx:+$('#glyphX').value,dy:+$('#glyphY').value}});
 $('#solve').onclick=async()=>{try{render(await json(await fetch(`${API}/analyses/${id}/solve`,{method:'POST',headers:{...auth(),'Content-Type':'application/json'},body:JSON.stringify({schemaVersion:'0.8.0',expectedStateVersion:version,mode:'review',confirmedSingleSourceRuleIds:[],maxAlternatives:2})})))}catch(e){alert(e.message)}};

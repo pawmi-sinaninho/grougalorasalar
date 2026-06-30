@@ -170,7 +170,6 @@
       "path": "progress.*TrackLength",
       "ruleIds": [
         "R-022",
-        "R-023",
         "R-024"
       ],
       "effect": "ranking"

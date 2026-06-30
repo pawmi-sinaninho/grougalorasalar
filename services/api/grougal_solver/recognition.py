@@ -5,6 +5,7 @@ from typing import Any
 
 from .arena import arena_given
 from .fast_recognition import get_fast_engine
+from .spellbar import recognise_spell_bar
 from .util import deep_copy, load_json
 
 REFERENCE_SHA256 = "2756a38a4451117001dedeab2e4da14423d4aa50978bc4549c9ff0cb1340f976"
@@ -20,8 +21,8 @@ def _blank_spells() -> dict[str, dict[str, Any]]:
 def blank_given(project_root: Path) -> dict[str, Any]:
     walkable = arena_given(project_root)
     return {
-        "summary": "Manual pre-live state; automatic confirmation disabled by MODEL-001.",
-        "profileMode": "production_review_profile",
+        "summary": "Automatic solo analysis state using the verified rules profile.",
+        "profileMode": "production_verified_profile",
         "arena": walkable,
         # Keep an unresolved player unresolved. A synthetic first arena cell
         # previously leaked as a plausible-looking detection.
@@ -33,7 +34,7 @@ def blank_given(project_root: Path) -> dict[str, Any]:
             "physicalBlackCells": [],
             "physicalWhiteCells": [],
         },
-        "resources": {"actionBudget": None, "spells": _blank_spells()},
+        "resources": {"actionBudget": 12, "spells": _blank_spells()},
         "progress": {"dragon": None, "crocoburio": None},
         "flags": {
             "anchorConfirmed": False,
@@ -43,7 +44,7 @@ def blank_given(project_root: Path) -> dict[str, Any]:
             "modelCalibrationStatus": "unvalidated",
         },
         "profileOverrides": {},
-        "profileId": "review-explicit-hypothesis-0.5.0",
+        "profileId": "dofuspourlesnoobs-observed-v1.0.0",
     }
 
 
@@ -167,10 +168,25 @@ def baseline_recognition(
             _obs("glyphs", None, 0.0, "fixture_signature_not_resolved", reason="VISION-GLYPH-UNKNOWN")
         )
 
+    spell_bar = recognise_spell_bar(image_path)
+    if spell_bar:
+        state["resources"]["spells"] = deep_copy(spell_bar["spells"])
+    automatic_ready = bool(
+        result.get("matchedFixtureId") and player and state["pillars"] and glyph and spell_bar
+    )
+    state["flags"]["pillarSetComplete"] = automatic_ready
+    state["flags"]["anchorConfirmed"] = automatic_ready
+    state["flags"]["criticalFieldsConfirmed"] = automatic_ready
     observations.extend(
         [
-            _obs("resources.actionBudget", None, 0.0, "not_read_without_verified_ui_contract", reason="V-006"),
-            _obs("resources.spells", state["resources"]["spells"], 0.0, "symbols_visible_state_unverified", reason="V-002"),
+            _obs("resources.actionBudget", 12, 1.0, "authoritative_rules_profile"),
+            _obs(
+                "resources.spells",
+                state["resources"]["spells"],
+                float(spell_bar["confidence"]) if spell_bar else 0.0,
+                "calibrated_spellbar_disabled_state" if spell_bar else "spellbar_not_calibrated_for_frame",
+                reason=None if spell_bar else "V-002",
+            ),
             _obs("progress", state["progress"], 0.0, "runners_visible_index_unverified", reason="V-001"),
         ]
     )
@@ -193,8 +209,9 @@ def baseline_recognition(
             "player": deep_copy(result.get("player")),
             "pillars": deep_copy(result.get("pillars", [])),
             "glyphPattern": deep_copy(result.get("glyphPattern")),
+            "spellBar": deep_copy(spell_bar),
         },
-        "automaticCriticalConfirmation": False,
+        "automaticCriticalConfirmation": automatic_ready,
         "ocrInvoked": False,
     }
     return state, observations, recognition

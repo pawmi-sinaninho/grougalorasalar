@@ -25,6 +25,19 @@ class CapacityExceeded(RuntimeError):
     pass
 
 
+def resolve_next_charges(
+    charges_at_turn_start: int,
+    casts_this_turn: int,
+    matching_white_hits: int,
+    maximum: int = 4,
+) -> int:
+    """Normative end-of-turn charge transition."""
+    remaining = charges_at_turn_start - casts_this_turn
+    if remaining < 0:
+        raise ValueError("charges may never fall below zero during a turn")
+    return min(maximum, remaining + matching_white_hits)
+
+
 @dataclass(frozen=True)
 class ArenaSets:
     walkable: frozenset[tuple[int, int]]
@@ -109,7 +122,16 @@ class DeterministicSolver:
         movement_cost = profile["resources"]["movementActionCost"]
         current = cell_tuple(given["player"]["current"])
         spells = given["resources"]["spells"]
-        spell_values = {spell: spells[spell].get("value") for spell in SPELLS}
+        # A calibrated "available" cue proves a conservative lower bound of
+        # one cast even when the exact positive count is not visually legible.
+        spell_values = {
+            spell: (
+                spells[spell].get("value")
+                if spells[spell].get("value") is not None
+                else (1 if spells[spell].get("availability") == "available" else None)
+            )
+            for spell in SPELLS
+        }
 
         root_definite, root_conditional = self._enumerate_actions(
             current,
@@ -424,18 +446,23 @@ class DeterministicSolver:
 
             for action in candidates:
                 rules = list(resource_rules) + list(action.get("conditionalRuleIds", []))
+                action = self._apply_movement_constraints(
+                    action, source, profile, arena, pillar_by_cell
+                )
+                if action is None:
+                    continue
                 destination = cell_tuple(action["destinationCell"])
                 cell_class = arena.classification(destination)
                 if cell_class in {"blocked", "outside"}:
                     continue
-                if cell_class == "boundary":
+                if cell_class == "boundary" and not fixture_mode:
                     rules.append("ARENA-BOUNDARY")
                 elif cell_class == "occluded":
                     rules.append("ARENA-OCCLUDED")
 
-                # Phase-3 fixtures enumerate Indécision to an adjacent pillar cell.
-                # For pillar-targeted spells, destination occupancy remains profile-controlled.
-                if action["targetKind"] == "pillar" and destination in pillar_by_cell:
+                # Every spell must end on a free cell. Indécision therefore
+                # rejects adjacent pillar cells just like all other spells.
+                if destination in pillar_by_cell:
                     occupancy = profile["movement"][spell].get("destinationOccupancy", "unknown")
                     if occupancy == "invalid":
                         continue
@@ -526,7 +553,7 @@ class DeterministicSolver:
                 rules.append("R-016")
                 move_distance = 3
             target_distance = self._aligned_steps(dx, dy)
-            if target_distance is not None and target_distance < move_distance:
+            if target_distance is not None and target_distance <= move_distance:
                 behaviour = cfg.get("shortRangeBehaviour")
                 if behaviour == "unknown":
                     rules.extend(["R-016", "ATTRACTION-SHORT-RANGE"])
@@ -541,6 +568,43 @@ class DeterministicSolver:
                 destination = source[0] + move_distance * unit[0], source[1] + move_distance * unit[1]
 
         return self._make_action(spell, source, target, "pillar", destination, pillar["id"], rules)
+
+    def _apply_movement_constraints(
+        self,
+        action: dict[str, Any],
+        source: tuple[int, int],
+        profile: dict[str, Any],
+        arena: ArenaSets,
+        pillar_by_cell: dict[tuple[int, int], dict[str, Any]],
+    ) -> dict[str, Any] | None:
+        """Apply blocker and edge semantics to a generated movement action."""
+        spell = action["spell"]
+        if spell == "indecision":
+            return action
+        cfg = profile["movement"][spell]
+        destination = cell_tuple(action["destinationCell"])
+        dx, dy = destination[0] - source[0], destination[1] - source[1]
+        steps = self._aligned_steps(dx, dy)
+        unit = self._normalised_direction(dx, dy)
+        if steps is None or unit is None:
+            return None
+
+        target = cell_tuple(action["targetCell"])
+        last_free = source
+        for distance in range(1, steps + 1):
+            cell = source[0] + distance * unit[0], source[1] + distance * unit[1]
+            target_pillar_exempt = spell == "reflection" and cell == target
+            blocked = arena.classification(cell) in {"blocked", "outside"}
+            blocked = blocked or (cell in pillar_by_cell and not target_pillar_exempt)
+            if blocked:
+                if cfg.get("pathMode") == "truncate_before_blocker" or cfg.get("edgeMode") == "truncate_to_last_walkable":
+                    if last_free == source:
+                        return None
+                    action["destinationCell"] = cell_dict(last_free)
+                    return action
+                return None
+            last_free = cell
+        return action
 
     def _make_action(
         self,
@@ -575,20 +639,10 @@ class DeterministicSolver:
         fixture_mode: bool,
     ) -> dict[str, Any]:
         final = node.cell
-        start = cell_tuple(given["player"]["current"])
         glyphs = given.get("glyphs", {})
         rules: list[str] = []
         black_ids: list[str] = []
         white_ids: list[str] = []
-
-        stationary_reference = profile["resolution"].get("stationaryReference")
-        if stationary_reference == "unknown":
-            rules.append("R-046")
-        stationary = final == start
-        if stationary:
-            # The configured stationary reference is itself governed by R-046.
-            # In fixture mode this matters only when R-046 is the focus rule.
-            rules.append("R-046")
 
         physical_black = {cell_tuple(c) for c in glyphs.get("physicalBlackCells", [])}
         physical_white = {cell_tuple(c) for c in glyphs.get("physicalWhiteCells", [])}
@@ -607,14 +661,7 @@ class DeterministicSolver:
                 white_ids.append(pillar["id"])
 
         race = "unknown"
-        if stationary:
-            outcome = profile["resolution"].get("stationaryOutcome")
-            if stationary_reference == "unknown" or outcome == "unknown":
-                rules.append("R-046")
-                race = "dragon_advance"
-            else:
-                race = outcome
-        elif direct_black:
+        if direct_black:
             rules.append("R-020")
             race = profile["resolution"].get("centerBlackOutcome", "unknown")
         elif black_ids:
@@ -643,6 +690,26 @@ class DeterministicSolver:
         if any(authority.classify(rule_id, fixture_mode) != "authoritative" for rule_id in rules):
             classification = "conditional"
 
+        next_spell_state: dict[str, int | None] = {}
+        white_counts = Counter(
+            pillar_by_cell_by_id(pillar_by_cell)[pid]["spellType"] for pid in white_ids
+        )
+        for spell in SPELLS:
+            value = node.spell_values.get(spell)
+            if value is None:
+                next_spell_state[spell] = None
+                continue
+            recharge = white_counts.get(spell, 0)
+            if direct_white and profile["resources"].get("centerWhiteRecharge") == "all_spells_plus_one":
+                recharge += 1
+            maximum = profile["resources"]["maxCharges"].get(spell)
+            start_value = value + node.cast_counts.get(spell, 0)
+            next_spell_state[spell] = (
+                resolve_next_charges(start_value, node.cast_counts.get(spell, 0), recharge, maximum)
+                if maximum is not None
+                else value + recharge
+            )
+
         return {
             "sequence": [action["canonicalSignature"] for action in node.actions],
             "actions": deep_copy(node.actions),
@@ -658,6 +725,7 @@ class DeterministicSolver:
                     for pid in white_ids
                 }
             ),
+            "nextSpellState": next_spell_state,
             "directCenterEffect": "black_adverse" if direct_black else ("white_recharge" if direct_white else "none"),
             "ruleIds": unique_preserve(rules),
             "remainingBudget": node.budget,
@@ -717,7 +785,7 @@ class DeterministicSolver:
             "whitePillarIds": best["whitePillarIds"] if best else [],
             "rechargedSpells": best["rechargedSpells"] if best else [],
             "directCenterEffect": best["directCenterEffect"] if best else "unknown",
-            "nextSpellState": None,
+            "nextSpellState": best.get("nextSpellState") if best else None,
         }
         alternatives = []
         for candidate in recommendations[1:3]:

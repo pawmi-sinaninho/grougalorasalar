@@ -401,6 +401,7 @@
         "actionBudgetPerTurn",
         "movementActionCost",
         "trackingMode",
+        "initialCharges",
         "chargeCostPerCast",
         "maxCharges",
         "rechargePerMatchingPillar",
@@ -416,6 +417,9 @@
             "null"
           ],
           "minimum": 0
+        },
+        "initialCharges": {
+          "$ref": "#/$defs/spellNullableInt"
         },
         "movementActionCost": {
           "type": [

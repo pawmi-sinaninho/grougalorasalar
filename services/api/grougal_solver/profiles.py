@@ -39,7 +39,7 @@ def load_rule_statuses(project_root: Path) -> dict[str, str]:
 
 
 def load_base_profile(project_root: Path) -> dict[str, Any]:
-    return load_json(project_root / "examples" / "rules-profile.hypothesis.json")
+    return load_json(project_root / "examples" / "rules-profile.verified.json")
 
 
 def compile_profile(
@@ -55,9 +55,8 @@ def compile_profile(
     if fixture_mode:
         profile["purpose"] = "specification_test_only"
         profile["profileId"] = "specification-test-explicit-v0.7.0"
-        # The fixture state is the selected action-budget source. This avoids
-        # manufacturing a conflict with the review profile's provisional default.
-        profile["resources"]["actionBudgetPerTurn"] = action_budget
+        # Fixture states may exercise a smaller remaining budget, while the
+        # verified per-turn profile remains fixed at 12 AP.
     validate_profile(profile)
     return profile
 
@@ -67,6 +66,15 @@ def validate_profile(profile: dict[str, Any]) -> None:
     cost = resources.get("movementActionCost")
     if not isinstance(cost, int) or cost <= 0:
         raise ProfileError("movementActionCost must be a positive integer")
+    if resources.get("actionBudgetPerTurn") != 12:
+        raise ProfileError("actionBudgetPerTurn must be exactly 12")
+    for spell in ("indecision", "reflection", "repulsion", "attraction"):
+        if resources.get("initialCharges", {}).get(spell) != 2:
+            raise ProfileError(f"{spell} initialCharges must be exactly 2")
+        if resources.get("maxCharges", {}).get(spell) != 4:
+            raise ProfileError(f"{spell} maxCharges must be exactly 4")
+        if resources.get("chargeCostPerCast", {}).get(spell) != 1:
+            raise ProfileError(f"{spell} chargeCostPerCast must be exactly 1")
     for spell in ("reflection", "repulsion", "attraction"):
         item = profile.get("movement", {}).get(spell, {})
         min_range = item.get("minRange")

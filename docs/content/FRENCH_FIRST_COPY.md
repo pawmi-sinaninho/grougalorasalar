@@ -43,7 +43,7 @@ Fallback order:
 
 - review CTA: `Vérifier l’analyse`;
 - rule blocker CTA: `Règles non vérifiées`;
-- solve CTA: `Calculer le tour`;
+- automatic solve status: `Analyse automatique`;
 - solving: `Calcul déterministe en cours…`;
 - stale: `Le plateau a été modifié. Recalculez le tour.`;
 - copy: `Copier les étapes`;
