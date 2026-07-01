@@ -70,6 +70,42 @@ def test_all_four_new_real_screenshots_match_logical_player_and_pillars() -> Non
         assert result["metrics"]["totalRecognitionMs"] < 5_000
 
 
+def test_real_screenshots_use_pixel_glyph_classifier_instead_of_fixture_annotations() -> None:
+    engine = get_fast_engine(PROJECT_ROOT)
+    expected_templates = {
+        "REAL-P7-01": "inner-diagonal",
+        "REAL-P7-02": "inner-cardinal",
+        "REAL-P7-03": "outer-cardinal",
+        "REAL-P7-04": "inner-diagonal",
+    }
+    templates = {template_id: (black, white) for template_id, black, white in GLYPH_TEMPLATES}
+    for fixture in _catalog()["fixtures"]:
+        result = engine.recognise(PROJECT_ROOT / fixture["source"]["path"], source_sha256=None)
+        glyph = result["glyphPattern"]
+        template_id = expected_templates[fixture["fixtureId"]]
+        expected_black, expected_white = templates[template_id]
+        assert glyph["classifier"] == "registered_cell_appearance_then_geometry_v3"
+        assert glyph["templateId"] == template_id
+        assert {(item["x"], item["y"]) for item in glyph["confirmedBlackCells"]} == expected_black
+        assert {(item["x"], item["y"]) for item in glyph["confirmedWhiteCells"]} == expected_white
+        assert glyph["observedBlackCells"]
+        assert glyph["observedWhiteCells"]
+
+
+def test_user_supplied_glyph_appearance_profile_separates_black_and_white() -> None:
+    profile = json.loads(
+        (PROJECT_ROOT / "data" / "vision" / "glyph-appearance-reference.v1.0.0.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    white = profile["references"]["white"]
+    black = profile["references"]["black"]
+    threshold = profile["classification"]["blackWhiteValueThreshold"]
+    assert black["sha256"] == "756607c2f7161037e0de6022a034e46e576e6fbacfea844520ad748f28003b4d"
+    assert white["sha256"] == "2da2f951757993456c2a4018371a00e77ffda95fc9858be6dfa7d874bdc99434"
+    assert black["innerHsvMedian"]["v"] < threshold < white["innerHsvMedian"]["v"]
+
+
 def test_all_five_real_screenshots_enter_the_pipeline_without_pixel_data_reaching_solver_state(tmp_path: Path) -> None:
     reference = PROJECT_ROOT / "assets" / "reference" / "user_reference.png"
     state, observations, recognition = baseline_recognition(
@@ -101,9 +137,9 @@ def test_all_five_real_screenshots_enter_the_pipeline_without_pixel_data_reachin
         assert "affine" not in serialized
         assert recognition["registration"]["referenceToImageAffine"] is not None
         blockers = validate_turn_state(state)
-        assert blockers == []
-        assert state["flags"]["criticalFieldsConfirmed"] is True
-        assert recognition["automaticCriticalConfirmation"] is True
+        assert blockers
+        assert state["flags"]["criticalFieldsConfirmed"] is False
+        assert recognition["automaticCriticalConfirmation"] is False
 
 
 @pytest.mark.parametrize("size", [(1920, 1080), (2560, 1440), (3840, 2160)])
@@ -186,6 +222,27 @@ def test_glyph_template_classifier_recovers_all_four_observed_phases(
     assert {(item["x"], item["y"]) for item in result["confirmedBlackCells"]} == expected_black
     assert {(item["x"], item["y"]) for item in result["confirmedWhiteCells"]} == expected_white
     assert result["unknownCandidateCells"] == []
+
+
+def test_one_visible_black_and_white_reference_resolve_the_phase() -> None:
+    engine = get_fast_engine(PROJECT_ROOT)
+    hsv = np.zeros((engine.reference_height, engine.reference_width, 3), dtype=np.uint8)
+    hsv[:, :] = (21, 155, 205)
+    examples = (((1, -1), (20, 108, 156)), ((0, -2), (22, 109, 186)))
+    for (x, y), fill in examples:
+        centre = REFERENCE_ORIGIN + x * REFERENCE_BASIS_X + y * REFERENCE_BASIS_Y
+        cx, anchor_y = np.rint(centre).astype(int)
+        cy = int(anchor_y - 17)
+        points = np.array(
+            [[cx - 30, cy], [cx, cy - 13], [cx + 30, cy], [cx, cy + 13]],
+            dtype=np.int32,
+        )
+        cv2.fillConvexPoly(hsv, points, fill)
+    result = engine.detect_glyphs(cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR))
+    assert result is not None
+    assert result["templateId"] == "inner-diagonal"
+    assert result["completenessStatus"] == "provisional_complete"
+    assert result["classifier"] == "registered_cell_appearance_then_geometry_v3"
 
 
 def test_web_worker_protocol_exists_and_is_valid_javascript() -> None:

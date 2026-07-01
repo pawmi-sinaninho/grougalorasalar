@@ -4,7 +4,9 @@ from pathlib import Path
 
 from fastapi.testclient import TestClient
 from jsonschema import Draft202012Validator
+import cv2
 import json
+import numpy as np
 
 import grougal_solver.app as app_module
 from grougal_solver.session_store import SessionStore
@@ -163,13 +165,50 @@ def test_real_round_upload_runs_fast_registration_pipeline(tmp_path: Path) -> No
     assert envelope["recognition"]["registration"]["accepted"] is True
     assert envelope["turnState"]["player"]["current"] == {"x": 1, "y": -1}
     assert len(envelope["turnState"]["pillars"]) == 24
-    assert len(envelope["turnState"]["glyphs"]["blackOffsets"]) == 3
-    assert len(envelope["turnState"]["glyphs"]["whiteOffsets"]) == 3
+    assert len(envelope["turnState"]["glyphs"]["blackOffsets"]) == 4
+    assert len(envelope["turnState"]["glyphs"]["whiteOffsets"]) == 8
+    assert (
+        envelope["recognition"]["proposals"]["glyphPattern"]["classifier"]
+        == "registered_cell_appearance_then_geometry_v3"
+    )
     assert envelope["recognition"]["proposals"]["player"]["cell"] == {"x": 1, "y": -1}
     assert len(envelope["recognition"]["proposals"]["pillars"]) == 24
     assert envelope["performance"]["serverScreenshotToStateMs"] < 5_000
     assert envelope["recognition"]["metrics"]["ocrInvoked"] is False
     assert envelope["session"]["gate"]["status"] == "review_required"
+
+
+def test_nested_full_page_screenshot_keeps_source_resolution_for_recognition(tmp_path: Path) -> None:
+    app_module.store = SessionStore(tmp_path / "sessions")
+    client = TestClient(app_module.app)
+    created = client.post(
+        "/api/v1/analyses",
+        json={
+            "schemaVersion": "0.8.0",
+            "locale": "fr",
+            "retentionConsent": "ephemeral_only",
+            "qualityImprovementConsent": False,
+        },
+    ).json()
+    source = cv2.imread(str(PROJECT_ROOT / "packages" / "fixtures" / "real" / "phase7" / "round-01.png"))
+    nested = cv2.resize(source, (1700, 955), interpolation=cv2.INTER_AREA)
+    page = np.full((1854, 2541, 3), (9, 18, 14), dtype=np.uint8)
+    page[160 : 160 + nested.shape[0], 300 : 300 + nested.shape[1]] = nested
+    path = tmp_path / "nested-page.png"
+    cv2.imwrite(str(path), page)
+    with path.open("rb") as handle:
+        response = client.post(
+            f"/api/v1/analyses/{created['session']['analysisId']}/image",
+            headers=_headers(created["accessToken"]),
+            files={"file": (path.name, handle, "image/png")},
+            data={"expectedStateVersion": "0"},
+        )
+    assert response.status_code == 202, response.text
+    envelope = response.json()
+    assert envelope["recognition"]["registration"]["accepted"] is True
+    assert len(envelope["turnState"]["pillars"]) >= 20
+    assert len(envelope["turnState"]["glyphs"]["blackOffsets"]) == 4
+    assert len(envelope["turnState"]["glyphs"]["whiteOffsets"]) == 8
 
 
 def test_real_round_confirmed_player_flow_returns_concrete_recommendation(tmp_path: Path) -> None:

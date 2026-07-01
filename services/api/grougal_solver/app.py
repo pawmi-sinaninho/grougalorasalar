@@ -202,12 +202,15 @@ async def upload_image(
         details = normalise_image(raw, assets_dir)
         state, observations, recognition = baseline_recognition(
             PROJECT_ROOT,
-            Path(details["working"]),
+            # Registration and glyph strokes need the lossless source-sized copy.
+            # The 1280px WebP remains useful for previews, but nested screenshots
+            # can shrink the actual arena below the registration scale floor.
+            Path(details["normalised"]),
             source_sha256=details["sha256"],
             source_width=details["width"],
             source_height=details["height"],
-            working_width=details["workingWidth"],
-            working_height=details["workingHeight"],
+            working_width=details["width"],
+            working_height=details["height"],
         )
         fight = reconcile_round_start(
             document["fight"],

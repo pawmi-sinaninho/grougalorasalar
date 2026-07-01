@@ -147,6 +147,9 @@ class FastRecognitionEngine:
         self.automatic_object_cell_set = set(self.automatic_object_cells)
 
         self.fixture_catalog = load_json(project_root / "data" / "vision" / "real-screenshot-fixtures.v0.8.0.json")
+        self.glyph_appearance = load_json(
+            project_root / "data" / "vision" / "glyph-appearance-reference.v1.0.0.json"
+        )
         self._fixture_by_hash = {
             fixture["source"]["sha256"]: fixture for fixture in self.fixture_catalog["fixtures"]
         }
@@ -206,7 +209,12 @@ class FastRecognitionEngine:
                 for item in pillars
                 if (int(item["cell"]["x"]), int(item["cell"]["y"])) != player_cell
             ]
-        glyph = self.detect_glyphs(canonical)
+        occupied_cells = {
+            (int(item["cell"]["x"]), int(item["cell"]["y"])) for item in pillars
+        }
+        if player is not None:
+            occupied_cells.add((int(player["cell"]["x"]), int(player["cell"]["y"])))
+        glyph = self.detect_glyphs(canonical, occupied_cells=occupied_cells)
         sampling_ms = _ms(sampling_started)
 
         fixture_started = time.perf_counter()
@@ -215,12 +223,6 @@ class FastRecognitionEngine:
             source_sha256=source_sha256,
         )
         fixture_ms = _ms(fixture_started)
-        if fixture:
-            # Retained fixture annotations remain the regression authority for
-            # their exact/accepted signature. New screenshots use the general
-            # template classifier above.
-            glyph = fixture["logicalAnnotation"]["glyphPattern"]
-
         return {
             "status": "recognised_review_required",
             "registration": registration.public(),
@@ -242,7 +244,12 @@ class FastRecognitionEngine:
             },
         }
 
-    def detect_glyphs(self, canonical: np.ndarray) -> dict[str, Any] | None:
+    def detect_glyphs(
+        self,
+        canonical: np.ndarray,
+        *,
+        occupied_cells: set[tuple[int, int]] | None = None,
+    ) -> dict[str, Any] | None:
         """Classify the projected black/white pattern on registered logical cells.
 
         The Dofus overlay desaturates the underlying sandstone tile. Sampling is
@@ -251,6 +258,13 @@ class FastRecognitionEngine:
         Side lobes keep the signal usable when a pillar or the player covers the
         middle of a glyph cell.
         """
+        occupied_cells = occupied_cells or set()
+        policy = self.glyph_appearance["classification"]
+        saturation_max = int(policy["maximumSaturationForOverlayPixel"])
+        presence_min = float(policy["minimumOverlayFraction"])
+        dark_value_max = float(policy["blackWhiteValueThreshold"])
+        precision_min = float(policy["minimumTemplatePrecision"])
+        margin_min = float(policy["minimumTemplateMargin"])
         hsv = cv2.cvtColor(canonical, cv2.COLOR_BGR2HSV)
         samples: list[dict[str, Any]] = []
         for cell in self.automatic_object_cells:
@@ -272,8 +286,8 @@ class FastRecognitionEngine:
             side_pixels = patch[side_lobes]
             if not len(inner_pixels) or not len(side_pixels):
                 continue
-            inner_low = inner_pixels[:, 1] < 120
-            side_low = side_pixels[:, 1] < 120
+            inner_low = inner_pixels[:, 1] < saturation_max
+            side_low = side_pixels[:, 1] < saturation_max
             low_fraction = max(float(np.mean(inner_low)), float(np.mean(side_low)))
             low_pixels = np.concatenate((inner_pixels[inner_low], side_pixels[side_low]), axis=0)
             if not len(low_pixels):
@@ -288,6 +302,7 @@ class FastRecognitionEngine:
                     "lowFraction": low_fraction,
                     "medianValue": median_value,
                     "medianSaturation": median_saturation,
+                    "occupied": cell in occupied_cells,
                 }
             )
 
@@ -295,31 +310,70 @@ class FastRecognitionEngine:
         if not by_cell:
             return None
 
-        scored_templates: list[tuple[float, str, frozenset[tuple[int, int]], frozenset[tuple[int, int]], float, float]] = []
-        central_cells = {cell for cell in by_cell if max(abs(cell[0]), abs(cell[1])) <= 3}
-        for template_id, black_cells, white_cells in GLYPH_TEMPLATES:
-            glyph_cells = black_cells | white_cells
-            present = [by_cell[cell]["lowFraction"] for cell in glyph_cells if cell in by_cell]
-            absent = [by_cell[cell]["lowFraction"] for cell in central_cells - glyph_cells]
-            black_values = [by_cell[cell]["medianValue"] for cell in black_cells if cell in by_cell]
-            white_values = [by_cell[cell]["medianValue"] for cell in white_cells if cell in by_cell]
-            if not present or not black_values or not white_values:
+        visible_samples = {
+            cell: sample for cell, sample in by_cell.items() if not sample["occupied"]
+        }
+        classified: dict[tuple[int, int], tuple[str, float]] = {}
+        for cell, sample in visible_samples.items():
+            low_fraction = float(sample["lowFraction"])
+            if low_fraction < presence_min:
                 continue
-            presence = float(np.mean(np.minimum(np.array(present) / 0.58, 1.0)))
-            background = float(np.mean(np.minimum(np.array(absent) / 0.58, 1.0))) if absent else 0.0
-            colour_gap = float(np.median(white_values) - np.median(black_values))
-            colour_score = min(1.0, max(0.0, colour_gap / 45.0))
-            score = 0.62 * presence + 0.26 * colour_score + 0.12 * (1.0 - background)
-            scored_templates.append((score, template_id, black_cells, white_cells, presence, colour_gap))
+            strength = min(1.0, (low_fraction - presence_min) / max(0.01, 1.0 - presence_min) + 0.45)
+            colour = "black" if float(sample["medianValue"]) < dark_value_max else "white"
+            classified[cell] = (colour, strength)
+
+        scored_templates: list[
+            tuple[
+                float,
+                str,
+                frozenset[tuple[int, int]],
+                frozenset[tuple[int, int]],
+                float,
+                float,
+                float,
+            ]
+        ] = []
+        for template_id, black_cells, white_cells in GLYPH_TEMPLATES:
+            support = 0.0
+            conflict = 0.0
+            black_support = 0.0
+            white_support = 0.0
+            for cell, (colour, strength) in classified.items():
+                expected = "black" if cell in black_cells else ("white" if cell in white_cells else None)
+                if colour == expected:
+                    support += strength
+                    if colour == "black":
+                        black_support += strength
+                    else:
+                        white_support += strength
+                else:
+                    conflict += strength * (1.15 if expected else 0.72)
+            if black_support == 0.0 or white_support == 0.0:
+                continue
+            precision = support / max(0.001, support + conflict)
+            evidence = support + conflict
+            score = precision * min(1.0, evidence / 3.0)
+            scored_templates.append(
+                (score, template_id, black_cells, white_cells, precision, black_support, white_support)
+            )
 
         if not scored_templates:
-            return None
+            return self._partial_glyph_result(classified, by_cell, dark_value_max)
         scored_templates.sort(reverse=True, key=lambda item: item[0])
-        score, template_id, black_cells, white_cells, presence, colour_gap = scored_templates[0]
+        score, template_id, black_cells, white_cells, precision, black_support, white_support = scored_templates[0]
         second_score = scored_templates[1][0] if len(scored_templates) > 1 else 0.0
         margin = score - second_score
-        complete = presence >= 0.55 and colour_gap >= 8.0 and margin >= 0.035
-        unresolved = [] if complete else sorted(black_cells | white_cells)
+        complete = precision >= precision_min and margin >= margin_min
+        if not complete:
+            return self._partial_glyph_result(
+                classified,
+                by_cell,
+                dark_value_max,
+                template_id=template_id,
+                template_score=score,
+                template_margin=margin,
+            )
+        unresolved = sorted((black_cells | white_cells) & occupied_cells)
         key = lambda item: (item["x"] + item["y"], item["x"], item["y"])
         black = sorted((_cell_dict(cell) for cell in black_cells), key=key)
         white = sorted((_cell_dict(cell) for cell in white_cells), key=key)
@@ -328,13 +382,60 @@ class FastRecognitionEngine:
             "confirmedBlackCells": black,
             "confirmedWhiteCells": white,
             "unknownCandidateCells": [_cell_dict(cell) for cell in unresolved],
-            "completenessStatus": "provisional_complete" if complete else "review_required",
-            "classifier": "registered_cell_template_desaturation_v2",
+            "completenessStatus": "provisional_complete" if not unresolved else "review_required",
+            "classifier": "registered_cell_appearance_then_geometry_v3",
             "templateId": template_id,
-            "confidence": round(min(0.995, 0.72 + 0.18 * presence + 0.10 * min(margin / 0.12, 1.0)), 6),
+            "confidence": round(min(0.995, 0.70 + 0.20 * precision + 0.10 * min(margin / 0.20, 1.0)), 6),
             "templateScore": round(score, 6),
             "templateMargin": round(margin, 6),
-            "clusterSeparation": round(colour_gap, 3),
+            "clusterSeparation": round(dark_value_max, 3),
+            "observedBlackCells": [
+                _cell_dict(cell) for cell, item in classified.items() if item[0] == "black"
+            ],
+            "observedWhiteCells": [
+                _cell_dict(cell) for cell, item in classified.items() if item[0] == "white"
+            ],
+        }
+
+    @staticmethod
+    def _partial_glyph_result(
+        classified: dict[tuple[int, int], tuple[str, float]],
+        samples: dict[tuple[int, int], dict[str, Any]],
+        dark_value_max: float,
+        *,
+        template_id: str | None = None,
+        template_score: float = 0.0,
+        template_margin: float = 0.0,
+    ) -> dict[str, Any] | None:
+        if not classified:
+            return None
+        key = lambda item: (item["x"] + item["y"], item["x"], item["y"])
+        black = sorted(
+            (_cell_dict(cell) for cell, item in classified.items() if item[0] == "black"),
+            key=key,
+        )
+        white = sorted(
+            (_cell_dict(cell) for cell, item in classified.items() if item[0] == "white"),
+            key=key,
+        )
+        confidence = float(np.mean([item[1] for item in classified.values()]))
+        return {
+            "anchorCell": {"x": 0, "y": 0},
+            "confirmedBlackCells": black,
+            "confirmedWhiteCells": white,
+            "unknownCandidateCells": sorted(
+                (_cell_dict(cell) for cell, sample in samples.items() if sample["occupied"]),
+                key=key,
+            ),
+            "completenessStatus": "review_required",
+            "classifier": "registered_cell_appearance_v3",
+            "templateId": template_id,
+            "confidence": round(min(0.89, confidence), 6),
+            "templateScore": round(template_score, 6),
+            "templateMargin": round(template_margin, 6),
+            "clusterSeparation": round(dark_value_max, 3),
+            "observedBlackCells": black,
+            "observedWhiteCells": white,
         }
 
     def register(self, image: np.ndarray) -> RegistrationResult:

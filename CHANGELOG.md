@@ -6,8 +6,10 @@
 - Fixed the production contract at one screenshot at the start of each round; paired end frames remain training-only evidence.
 - Added stateful fight resources: round 1 starts at two charges, solver output stages next charges, and the following screenshot commits them only after player-position reconciliation.
 - Added the observed round-8 transition from `2/3/2/2` through one Attrait cast and one yellow white hit to `2/3/3/1`.
-- Replaced fixture-only glyph lookup for new screenshots with registered cell sampling and four-phase geometric template classification.
-- Verified identical complete glyph sets in each start/end pair across all eight supplied rounds.
+- Replaced fixture annotation overrides with a two-stage production classifier: user-calibrated black/white cell appearance first, four-phase geometry second.
+- Kept full-resolution normalised uploads for recognition; the lossy 1280px preview no longer makes nested arena screenshots fail registration.
+- Added real-pixel, sparse-reference and nested-page upload regressions, including one-visible-black plus one-visible-white phase recovery.
+- Verified identical complete glyph sets in each start/end pair across all eight supplied rounds and the reported 26-pillar screenshot.
 - Kept pillar completeness review-gated because three start frames still miss one strongly illuminated edge pillar compared with their training end frame.
 
 ## 1.0.0 — Verified gameplay-rule repair

@@ -2,7 +2,7 @@
   "files": [
     {
       "path": "data/rule-catalog.json",
-      "sha256": "9be5ff92a377cdd56a3455ad8ce81e10e01093c24a5409928b68b87bbe3fb1ef"
+      "sha256": "8d8da9f48c4cf7a651118fc350c3added992eb4fb13146a9abe76ac90bcabea2"
     },
     {
       "path": "data/arena/grougalorasalar.cells.json",
@@ -26,7 +26,7 @@
     },
     {
       "path": "data/solver/rule-dependency-map.v0.5.0.json",
-      "sha256": "aff929c0b900d81b61db0ac775019b235471268c47203e1257884a28ab65139a"
+      "sha256": "8bd9751a7e642cc60c7ad4de2752a979d2629f055e7d14acb7c46637acaa35af"
     },
     {
       "path": "data/solver/status-precedence.v0.5.0.json",
@@ -35,6 +35,10 @@
     {
       "path": "data/vision/recognition-policy.v0.5.0.json",
       "sha256": "78e33fa1167c408ef468750bed482a1c1a1c0eab293a9940f96f6eba5888292d"
+    },
+    {
+      "path": "data/vision/glyph-appearance-reference.v1.0.0.json",
+      "sha256": "c16678106d873074efc8b2bcaf339063b8047ef23a41324c9334430171b42fee"
     },
     {
       "path": "data/vision/real-screenshot-fixtures.v0.8.0.json",

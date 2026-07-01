@@ -172,7 +172,9 @@ def baseline_recognition(
     if spell_bar:
         state["resources"]["spells"] = deep_copy(spell_bar["spells"])
     glyph_complete = bool(glyph and glyph.get("completenessStatus") == "provisional_complete")
-    automatic_ready = bool(result.get("matchedFixtureId") and player and state["pillars"] and glyph)
+    automatic_ready = bool(
+        result.get("matchedFixtureId") and player and state["pillars"] and glyph_complete
+    )
     state["flags"]["pillarSetComplete"] = automatic_ready
     state["flags"]["anchorConfirmed"] = glyph_complete or automatic_ready
     state["flags"]["criticalFieldsConfirmed"] = automatic_ready

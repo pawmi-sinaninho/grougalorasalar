@@ -16,6 +16,7 @@ FILES = [
     "data/solver/rule-dependency-map.v0.5.0.json",
     "data/solver/status-precedence.v0.5.0.json",
     "data/vision/recognition-policy.v0.5.0.json",
+    "data/vision/glyph-appearance-reference.v1.0.0.json",
     "data/vision/real-screenshot-fixtures.v0.8.0.json",
     "schemas/real-screenshot-fixture.schema.json",
     "packages/contracts/schema-manifest.json",

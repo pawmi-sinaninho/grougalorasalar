@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "1.0.0",
+  "description": "Measured HSV appearance of user-supplied white and black central-glyph cell crops.",
+  "classification": {
+    "maximumSaturationForOverlayPixel": 120,
+    "minimumOverlayFraction": 0.52,
+    "blackWhiteValueThreshold": 171,
+    "minimumTemplatePrecision": 0.62,
+    "minimumTemplateMargin": 0.08
+  },
+  "references": {
+    "white": {
+      "sha256": "2da2f951757993456c2a4018371a00e77ffda95fc9858be6dfa7d874bdc99434",
+      "dimensions": {"width": 168, "height": 100},
+      "innerHsvMedian": {"h": 22, "s": 109, "v": 186}
+    },
+    "black": {
+      "sha256": "756607c2f7161037e0de6022a034e46e576e6fbacfea844520ad748f28003b4d",
+      "dimensions": {"width": 174, "height": 100},
+      "innerHsvMedian": {"h": 20, "s": 108, "v": 156}
+    }
+  }
+}
