@@ -20,11 +20,25 @@ export type AnalysisEnvelope = {
     ingest?: Record<string, number>;
     recognition?: Record<string, number | boolean | string>;
   };
+  fight?: {
+    round: number;
+    charges: Record<'indecision' | 'reflection' | 'repulsion' | 'attraction', number>;
+    syncStatus: string;
+    verifiedStartCell?: { x: number; y: number } | null;
+    pendingTransition?: {
+      expectedFinalCell: { x: number; y: number };
+      nextCharges: Record<'indecision' | 'reflection' | 'repulsion' | 'attraction', number>;
+    } | null;
+  };
   recommendation?: {
     status: string;
     statusReasonCodes: string[];
     actions: Array<{ order: number; instruction: string; canonicalSignature: string; spell?: string; targetPillarId?: string | null }>;
-    expected: { finalCell: { x: number; y: number } | null; raceOutcome: string };
+    expected: {
+      finalCell: { x: number; y: number } | null;
+      raceOutcome: string;
+      nextSpellState?: Record<'indecision' | 'reflection' | 'repulsion' | 'attraction', number | null> | null;
+    };
   } | null;
 };
 

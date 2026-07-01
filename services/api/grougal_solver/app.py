@@ -15,6 +15,7 @@ from .api_models import CreateAnalysisRequest, SolveRequest
 from .editor import CommandRejected, apply_command, validate_turn_state
 from .fixtures import get_fixture, load_fixture_catalog
 from .fast_recognition import get_fast_engine
+from .fight_state import reconcile_round_start, resource_state, stage_transition
 from .image_ingest import UploadRejected, normalise_image
 from .overlay import render_annotated
 from .recognition import baseline_recognition
@@ -112,6 +113,7 @@ def _envelope(document: dict[str, Any]) -> dict[str, Any]:
         "turnState": document.get("turnState"),
         "observations": document.get("observations", []),
         "recommendation": document.get("recommendation"),
+        "fight": document.get("fight"),
         "recognition": document.get("recognition"),
         "performance": document.get("performance", {}),
         "audit": document.get("audit", [])[-20:],
@@ -207,6 +209,36 @@ async def upload_image(
             working_width=details["workingWidth"],
             working_height=details["workingHeight"],
         )
+        fight = reconcile_round_start(
+            document["fight"],
+            (state.get("player") or {}).get("current"),
+        )
+        state["resources"] = resource_state(fight["charges"])
+        observations.append(
+            {
+                "observationId": f"obs_fight_resources_r{fight['round']}",
+                "fieldPath": "resources",
+                "proposedValue": state["resources"],
+                "confidence": 1.0,
+                "critical": True,
+                "decisionState": "auto_confirmed",
+                "method": "stateful_fight_transition",
+                "reasonCodes": ["FIGHT-STATE-SYNCHRONISED"],
+                "autoConfirmed": True,
+            }
+        )
+        if fight["syncStatus"] == "player_mismatch":
+            state["flags"]["criticalFieldsConfirmed"] = False
+            recognition["stateContinuity"] = {
+                "status": "player_mismatch",
+                "expected": fight["pendingTransition"]["expectedFinalCell"],
+                "detected": fight.get("detectedStartCell"),
+            }
+        else:
+            recognition["stateContinuity"] = {
+                "status": fight["syncStatus"],
+                "round": fight["round"],
+            }
         document["state"] = "board_review"
         document["assets"] = {"normalised": True, "thumbnail": True, "annotated": False}
         document["image"] = {
@@ -219,6 +251,7 @@ async def upload_image(
         document["turnState"] = state
         document["observations"] = observations
         document["recognition"] = recognition
+        document["fight"] = fight
         document["performance"] = {
             "engineeringTargets": True,
             "ingest": details["metrics"],
@@ -322,6 +355,7 @@ def solve(
         solver_ms = round((time.perf_counter() - solver_started) * 1000.0, 3)
         document.setdefault("performance", {})["solverMs"] = solver_ms
         document["recommendation"] = result
+        document["fight"] = stage_transition(document["fight"], result)
         document["recommendationInvalidated"] = False
         document["state"] = {
             "solved": "solved",

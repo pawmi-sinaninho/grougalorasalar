@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 from .editor import validate_turn_state
+from .fight_state import new_fight_state
 from .util import deep_copy, dump_json, load_json
 
 
@@ -58,6 +59,7 @@ class SessionStore:
             "assets": {},
             "observations": [],
             "turnState": None,
+            "fight": new_fight_state(),
             "history": [],
             "future": [],
             "audit": [],

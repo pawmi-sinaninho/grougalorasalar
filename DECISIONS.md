@@ -456,3 +456,23 @@ The count still reproduces structurally, but count equality does not prove posit
 ## D-095 — Position review uses local regional grid-line fits
 
 Each boundary cell records expected and plausible empty-map centres, pixel and cell distance, fit region and a `0.12`-cell outlier threshold. This metric supports review but does not replace the two-evidence authority gate.
+
+## D-102 — Live play uses one round-start screenshot
+
+The paired end frames supplied on 2026-07-01 are training and regression evidence only. Production never waits for an end-of-round screenshot: it computes the expected final position, collision result and next charges, then reconciles those expectations against the next round-start screenshot.
+
+## D-103 — Charge state is derived across a fight
+
+A new fight starts at two charges for every spell. The solver's `nextSpellState` becomes the pending next-round state. It is committed only when the following screenshot detects the player on the previously predicted final cell; mismatches keep the old charge state and block automatic progression.
+
+## D-104 — The corrected blue-use frame belongs to round 2
+
+`fight-01-round-01-1blueused.png` is an invalid historical label and must not appear in fixtures or documentation. The exact content is recorded as `fight-01-round-02-1blueused.png`, which connects round 2 start `(-2,1)` to round 3 start `(-2,2)`.
+
+## D-105 — Glyph recognition classifies four observed geometric phases
+
+The eight-round sequence repeats four complete pattern geometries: inner cardinal black with inner diagonal white; inner diagonal black with outer cardinal white; outer cardinal black with outer diagonal white; and outer diagonal black with inner cardinal white. Vision selects among these templates from registered per-cell desaturation and black/white value separation. It does not infer the phase from the round number.
+
+## D-106 — Creature mode is unsupported
+
+The supported capture profile keeps normal pillar rendering. Creature mode hides or alters the pillar evidence needed by the detector and is therefore rejected for the live workflow.

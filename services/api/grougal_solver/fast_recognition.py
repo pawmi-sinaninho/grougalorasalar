@@ -24,6 +24,21 @@ WORK_MIN_WIDTH = 960
 WORK_MAX_WIDTH = 1280
 CANONICAL_BOARD_BOTTOM = 880
 
+INNER_CARDINAL = frozenset({(-1, 0), (0, -1), (0, 1), (1, 0)})
+INNER_DIAGONAL = frozenset({(-1, -1), (-1, 1), (1, -1), (1, 1)})
+OUTER_CARDINAL = frozenset(
+    {(-3, 0), (-2, 0), (0, -3), (0, -2), (0, 2), (0, 3), (2, 0), (3, 0)}
+)
+OUTER_DIAGONAL = frozenset(
+    {(-3, -3), (-3, 3), (-2, -2), (-2, 2), (2, -2), (2, 2), (3, -3), (3, 3)}
+)
+GLYPH_TEMPLATES = (
+    ("inner-cardinal", INNER_CARDINAL, INNER_DIAGONAL),
+    ("inner-diagonal", INNER_DIAGONAL, OUTER_CARDINAL),
+    ("outer-cardinal", OUTER_CARDINAL, OUTER_DIAGONAL),
+    ("outer-diagonal", OUTER_DIAGONAL, INNER_CARDINAL),
+)
+
 
 @dataclass(frozen=True)
 class RegistrationResult:
@@ -191,6 +206,7 @@ class FastRecognitionEngine:
                 for item in pillars
                 if (int(item["cell"]["x"]), int(item["cell"]["y"])) != player_cell
             ]
+        glyph = self.detect_glyphs(canonical)
         sampling_ms = _ms(sampling_started)
 
         fixture_started = time.perf_counter()
@@ -199,7 +215,11 @@ class FastRecognitionEngine:
             source_sha256=source_sha256,
         )
         fixture_ms = _ms(fixture_started)
-        glyph = fixture["logicalAnnotation"]["glyphPattern"] if fixture else None
+        if fixture:
+            # Retained fixture annotations remain the regression authority for
+            # their exact/accepted signature. New screenshots use the general
+            # template classifier above.
+            glyph = fixture["logicalAnnotation"]["glyphPattern"]
 
         return {
             "status": "recognised_review_required",
@@ -220,6 +240,101 @@ class FastRecognitionEngine:
                 "ocrInvoked": False,
                 "templatesReloaded": False,
             },
+        }
+
+    def detect_glyphs(self, canonical: np.ndarray) -> dict[str, Any] | None:
+        """Classify the projected black/white pattern on registered logical cells.
+
+        The Dofus overlay desaturates the underlying sandstone tile. Sampling is
+        intentionally cell-local and shifted to the visual centre of the
+        isometric diamond; the logical anchor itself lies near its lower tip.
+        Side lobes keep the signal usable when a pillar or the player covers the
+        middle of a glyph cell.
+        """
+        hsv = cv2.cvtColor(canonical, cv2.COLOR_BGR2HSV)
+        samples: list[dict[str, Any]] = []
+        for cell in self.automatic_object_cells:
+            # The physical reference pattern is contained in the seven-by-seven
+            # logical centre window in every retained and observed round.
+            if max(abs(cell[0]), abs(cell[1])) > 3:
+                continue
+            centre = REFERENCE_ORIGIN + cell[0] * REFERENCE_BASIS_X + cell[1] * REFERENCE_BASIS_Y
+            cx, anchor_y = np.rint(centre).astype(int)
+            cy = int(anchor_y - 17)
+            if cx - 30 < 0 or cx + 31 > hsv.shape[1] or cy - 13 < 0 or cy + 14 > hsv.shape[0]:
+                continue
+            patch = hsv[cy - 13 : cy + 14, cx - 30 : cx + 31]
+            yy, xx = np.mgrid[-13:14, -30:31]
+            radius = np.abs(xx) / 30.0 + np.abs(yy) / 13.0
+            inner = radius <= 0.74
+            side_lobes = (radius <= 0.92) & (np.abs(xx) >= 14)
+            inner_pixels = patch[inner]
+            side_pixels = patch[side_lobes]
+            if not len(inner_pixels) or not len(side_pixels):
+                continue
+            inner_low = inner_pixels[:, 1] < 120
+            side_low = side_pixels[:, 1] < 120
+            low_fraction = max(float(np.mean(inner_low)), float(np.mean(side_low)))
+            low_pixels = np.concatenate((inner_pixels[inner_low], side_pixels[side_low]), axis=0)
+            if not len(low_pixels):
+                median_value = 255.0
+                median_saturation = 255.0
+            else:
+                median_value = float(np.median(low_pixels[:, 2]))
+                median_saturation = float(np.median(low_pixels[:, 1]))
+            samples.append(
+                {
+                    "cell": cell,
+                    "lowFraction": low_fraction,
+                    "medianValue": median_value,
+                    "medianSaturation": median_saturation,
+                }
+            )
+
+        by_cell = {item["cell"]: item for item in samples}
+        if not by_cell:
+            return None
+
+        scored_templates: list[tuple[float, str, frozenset[tuple[int, int]], frozenset[tuple[int, int]], float, float]] = []
+        central_cells = {cell for cell in by_cell if max(abs(cell[0]), abs(cell[1])) <= 3}
+        for template_id, black_cells, white_cells in GLYPH_TEMPLATES:
+            glyph_cells = black_cells | white_cells
+            present = [by_cell[cell]["lowFraction"] for cell in glyph_cells if cell in by_cell]
+            absent = [by_cell[cell]["lowFraction"] for cell in central_cells - glyph_cells]
+            black_values = [by_cell[cell]["medianValue"] for cell in black_cells if cell in by_cell]
+            white_values = [by_cell[cell]["medianValue"] for cell in white_cells if cell in by_cell]
+            if not present or not black_values or not white_values:
+                continue
+            presence = float(np.mean(np.minimum(np.array(present) / 0.58, 1.0)))
+            background = float(np.mean(np.minimum(np.array(absent) / 0.58, 1.0))) if absent else 0.0
+            colour_gap = float(np.median(white_values) - np.median(black_values))
+            colour_score = min(1.0, max(0.0, colour_gap / 45.0))
+            score = 0.62 * presence + 0.26 * colour_score + 0.12 * (1.0 - background)
+            scored_templates.append((score, template_id, black_cells, white_cells, presence, colour_gap))
+
+        if not scored_templates:
+            return None
+        scored_templates.sort(reverse=True, key=lambda item: item[0])
+        score, template_id, black_cells, white_cells, presence, colour_gap = scored_templates[0]
+        second_score = scored_templates[1][0] if len(scored_templates) > 1 else 0.0
+        margin = score - second_score
+        complete = presence >= 0.55 and colour_gap >= 8.0 and margin >= 0.035
+        unresolved = [] if complete else sorted(black_cells | white_cells)
+        key = lambda item: (item["x"] + item["y"], item["x"], item["y"])
+        black = sorted((_cell_dict(cell) for cell in black_cells), key=key)
+        white = sorted((_cell_dict(cell) for cell in white_cells), key=key)
+        return {
+            "anchorCell": {"x": 0, "y": 0},
+            "confirmedBlackCells": black,
+            "confirmedWhiteCells": white,
+            "unknownCandidateCells": [_cell_dict(cell) for cell in unresolved],
+            "completenessStatus": "provisional_complete" if complete else "review_required",
+            "classifier": "registered_cell_template_desaturation_v2",
+            "templateId": template_id,
+            "confidence": round(min(0.995, 0.72 + 0.18 * presence + 0.10 * min(margin / 0.12, 1.0)), 6),
+            "templateScore": round(score, 6),
+            "templateMargin": round(margin, 6),
+            "clusterSeparation": round(colour_gap, 3),
         }
 
     def register(self, image: np.ndarray) -> RegistrationResult:
@@ -605,6 +720,10 @@ def _point(value: tuple[float, float] | None) -> dict[str, float] | None:
     if value is None:
         return None
     return {"x": round(value[0], 6), "y": round(value[1], 6)}
+
+
+def _cell_dict(value: tuple[int, int]) -> dict[str, int]:
+    return {"x": int(value[0]), "y": int(value[1])}
 
 
 def _ms(started: float) -> float:

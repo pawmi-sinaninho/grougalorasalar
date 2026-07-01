@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 1.0.1 — Stateful fight and glyph stabilisation
+
+- Corrected the mislabeled blue-use training frame from round 1 to round 2 and recorded the eight-round sequence with original hashes, dimensions, casts and player continuity.
+- Fixed the production contract at one screenshot at the start of each round; paired end frames remain training-only evidence.
+- Added stateful fight resources: round 1 starts at two charges, solver output stages next charges, and the following screenshot commits them only after player-position reconciliation.
+- Added the observed round-8 transition from `2/3/2/2` through one Attrait cast and one yellow white hit to `2/3/3/1`.
+- Replaced fixture-only glyph lookup for new screenshots with registered cell sampling and four-phase geometric template classification.
+- Verified identical complete glyph sets in each start/end pair across all eight supplied rounds.
+- Kept pillar completeness review-gated because three start frames still miss one strongly illuminated edge pillar compared with their training end frame.
+
 ## 1.0.0 — Verified gameplay-rule repair
 
 - Replaced the hypothesis profile with the binding DofusPourLesNoobs/observed profile: 12 AP, 1 AP/cast, 2 initial charges, maximum 4 and immediate 1-charge cost.

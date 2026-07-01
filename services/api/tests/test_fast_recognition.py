@@ -12,7 +12,13 @@ import numpy as np
 import pytest
 
 from grougal_solver.editor import validate_turn_state
-from grougal_solver.fast_recognition import get_fast_engine
+from grougal_solver.fast_recognition import (
+    GLYPH_TEMPLATES,
+    REFERENCE_BASIS_X,
+    REFERENCE_BASIS_Y,
+    REFERENCE_ORIGIN,
+    get_fast_engine,
+)
 from grougal_solver.recognition import REFERENCE_SHA256, baseline_recognition
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
@@ -150,6 +156,36 @@ def test_non_arena_uses_manual_fallback_and_cannot_emit_safe_recommendation(tmp_
     assert result["player"] is None
     assert result["pillars"] == []
     assert result["metrics"]["ocrInvoked"] is False
+
+
+@pytest.mark.parametrize(("template_id", "expected_black", "expected_white"), GLYPH_TEMPLATES)
+def test_glyph_template_classifier_recovers_all_four_observed_phases(
+    template_id: str,
+    expected_black: frozenset[tuple[int, int]],
+    expected_white: frozenset[tuple[int, int]],
+) -> None:
+    engine = get_fast_engine(PROJECT_ROOT)
+    hsv = np.zeros((engine.reference_height, engine.reference_width, 3), dtype=np.uint8)
+    hsv[:, :] = (21, 155, 205)
+    for colour, cells in (("black", expected_black), ("white", expected_white)):
+        fill = (20, 96, 138) if colour == "black" else (22, 104, 205)
+        for x, y in cells:
+            centre = REFERENCE_ORIGIN + x * REFERENCE_BASIS_X + y * REFERENCE_BASIS_Y
+            cx, anchor_y = np.rint(centre).astype(int)
+            cy = int(anchor_y - 17)
+            points = np.array(
+                [[cx - 30, cy], [cx, cy - 13], [cx + 30, cy], [cx, cy + 13]],
+                dtype=np.int32,
+            )
+            cv2.fillConvexPoly(hsv, points, fill)
+    canonical = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
+    result = engine.detect_glyphs(canonical)
+    assert result is not None
+    assert result["templateId"] == template_id
+    assert result["completenessStatus"] == "provisional_complete"
+    assert {(item["x"], item["y"]) for item in result["confirmedBlackCells"]} == expected_black
+    assert {(item["x"], item["y"]) for item in result["confirmedWhiteCells"]} == expected_white
+    assert result["unknownCandidateCells"] == []
 
 
 def test_web_worker_protocol_exists_and_is_valid_javascript() -> None:

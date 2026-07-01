@@ -96,6 +96,7 @@ export default function Home() {
   const lastAutoSolvedVersion = useRef<number | null>(null);
 
   const turn = (data?.turnState ?? {}) as TurnState;
+  const fight = data?.fight;
   const recognition = (data?.recognition ?? {}) as Recognition;
   const registration = recognition.registration;
   const pillars = turn.pillars ?? [];
@@ -154,17 +155,34 @@ export default function Home() {
 
   async function begin(file: File) {
     startedAt.current = performance.now();
-    setElapsedMs(0); setBusy(true); setError(''); setData(null); setCorrectionMode(null); setPillarOverlayReviewed(false);
+    const continuingFight = Boolean(data && token && data.recommendation);
+    setElapsedMs(0); setBusy(true); setError(''); setCorrectionMode(null); setPillarOverlayReviewed(false);
+    if (!continuingFight) setData(null);
     if (imageUrl.startsWith('blob:')) URL.revokeObjectURL(imageUrl);
     setImageUrl(URL.createObjectURL(file));
     setProgress({ stage: 'preview_ready', elapsedMs: 0 });
     startLocalWorker(file);
     try {
-      const created = await createAnalysis('fr');
-      setToken(created.accessToken);
-      setProgress({ stage: 'session_created', elapsedMs: performance.now() - (startedAt.current ?? performance.now()) });
-      const uploaded = await uploadImage(created.session.analysisId, created.accessToken, created.session.stateVersion, file);
+      let analysisId: string;
+      let accessToken: string;
+      let stateVersion: number;
+      if (continuingFight && data) {
+        analysisId = data.session.analysisId;
+        accessToken = token;
+        stateVersion = data.session.stateVersion;
+      } else {
+        const created = await createAnalysis('fr');
+        analysisId = created.session.analysisId;
+        accessToken = created.accessToken;
+        stateVersion = created.session.stateVersion;
+        setToken(created.accessToken);
+        setProgress({ stage: 'session_created', elapsedMs: performance.now() - (startedAt.current ?? performance.now()) });
+      }
+      const uploaded = await uploadImage(analysisId, accessToken, stateVersion, file);
       setData(uploaded);
+      if (uploaded.fight?.syncStatus === 'player_mismatch') {
+        setError('La position du joueur ne correspond pas à la fin calculée du tour précédent. Le combat n’a pas été avancé.');
+      }
       setProgress({ stage: 'recognition_complete', elapsedMs: performance.now() - (startedAt.current ?? performance.now()) });
     } catch {
       setError('La capture n’a pas pu être analysée. Réessayez avec une capture complète du combat.');
@@ -218,6 +236,7 @@ export default function Home() {
         <p className="eyebrow">ASSISTANT DE TOUR · VERSION 0.9.0</p>
         <h1>Grougalorasalar Solver</h1>
         <p>Copiez votre capture de combat puis collez-la ici avec Ctrl+V. La détection et le calcul démarrent automatiquement.</p>
+        {fight && <p>Tour {fight.round} · Charges suivies automatiquement : bleu {fight.charges.indecision}, vert {fight.charges.reflection}, jaune {fight.charges.repulsion}, rouge {fight.charges.attraction}.</p>}
       </header>
 
       {!imageUrl && <section className="upload"><h2>Collez la capture avec Ctrl+V</h2><p>Aucune saisie manuelle n’est nécessaire.</p><button className="debug-toggle" aria-pressed={debug} onClick={() => setDebug(value => !value)}>Debug</button>{debug && <label>Fixture locale<input aria-label="Capture du combat (debug)" type="file" accept="image/png,image/jpeg,image/webp" disabled={busy} onChange={event => event.target.files?.[0] && begin(event.target.files[0])} /></label>}</section>}
@@ -251,7 +270,7 @@ export default function Home() {
           {correctionMode && <p className="click-hint">Cliquez directement sur la bonne case de la capture.</p>}
         </section>
 
-        {data && !debug && <aside><div className="aside-heading"><div><p className="step">AUTOMATIQUE</p><h2>{ready ? 'Calcul du tour en cours' : 'Analyse de la capture'}</h2></div><button className="debug-toggle" aria-pressed={debug} onClick={() => setDebug(true)}>Debug</button></div><p>Les piliers, le motif, les 12 PA et l’état des sorts sont traités sans confirmation manuelle.</p></aside>}
+        {data && !debug && <aside><div className="aside-heading"><div><p className="step">AUTOMATIQUE · TOUR {fight?.round ?? 1}</p><h2>{ready ? 'Calcul du tour en cours' : 'Analyse de la capture'}</h2></div><button className="debug-toggle" aria-pressed={debug} onClick={() => setDebug(true)}>Debug</button></div><p>Collez uniquement une capture au début de chaque tour. Les charges sont reprises du résultat calculé au tour précédent.</p></aside>}
 
         {data && debug && <aside>
           <div className="aside-heading"><div><p className="step">VÉRIFICATION</p><h2>Ce qu’il reste à faire</h2></div><button className="debug-toggle" aria-pressed={debug} onClick={() => setDebug(value => !value)}>Debug</button></div>

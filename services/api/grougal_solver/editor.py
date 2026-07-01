@@ -127,6 +127,9 @@ def apply_command(document: dict[str, Any], command: dict[str, Any]) -> dict[str
     ]
     document["recommendation"] = None
     document["recommendationInvalidated"] = True
+    if document.get("fight"):
+        document["fight"]["pendingTransition"] = None
+        document["fight"]["syncStatus"] = "synchronised"
     return document
 
 

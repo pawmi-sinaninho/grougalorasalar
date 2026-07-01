@@ -137,21 +137,21 @@ def baseline_recognition(
             "physicalWhiteCells": white_cells,
         }
         completeness = glyph.get("completenessStatus", "unknown")
-        confidence = 0.92 if completeness == "provisional_complete" else 0.69
+        confidence = float(glyph.get("confidence") or (0.92 if completeness == "provisional_complete" else 0.69))
         observations.extend(
             [
                 _obs(
                     "glyphs.blackOffsets",
                     state["glyphs"]["blackOffsets"],
                     confidence,
-                    "registered_fixture_signature_annotation",
+                    str(glyph.get("classifier") or "registered_fixture_signature_annotation"),
                     reason="FAST-PATH-GLYPH-PROPOSAL",
                 ),
                 _obs(
                     "glyphs.whiteOffsets",
                     state["glyphs"]["whiteOffsets"],
                     confidence if white_cells else 0.0,
-                    "registered_fixture_signature_annotation",
+                    str(glyph.get("classifier") or "registered_fixture_signature_annotation"),
                     reason="FAST-PATH-GLYPH-PROPOSAL" if white_cells else "VISION-GLYPH-UNKNOWN",
                 ),
                 _obs(
@@ -171,11 +171,10 @@ def baseline_recognition(
     spell_bar = recognise_spell_bar(image_path)
     if spell_bar:
         state["resources"]["spells"] = deep_copy(spell_bar["spells"])
-    automatic_ready = bool(
-        result.get("matchedFixtureId") and player and state["pillars"] and glyph and spell_bar
-    )
+    glyph_complete = bool(glyph and glyph.get("completenessStatus") == "provisional_complete")
+    automatic_ready = bool(result.get("matchedFixtureId") and player and state["pillars"] and glyph)
     state["flags"]["pillarSetComplete"] = automatic_ready
-    state["flags"]["anchorConfirmed"] = automatic_ready
+    state["flags"]["anchorConfirmed"] = glyph_complete or automatic_ready
     state["flags"]["criticalFieldsConfirmed"] = automatic_ready
     observations.extend(
         [

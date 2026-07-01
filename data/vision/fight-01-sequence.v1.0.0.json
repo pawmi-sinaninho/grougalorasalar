@@ -1,0 +1,81 @@
+{
+  "schemaVersion": "1.0.0",
+  "sequenceId": "fight-01-observed-2026-07-01",
+  "purpose": "Training and regression evidence only. Production accepts one screenshot at the start of each round.",
+  "captureProfile": {
+    "nominalDisplay": {"width": 3840, "height": 2160},
+    "dofusMode": "fullscreen",
+    "zoom": "none",
+    "creatureMode": false,
+    "uiVisible": true,
+    "acceptedRasterVariance": "The supplied Windows captures are 3839x2159 except round 02 start at 3835x2159. Registration must be geometric, not exact-size gated."
+  },
+  "liveContract": {
+    "screenshotsPerRound": 1,
+    "captureMoment": "start_of_round",
+    "endFrameRequired": false,
+    "chargesDerivedFromPreviousRecommendation": true,
+    "nextRoundPlayerMustMatchPreviousExpectedFinalCell": true
+  },
+  "initialCharges": {
+    "indecision": 2,
+    "reflection": 2,
+    "repulsion": 2,
+    "attraction": 2
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "start": {"file": "fight-01-round-01.png", "sha256": "40f594a1b3df77e4b090b1a43231f54e8d0f520a9bb51fe224c5899b8d287858", "bytes": 9027821, "width": 3839, "height": 2159, "player": {"x": 0, "y": 0}},
+      "trainingEnd": {"file": "fight-01-round-01-1blueused-1redused.png", "sha256": "1375e7108d874811b75ffe2431058bc17e2ef6e1a85888dd0c7afd6d4682a7cf", "bytes": 9041251, "width": 3839, "height": 2159, "player": {"x": -2, "y": 1}},
+      "casts": ["indecision", "attraction"]
+    },
+    {
+      "round": 2,
+      "start": {"file": "fight-01-round-02.png", "sha256": "c6c3322659f032a1a1220db6e1292fbb75c05423d55e49c0b25c5b5eb61896a9", "bytes": 8969597, "width": 3835, "height": 2159, "player": {"x": -2, "y": 1}},
+      "trainingEnd": {"file": "fight-01-round-02-1blueused.png", "sha256": "f16c94aa478585e7e0afbdf396c342bc415708109d59bcaeace93d4653890620", "bytes": 9025184, "width": 3839, "height": 2159, "player": {"x": -2, "y": 2}},
+      "casts": ["indecision"],
+      "correction": "This end frame was originally mislabelled as round 01 and was corrected by the user on 2026-07-01."
+    },
+    {
+      "round": 3,
+      "start": {"file": "fight-01-round-03.png", "sha256": "774e5bb7e4eeccbaef2a86d8cda58263a05668e43e5b07d1edbbb46360367dbc", "bytes": 9051877, "width": 3839, "height": 2159, "player": {"x": -2, "y": 2}},
+      "trainingEnd": {"file": "fight-01-round-03-1redused.png", "sha256": "76b30effb39c9a9e453ba17cf9ce97878365f46a3e3b66788cb2a7e26ca77394", "bytes": 9091817, "width": 3839, "height": 2159, "player": {"x": -2, "y": -1}},
+      "casts": ["attraction"]
+    },
+    {
+      "round": 4,
+      "start": {"file": "fight-01-round-04.png", "sha256": "0d4a53460a93211c58b2e8526b1c3d210c29124a5310d02faba8df51ca4fd1e5", "bytes": 9104312, "width": 3839, "height": 2159, "player": {"x": -2, "y": -1}},
+      "trainingEnd": {"file": "fight-01-round-04-1blueused.png", "sha256": "d9cec9fee0950b32f9b03d559213b2a0aaf4478238fce73cc59b664c2a1344a5", "bytes": 9017700, "width": 3839, "height": 2159, "player": {"x": -1, "y": -1}},
+      "casts": ["indecision"]
+    },
+    {
+      "round": 5,
+      "start": {"file": "fight-01-round-05.png", "sha256": "cec2587806a3f29287b49d5f76d0ae8c962221f9a4eccb2f4b0fc2cffcb50ccb", "bytes": 8986121, "width": 3839, "height": 2159, "player": {"x": -1, "y": -1}},
+      "trainingEnd": {"file": "fight-01-round-05-1blueused.png", "sha256": "a7369413ca1c67433777c8397ac6bba81cb2d95adf9a2a75ef583783fc26e956", "bytes": 9058329, "width": 3839, "height": 2159, "player": {"x": 0, "y": -1}},
+      "casts": ["indecision"]
+    },
+    {
+      "round": 6,
+      "start": {"file": "fight-01-round-06.png", "sha256": "fbd9714bb2f7269ff882bed83c7a2efd4c15b39b2db480ea503b041214ecc04b", "bytes": 9051307, "width": 3839, "height": 2159, "player": {"x": 0, "y": -1}},
+      "trainingEnd": {"file": "fight-01-round-06-1redused.png", "sha256": "c0eb856ad55541a0e728bf737a9b2901c13594f446e24c8b9ad2e9ae1d60cf7c", "bytes": 9068867, "width": 3839, "height": 2159, "player": {"x": 0, "y": 1}},
+      "casts": ["attraction"]
+    },
+    {
+      "round": 7,
+      "start": {"file": "fight-01-round-07.png", "sha256": "4474ffc0f58ee31cc922bcacd3c8062c35bc920f67c4e33dd796984cc67cae43", "bytes": 8975549, "width": 3839, "height": 2159, "player": {"x": 0, "y": 1}},
+      "trainingEnd": {"file": "fight-01-round-07-1yellowused.png", "sha256": "e738e446a6c3af78538f2787e697d04267468b61939e8bf21e1705e1b232db02", "bytes": 9023579, "width": 3839, "height": 2159, "player": {"x": -2, "y": 3}},
+      "casts": ["repulsion"]
+    },
+    {
+      "round": 8,
+      "start": {"file": "fight-01-round-08.png", "sha256": "77c929465c9f59a5da66e80563833bc585c03da0908809f8dd7a22612fefd919", "bytes": 9106438, "width": 3839, "height": 2159, "player": {"x": -2, "y": 3}},
+      "trainingEnd": {"file": "fight-01-round-08-1redused.png", "sha256": "432033580c15535c9fbb2462d5c975c60cefdc4aef6868848d73f8a04c7c6750", "bytes": 9088894, "width": 3839, "height": 2159, "player": {"x": 1, "y": 3}},
+      "casts": ["attraction"],
+      "chargesAtStart": {"indecision": 2, "reflection": 3, "repulsion": 2, "attraction": 2},
+      "observedMatchingWhiteHits": {"repulsion": 1},
+      "chargesAtNextRound": {"indecision": 2, "reflection": 3, "repulsion": 3, "attraction": 1}
+    }
+  ],
+  "continuity": "For rounds 1 through 7, every trainingEnd.player equals the following round start.player."
+}

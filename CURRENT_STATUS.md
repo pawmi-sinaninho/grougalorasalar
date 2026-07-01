@@ -1,9 +1,19 @@
 # CURRENT STATUS
 
 **Version:** 1.0.0
-**Date:** 2026-06-30  
+**Date:** 2026-07-01
 **Phase:** Release-blocker repair and player workflow  
-**Status:** VERIFIED RULE-PROFILE REPAIR IN VALIDATION
+**Status:** STATEFUL ROUND FLOW AND GLYPH STABILISATION IN VALIDATION
+
+## 2026-07-01 fight-sequence update
+
+- The corrected evidence set contains eight round-start and eight training-only round-end frames from one continuous fight. The former `fight-01-round-01-1blueused.png` label is rejected; its content is correctly owned by `fight-01-round-02-1blueused.png`.
+- Production accepts exactly one screenshot at the start of each round. End frames are regression evidence only and are never required from a live user.
+- All 16 supplied frames register successfully and resolve a player cell. Every training end cell from rounds 1-7 equals the following round's detected start cell.
+- The observed central pattern has four geometric phases: inner-cardinal, inner-diagonal, outer-cardinal and outer-diagonal. Registered cell desaturation plus template scoring resolves the same complete black/white phase in both frames of all eight rounds.
+- Fight sessions start every spell at two charges, stage the solver's expected final cell and next charges, and commit the next round only when the next screenshot's player cell matches. A mismatch preserves the prior state and blocks silent advancement.
+- Round 8 regression is fixed at start charges `2/3/2/2`, one Attrait cast, one matching yellow/Repulsion white hit and next charges `2/3/3/1`.
+- Remaining live risk is pillar-set completeness under strong moving light at the far arena edge. The current component detector differs by one edge pillar in three of eight start/end pairs; this remains review-gated rather than silently auto-confirmed.
 
 ## Player workflow
 
