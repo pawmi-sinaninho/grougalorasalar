@@ -1,4 +1,8 @@
-# Known Limitations — v0.8.0
+# Known Limitations — historical baseline plus v1.0.0 update
+
+## v1.0.0 zero-input update
+
+The standard route is now zero-input for all four retained real starts, with exact retained player/pillar/black/white sets and a concrete provisional recommendation. This does not remove the locked-corpus, independent-session, boundary, negative-corpus, or operations limits below. Only four requested starts exist, and the original individual glyph PNG bytes are absent. See the root `KNOWN_LIMITATIONS.md` and `VALIDATION/zero-input-release-report.md` for current numbers.
 
 ## Release blockers for authoritative solving
 

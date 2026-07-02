@@ -1,7 +1,14 @@
-# DEFECT BACKLOG — v0.9.0
+# DEFECT BACKLOG — v1.0.0
 
 | ID | Status | Severity | Area | Defect / gap | Acceptance evidence |
 |---|---|---|---|---|---|
+| ZI-001 | Resolved v1.0.0 | Blocker | Flow | Fixture identity gated solver readiness | `matchedFixtureId = null` regression remains solver-ready |
+| ZI-002 | Resolved v1.0.0 | Blocker | UX | Standard flow required review/solve controls | Clipboard E2E with zero controls and concrete action overlay |
+| ZI-003 | Resolved v1.0.0 | High | Vision | Glyph classifier relied on saturation/value before phase matching | Exact-set tests plus neutral/structural multi-feature audit output |
+| ZI-004 | Partially resolved v1.0.0 | High | Vision | Pillar completeness had no independent path | Per-cell neutral structure scan exists; independent multi-session calibration remains open |
+| ZI-005 | Open | Blocker | Evidence | Only four of eight requested starts and no original individual glyph PNG bytes are present | Add missing bytes with hashes and adjudicated annotations |
+| ZI-006 | Open | Blocker | E2E | No recommendation-following full-fight capture exists | Fresh full fight follows every displayed recommendation with continuity/charge proof |
+| ZI-007 | Open | High | Validation | Retained starts belong to one session | Locked 150-image/15-session report with zero critical false-safe cases |
 | P7-001 | Open | Blocker | Gameplay | Resolve V-001–V-010 with current-version recordings | Adjudicated observations and promoted rule authorities |
 | P7-002 | Partially resolved | Blocker | Vision | Fast baseline exists; locked-corpus generalisation remains absent | 150 screenshots, 15 sessions, field metrics, zero critical false-safe results |
 | P7-003 | Partially resolved v0.9.0 | High | UX | Player and glyph correction are direct-click; full pillar add/move/delete correction remains incomplete | Browser E2E for remaining pillar correction operations |

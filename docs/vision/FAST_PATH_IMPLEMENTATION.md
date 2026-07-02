@@ -1,5 +1,7 @@
 # Fast Recognition Path — v0.8.0
 
+> v1.0.0 update: the lossless upload now continues through solving in the same API mutation. Glyphs use neutral-background and structural multi-feature phase scoring; pillar components receive an independent per-cell completeness scan. Fixture identity is diagnostic only. Current timings are in `VALIDATION/zero-input-release-report.json`.
+
 ## Scope
 
 This implementation handles the fixed Grougalorasalar arena using deterministic image registration and logical-cell sampling. It is a baseline detector, not an accuracy certification. Every critical output remains `review_required` while `modelCalibrationStatus = unvalidated`.

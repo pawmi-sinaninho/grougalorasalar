@@ -1,5 +1,37 @@
 # DECISIONS
 
+## D-110 — Product readiness is independent of fixture identity
+
+Fixture hashes may label regression evidence but may not set solver readiness, choose glyphs, or grant production tactical authority.
+
+## D-109 — Berechenbarkeit and visual validation are separate
+
+`solverInputComplete` permits deterministic evaluation. `recognitionValidated` controls `solved`; otherwise a tactically invariant concrete result is `provisional_solution`.
+
+## D-108 — Ambiguity is tested tactically
+
+At most one alternate glyph phase is solved. Equal tactical signatures remain provisional; divergent signatures become `ambiguous_input` and suppress the definitive action list.
+
+## D-107 — Upload is the normal turn orchestration boundary
+
+The upload operation performs recognition, solving, transition staging, and overlay rendering in one mutation/response. The separate solve endpoint remains for Debug/backward compatibility.
+
+## D-106 — Numeric fight resources require no player input
+
+Each fight starts at 12 AP and two charges per spell, caps at four, and advances to the prior recommendation's `nextSpellState` only after player-position continuity succeeds.
+
+## D-105 — Standard UI is not an editor
+
+`/` contains paste, analysis feedback, numbered actions, outcome, and new-fight recovery. Manual controls and technical metadata are restricted to `/?debug=1`.
+
+## D-104 — Structural glyph evidence is multi-source
+
+Glyph phase scoring combines same-cell neutral background, LAB/lightness/saturation, gradients, cached reference-image patches, visibility, and global geometry. A value threshold is only one weak vote.
+
+## D-103 — Production dominance pruning is exact
+
+At one cell, a state with at least as much AP and every charge dominates a lower-resource state because terminal collision is position-only and recharge is monotonic. The production path prunes only those states; full diagnostic enumeration remains the fixture/property oracle.
+
 ## D-096 — The Web build is lockfile-only
 
 Node 24.17.0 is fixed by image digest and npm 11.18.0 is asserted before `npm ci`. `npm install` is not a release build step.

@@ -1,6 +1,14 @@
-# Grougalorasalar Solver — v0.9.0
+# Grougalorasalar Solver — v1.0.0
 
-French-first screenshot review and deterministic turn solver for the fixed Grougalorasalar arena.
+French-first, deterministic screenshot-to-turn assistant for the fixed Grougalorasalar arena.
+
+## End-user flow
+
+1. Open `http://localhost:3000`.
+2. Paste a complete screenshot from the start of the round with `Ctrl+V`.
+3. Wait for the numbered recommendation, execute it, finish the round, and paste the next screenshot.
+
+The standard route asks for no AP, charge, pillar, glyph, confirmation, or solve-button input. It shows numbered target markers, movement, final cell, black/white hits, progression, and next-round charges. Diagnostic controls exist only at `/?debug=1`.
 
 ## Start
 
@@ -10,40 +18,27 @@ Requirements: Docker Desktop with the Docker Engine running.
 docker compose up --build
 ```
 
-Open [http://localhost:3000](http://localhost:3000). API readiness is available at [http://localhost:8000/api/v1/health/ready](http://localhost:8000/api/v1/health/ready).
+API readiness: `http://localhost:8000/api/v1/health/ready`. Stop with `docker compose down`.
 
-No dependency installation or source-file editing is required for this start path. Stop with `docker compose down`.
-
-## Player workflow
-
-1. Upload a complete combat screenshot.
-2. Inspect the player, pillar, and central-pattern overlays.
-3. Correct the player or pattern by clicking the screenshot if needed.
-4. Review the complete pillar list.
-5. Select action budget and the four spell states.
-6. Confirm the detected state and calculate the turn.
-
-Developer codes are hidden in normal mode and available only through Debug.
-
-## Automated tests
+## Tests
 
 ```bash
-docker run --rm grougadofus-api:latest python -m pytest -q
+python -m pytest -q
 cd apps/web
 npm ci --ignore-scripts
-npx playwright install chromium
 npm run typecheck
+npm run build
 npm run test:e2e
 ```
 
-The browser test uses the retained real fixture at `packages/fixtures/real/phase7/round-01.png` and exercises upload, recognition, confirmation, and recommendation.
+The release regression and exact screenshot matrix are in `VALIDATION/zero-input-release-report.md` and `.json`.
 
-## Safety limits
+## Honest validation boundary
 
-- Critical detections require player review.
-- Exact retained fixtures may use fixture-proof semantics only for their byte-identical hashes in review mode.
-- Arbitrary or approximate screenshots never receive fixture-only solver authority.
-- Seven boundary cells remain unresolved, so the 338-cell footprint is not claimed as fully position-verified.
-- Locked-corpus detector accuracy and current gameplay-rule verification remain open.
+- The four retained real start screenshots all produce an executable provisional recommendation with zero interaction and exact player/pillar/black/white sets.
+- Those four screenshots belong to one capture session; this is regression evidence, not independent beta validation.
+- Only four of the requested eight start screenshots are present.
+- The original individual glyph-template PNG bytes referenced by hash are absent. The runtime therefore uses cached structural patches derived from retained reference imagery plus neutral-background comparison.
+- Seven arena-boundary cells and independent locked-corpus validation remain open.
 
-Read `CURRENT_STATUS.md`, `TEST_REPORT.md`, `DEFECT_BACKLOG.md`, and `NEXT_STEP.md` for the release state.
+Read `CURRENT_STATUS.md`, `KNOWN_LIMITATIONS.md`, `DEFECT_BACKLOG.md`, and `NEXT_STEP.md` before calling the build release-ready.

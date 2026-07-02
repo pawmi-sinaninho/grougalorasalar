@@ -8,4 +8,7 @@ playwright-report/
 .playwright-tmp/
 runtime/sessions/*
 !runtime/sessions/.gitkeep
+runtime/sessions-e2e/
 .env
+.codex-deps/
+apps/web/.npm-cache/

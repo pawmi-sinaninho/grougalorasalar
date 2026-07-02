@@ -1,5 +1,9 @@
 # STATUS, AMBIGUITY AND FAILURE HANDLING
 
+## v1.0.0 orchestration statuses
+
+The solver's internal mechanical statuses remain below. Turn orchestration maps a concrete mechanically solved/confirmable candidate to `solved` only when visual recognition is validated, otherwise to `provisional_solution`. Plausible visual hypotheses with different tactical signatures yield `ambiguous_input`. Missing visual data, invalid screenshots, and capacity failures remain `blocked_missing_data`, `invalid_screenshot`, and `capacity_error`; none is translated to `no_safe_solution`.
+
 ## Authority classes
 
 Rule-catalog statuses map to solver authority as follows:

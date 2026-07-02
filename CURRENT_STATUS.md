@@ -1,55 +1,38 @@
 # CURRENT STATUS
 
 **Version:** 1.0.0
-**Date:** 2026-07-01
-**Phase:** Release-blocker repair and player workflow  
-**Status:** STATEFUL ROUND FLOW AND GLYPH STABILISATION IN VALIDATION
+**Date:** 2026-07-02
+**Branch:** `codex/zero-input-enduser-flow`
+**Status:** FUNCTIONAL ZERO-INPUT REGRESSION; NOT INDEPENDENTLY RELEASE-VALIDATED
 
-## 2026-07-01 fight-sequence update
+## Implemented
 
-- The corrected evidence set contains eight round-start and eight training-only round-end frames from one continuous fight. The former `fight-01-round-01-1blueused.png` label is rejected; its content is correctly owned by `fight-01-round-02-1blueused.png`.
-- Production accepts exactly one screenshot at the start of each round. End frames are regression evidence only and are never required from a live user.
-- All 16 supplied frames register successfully and resolve a player cell. Every training end cell from rounds 1-7 equals the following round's detected start cell.
-- The observed central pattern has four geometric phases: inner-cardinal, inner-diagonal, outer-cardinal and outer-diagonal. Production now classifies each visible cell from user-calibrated black/white appearance before resolving geometry; fixture annotations no longer replace detector output.
-- Recognition uses the lossless source-sized upload. The 1280px WebP is preview-only, preventing full-page or bordered screenshots from shrinking the embedded arena below the registration scale floor.
-- Fight sessions start every spell at two charges, stage the solver's expected final cell and next charges, and commit the next round only when the next screenshot's player cell matches. A mismatch preserves the prior state and blocks silent advancement.
-- Round 8 regression is fixed at start charges `2/3/2/2`, one Attrait cast, one matching yellow/Repulsion white hit and next charges `2/3/3/1`.
-- Remaining live risk is pillar-set completeness under strong moving light at the far arena edge. The current component detector differs by one edge pillar in three of eight start/end pairs; this remains review-gated rather than silently auto-confirmed.
+- A paste uploads the original lossless screenshot, performs registration, player/pillar/glyph recognition, deterministic solving, overlay rendering, and returns one consistent response.
+- Fixture identity is diagnostic only. `matchedFixtureId = null` no longer blocks solver readiness or provisional recommendations.
+- Product states are distinct: `solved`, `provisional_solution`, `ambiguous_input`, `no_safe_solution`, `invalid_screenshot`, `blocked_missing_data`, and `capacity_error`.
+- New fights start with 12 AP and `2/2/2/2` charges; following rounds reuse the staged `nextSpellState` only after the detected player matches the expected final cell.
+- The normal route contains no manual controls, confidence list, timings, version label, pillar IDs, raw coordinates, or solve button. Debug controls remain at `/?debug=1`.
+- The result shows numbered spell targets, movement, final-cell marker, hits, recharge, progress direction, next charges, and up to two alternatives.
+- Glyph detection combines neutral-cell comparison, LAB and saturation deltas, gradient structure, cached reference-patch similarity, occlusion masking, and global four-phase scoring.
+- Pillar components are cross-checked by an independent neutral-background per-cell structure scan.
+- Production search uses exact Pareto dominance to discard states that cannot beat an otherwise identical position with more AP/charges. Fixture/property mode still enumerates the full diagnostic graph.
 
-## Player workflow
+## Measured retained-corpus result
 
-- The retained real screenshot `round-01.png` detects the controlled player at logical cell `(1,-1)`; an unresolved player remains `null` and can no longer leak as a synthetic `0,0` result.
-- The player is drawn directly on the screenshot with a cyan cell and red centre marker.
-- All 24 detected pillars are shown with ID and spell type; confidence below `0.80` is highlighted in orange.
-- The resolved phase exports and overlays the complete black/white pattern; observed cells and occupied/occluded candidates remain separately reviewable. A genuinely missing pattern displays exactly: `Le motif central n’a pas été détecté.`
-- The normal workflow is screenshot copy → Ctrl+V → automatic recognition → automatic solving → numbered action. Manual pillar, pattern, AP and spell-state controls exist only in hidden Debug mode.
-- Every turn has 12 AP; every cast costs 1 AP. Each spell starts at 2 charges, costs 1 charge, caps at 4 and receives stacked matching white hits during end-of-turn resolution.
-- The retained spell-bar regression image is byte-identical and automatically recognises Indécision/Reflet as unavailable at 0 and Rejet/Attrait as available.
-- Player-facing names are exclusively Indécision, Reflet, Rejet and Attrait.
-- Rule codes, state versions, server path, and internal statuses exist only behind the Debug control.
+`VALIDATION/zero-input-release-report.json` records:
 
-## Clean start
+- 4/4 exact players;
+- 4/4 exact pillar sets and types;
+- 4/4 exact black and white glyph sets;
+- 4/4 executable `provisional_solution` responses;
+- 0 manual interactions and 0 observed false-safe regressions;
+- pipeline p50 1320.436 ms, p95/max 1397.795 ms in the final recorded local run.
 
-- User start command: `docker compose up --build`
-- Web: `http://localhost:3000`
-- API readiness: `http://localhost:8000/api/v1/health/ready`
-- Node is pinned to `24.17.0` by image tag and digest.
-- npm is pinned to `11.18.0`; dependency installation is `npm ci` from `package-lock.json` with scripts disabled.
-- Git data, archives, virtual environments, pytest/Python caches, `node_modules`, `.next`, Playwright results, reports, and runtime sessions are excluded from Docker context.
-- The obsolete local `apps/web/Dockerfile.bak` was removed.
+This is one fight/capture session. It is not an independent accuracy claim.
 
-## Previous verified baseline
+## Remaining release blockers
 
-Current repair validation: **52 API/unit/property/solver/vision tests passed**, Phase-3 cumulative validation passed, TypeScript passed, and the Next.js production build passed. The supplied spell-bar fixture hash is `0a8a81b7d19a35967e19f7c3dfffdd4a40d4e7acfa91b85fa74e66c543374ff5` and matches the source byte-for-byte.
-
-- clean no-cache Web/API image build: passed;
-- API suite in the built image: **36 passed**;
-- TypeScript and Next.js production build: passed;
-- API readiness: `ready`; Web HTTP response: `200`;
-- Playwright Chromium real-fixture flow: **2 passed in 4.4 s**;
-- real screenshot upload-to-review time in the browser test: below 5 seconds;
-- Compose down and restart: passed.
-
-## Remaining safety boundary
-
-This repair does not close the separate arena boundary review: 43 boundary cells are confirmed and 7 remain unresolved (`C009`, `C016`, `C025`, `C064`, `C081`, `C168`, `C193`). The 338-cell count remains provisional for full positional authority. General gameplay rule verification and locked-corpus accuracy also remain open. Fixture-proof solving is enabled only for an exact retained fixture hash in review mode; arbitrary screenshots do not inherit fixture authority.
+- Four expected real round-start screenshots and the original individual black/white glyph PNG bytes are absent from the repository.
+- Full multi-round browser proof cannot use the retained sequence as an oracle because the recorded human end positions differ from the new solver's recommended final positions; continuity correctly rejects such a mismatch.
+- Independent locked-corpus/beta validation, negative-image breadth, visual/accessibility regression, and seven arena-boundary cells remain open.
+- Docker/browser verification must be reported from the current environment; no unexecuted check is considered passed.

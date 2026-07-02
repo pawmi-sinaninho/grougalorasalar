@@ -1,5 +1,20 @@
 # CHANGELOG
 
+## 1.0.0 — Zero-input end-user flow
+
+- Decoupled solver readiness and tactical authority from fixture matching.
+- Added the seven product solution statuses and preserved concrete actions for provisional results.
+- Combined screenshot recognition, deterministic solving, fight transition staging, and overlay rendering in the upload response.
+- Added 12-AP and numeric charge defaults/continuation without player input.
+- Replaced the standard review workbench with a paste-first numbered recommendation and solution overlay; diagnostics moved to `/?debug=1`.
+- Added neutral-background, LAB/saturation, gradient, structural reference-patch, occlusion, and global-phase glyph evidence.
+- Added independent per-cell pillar-completeness cross-check metadata.
+- Added bounded glyph hypotheses and tactical-invariance classification.
+- Added exact dominance pruning to the production solver path while retaining full diagnostic enumeration in fixture/property mode.
+- Added exact four-start gold annotations and zero-input JSON/Markdown reports.
+- Confirmed R-028 as direct observation, matching the accepted multi-cast mechanics and tests.
+- Validation remains single-session regression, not independent beta evidence; four requested starts and the original individual glyph PNG bytes are absent.
+
 ## 1.0.1 — Stateful fight and glyph stabilisation
 
 - Corrected the mislabeled blue-use training frame from round 1 to round 2 and recorded the eight-round sequence with original hashes, dimensions, casts and player continuity.

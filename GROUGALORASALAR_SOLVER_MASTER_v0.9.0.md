@@ -1,6 +1,6 @@
 # GROUGALORASALAR SOLVER — MASTER SPECIFICATION
 
-**Version:** 0.9.0  
+**Version:** 0.9.0 (historical snapshot; superseded operationally by `MASTER_SPEC.md` v1.0.0)
 
 ## 100. Release-blocker repair: clean start and player workflow
 

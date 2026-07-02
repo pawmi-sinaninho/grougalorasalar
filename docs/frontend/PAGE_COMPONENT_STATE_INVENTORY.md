@@ -1,5 +1,7 @@
 # PAGE, COMPONENT & STATE INVENTORY — Phase 5
 
+> v1.0.0 end-user override: `/` is the paste-first zero-input flow. The historical review components below are available only through `/?debug=1`. Product result states additionally include `provisional_solution`, `ambiguous_input`, `invalid_screenshot`, `blocked_missing_data`, and `capacity_error`.
+
 ## 1. Routes
 
 | Route | Purpose | Availability |

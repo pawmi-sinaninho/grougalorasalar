@@ -1,19 +1,11 @@
 # NEXT STEP
 
-The clean-start and unusable-player-workflow release blockers are closed. Do not add unrelated features before the following evidence work.
+The functional zero-input regression is complete for the four retained real starts. The next release gate is independent evidence, not more UI controls.
 
-## 1. Close the seven-cell boundary review
+1. Add the four missing round-start images and original individual black/white glyph PNGs.
+2. Capture a fresh fight in which every executed turn follows the displayed recommendation, then run the zero-input browser sequence through all rounds.
+3. Expand to the locked 150-screenshot/15-session corpus, including negatives, occlusion, gamma, compression, crops, and resolution slices.
+4. Resolve the seven remaining arena-boundary cells.
+5. Add visual and accessibility regression and supported-hardware latency percentiles.
 
-Resolve `C009`, `C016`, `C025`, `C064`, `C081`, `C168`, and `C193` with a second accepted evidence criterion per cell. Then rerun `scripts/build_canonical_arena.py --check` and `scripts/validate_phase7b.py`.
-
-## 2. Generalise the proven browser flow
-
-Run the same overlay and correction workflow on the remaining real fixtures and the locked corpus. Measure player, pillar, and pattern accuracy without allowing an approximate fixture match to acquire fixture-only solver authority.
-
-## 3. Finish release QA
-
-Add keyboard/accessibility and responsive-browser coverage, then verify the published ZIP on a second clean Docker Desktop machine using only:
-
-```bash
-docker compose up --build
-```
+Do not promote `provisional_solution` to `solved` merely because the retained fixtures pass.

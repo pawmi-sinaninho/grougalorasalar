@@ -1,0 +1,259 @@
+{
+  "schemaVersion": "1.0.0",
+  "validationClass": "single-session regression; not independent beta validation",
+  "availableStartScreenshotGap": {
+    "required": 8,
+    "present": 4
+  },
+  "metrics": {
+    "totalScreenshots": 4,
+    "exactPlayerMatches": 4,
+    "exactPillarSetMatches": 4,
+    "exactPillarTypeMatches": 4,
+    "exactBlackGlyphSetMatches": 4,
+    "exactWhiteGlyphSetMatches": 4,
+    "automaticSolutionCount": 4,
+    "solvedCount": 0,
+    "provisionalSolutionCount": 4,
+    "ambiguousInputCount": 0,
+    "falseSafeCount": 0,
+    "manualInteractionCount": 0,
+    "p50LatencyMs": 1320.436,
+    "p95LatencyMs": 1397.795,
+    "maxLatencyMs": 1397.795,
+    "zeroInputExecutableRecommendationRate": 1.0
+  },
+  "screenshots": [
+    {
+      "screenshotId": "REAL-P7-01",
+      "captureSessionId": "fight-01",
+      "playerExact": true,
+      "pillarSetExact": true,
+      "pillarTypesExact": true,
+      "blackGlyphSetExact": true,
+      "whiteGlyphSetExact": true,
+      "solutionStatus": "provisional_solution",
+      "actions": [
+        "repulsion@pillar:0,-1:P11",
+        "indecision@cell:4,-2:-"
+      ],
+      "finalCell": {
+        "x": 4,
+        "y": -2
+      },
+      "blackHits": [],
+      "whiteHits": [
+        "P13",
+        "P16",
+        "P17"
+      ],
+      "recharges": [
+        "indecision",
+        "reflection",
+        "repulsion"
+      ],
+      "latencyMs": 1397.795,
+      "timings": {
+        "decodeMs": 55.789,
+        "registrationMs": 137.005,
+        "playerMs": 11.456,
+        "pillarMs": 241.678,
+        "glyphMs": 44.018,
+        "hypothesisMs": 0.001,
+        "solverMs": 467.498,
+        "overlayMs": 117.597,
+        "totalMs": 1397.795
+      },
+      "manualInteractions": 0,
+      "falseSafe": false
+    },
+    {
+      "screenshotId": "REAL-P7-02",
+      "captureSessionId": "fight-01",
+      "playerExact": true,
+      "pillarSetExact": true,
+      "pillarTypesExact": true,
+      "blackGlyphSetExact": true,
+      "whiteGlyphSetExact": true,
+      "solutionStatus": "provisional_solution",
+      "actions": [
+        "attraction@pillar:4,1:P21"
+      ],
+      "finalCell": {
+        "x": 3,
+        "y": 0
+      },
+      "blackHits": [],
+      "whiteHits": [
+        "P17",
+        "P21"
+      ],
+      "recharges": [
+        "indecision",
+        "reflection"
+      ],
+      "latencyMs": 1289.542,
+      "timings": {
+        "decodeMs": 27.948,
+        "registrationMs": 140.196,
+        "playerMs": 11.877,
+        "pillarMs": 140.409,
+        "glyphMs": 47.317,
+        "hypothesisMs": 0.001,
+        "solverMs": 546.352,
+        "overlayMs": 129.087,
+        "totalMs": 1289.542
+      },
+      "manualInteractions": 0,
+      "falseSafe": false
+    },
+    {
+      "screenshotId": "REAL-P7-03",
+      "captureSessionId": "fight-01",
+      "playerExact": true,
+      "pillarSetExact": true,
+      "pillarTypesExact": true,
+      "blackGlyphSetExact": true,
+      "whiteGlyphSetExact": true,
+      "solutionStatus": "provisional_solution",
+      "actions": [
+        "attraction@pillar:2,-2:P13",
+        "indecision@cell:1,-2:-"
+      ],
+      "finalCell": {
+        "x": 1,
+        "y": -2
+      },
+      "blackHits": [],
+      "whiteHits": [
+        "P08",
+        "P12",
+        "P18"
+      ],
+      "recharges": [
+        "attraction",
+        "reflection",
+        "repulsion"
+      ],
+      "latencyMs": 1351.331,
+      "timings": {
+        "decodeMs": 28.818,
+        "registrationMs": 146.816,
+        "playerMs": 10.749,
+        "pillarMs": 165.934,
+        "glyphMs": 44.191,
+        "hypothesisMs": 0.0,
+        "solverMs": 568.075,
+        "overlayMs": 124.77,
+        "totalMs": 1351.331
+      },
+      "manualInteractions": 0,
+      "falseSafe": false
+    },
+    {
+      "screenshotId": "REAL-P7-04",
+      "captureSessionId": "fight-01",
+      "playerExact": true,
+      "pillarSetExact": true,
+      "pillarTypesExact": true,
+      "blackGlyphSetExact": true,
+      "whiteGlyphSetExact": true,
+      "solutionStatus": "provisional_solution",
+      "actions": [
+        "indecision@cell:0,-2:-",
+        "reflection@pillar:2,-2:P14"
+      ],
+      "finalCell": {
+        "x": 4,
+        "y": -2
+      },
+      "blackHits": [],
+      "whiteHits": [
+        "P14",
+        "P22",
+        "P23"
+      ],
+      "recharges": [
+        "attraction",
+        "indecision",
+        "reflection"
+      ],
+      "latencyMs": 1276.03,
+      "timings": {
+        "decodeMs": 30.463,
+        "registrationMs": 139.273,
+        "playerMs": 12.612,
+        "pillarMs": 143.534,
+        "glyphMs": 41.351,
+        "hypothesisMs": 0.0,
+        "solverMs": 544.08,
+        "overlayMs": 121.419,
+        "totalMs": 1276.03
+      },
+      "manualInteractions": 0,
+      "falseSafe": false
+    }
+  ],
+  "stageLatencyMs": {
+    "decodeMs": {
+      "p50": 29.641,
+      "p95": 55.789,
+      "max": 55.789
+    },
+    "registrationMs": {
+      "p50": 139.734,
+      "p95": 146.816,
+      "max": 146.816
+    },
+    "playerMs": {
+      "p50": 11.666,
+      "p95": 12.612,
+      "max": 12.612
+    },
+    "pillarMs": {
+      "p50": 154.734,
+      "p95": 241.678,
+      "max": 241.678
+    },
+    "glyphMs": {
+      "p50": 44.105,
+      "p95": 47.317,
+      "max": 47.317
+    },
+    "hypothesisMs": {
+      "p50": 0.001,
+      "p95": 0.001,
+      "max": 0.001
+    },
+    "solverMs": {
+      "p50": 545.216,
+      "p95": 568.075,
+      "max": 568.075
+    },
+    "overlayMs": {
+      "p50": 123.094,
+      "p95": 129.087,
+      "max": 129.087
+    },
+    "totalMs": {
+      "p50": 1320.436,
+      "p95": 1397.795,
+      "max": 1397.795
+    }
+  },
+  "verification": {
+    "python": "73 passed, 1 warning",
+    "typecheck": "passed",
+    "productionBuild": "passed",
+    "playwright": "2 passed",
+    "npmAudit": "0 vulnerabilities",
+    "pipCheck": "no broken requirements",
+    "dockerCompose": "not executed: Docker Desktop Linux engine pipe was unavailable"
+  },
+  "limitations": [
+    "All retained starts belong to one capture session.",
+    "Only four of the requested eight start screenshots are present in the repository.",
+    "The individual original black/white glyph PNG bytes referenced by hash are absent; cached structural patches are derived from retained reference imagery.",
+    "Independent beta accuracy and tactical outcome validation remain open."
+  ]
+}

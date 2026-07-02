@@ -1,14 +1,18 @@
 # GROUGALORASALAR SOLVER — MASTER SPECIFICATION
 
-**Version:** 0.9.0  
+**Version:** 1.0.0
+
+## 101. Zero-input end-user contract
+
+The normal product contract is `Ctrl+V → automatic recognition → deterministic recommendation → next round`. Fixture matching is diagnostic only. A complete but not independently validated visual state produces a full `provisional_solution`; tactically divergent visual hypotheses produce `ambiguous_input`. The normal route contains no confirmation, AP/charge input, or solve button. Exact current validation numbers and limits are authoritative in `VALIDATION/zero-input-release-report.json`.
 
 ## 100. Release-blocker repair: clean start and player workflow
 
 The v0.9.0 release path is `docker compose up --build`, serving the player UI at `http://localhost:3000` and the ready API at `http://localhost:8000/api/v1/health/ready`. The Web image pins Node 24.17.0 by digest, installs npm 11.18.0, and uses `npm ci` exclusively.
 
-The normal UI projects the controlled player, all typed pillars, doubtful pillars, and central-pattern cells onto the uploaded screenshot. Player and pattern correction are direct clicks. Action budget and each spell use explicit unknown/available/unavailable state. The solver button remains disabled until the five player-facing checks and detection review are complete. Internal status/rule codes are Debug-only.
+The v0.9.0 review workbench described below is historical. In v1.0.0, those controls are Debug-only and the standard route automatically solves a complete recognised state.
 
-The retained `REAL-P7-01` fixture proves player cell `(1,-1)`, 24 pillars, three dark and three light pattern cells, and the complete browser upload-to-recommendation flow. Fixture-proof solver semantics require a byte-identical retained fixture and exact match distance zero; no approximate or arbitrary upload gains that authority.
+Fixture identity no longer grants solver authority. The retained images are regression labels only.
 **Phase:** 7B-R — Boundary Refinement  
 **Status:** REVIEW REQUIRED — 338-CELL WORKING MASK PROVISIONAL; 7 BOUNDARY CELLS UNRESOLVED  
 **Language:** German working specification; player-facing UI planned for French first, then German/English  
