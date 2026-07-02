@@ -32,13 +32,22 @@ export type AnalysisEnvelope = {
   };
   recommendation?: {
     status: string;
+    solverStatus?: string;
     statusReasonCodes: string[];
-    actions: Array<{ order: number; instruction: string; canonicalSignature: string; spell?: string; targetPillarId?: string | null }>;
+    actions: Array<{
+      order: number; instruction: string; canonicalSignature: string; spell?: string;
+      targetPillarId?: string | null; targetCell?: { x: number; y: number };
+      sourceCell?: { x: number; y: number }; destinationCell?: { x: number; y: number };
+    }>;
     expected: {
       finalCell: { x: number; y: number } | null;
       raceOutcome: string;
+      blackPillarIds?: string[];
+      whitePillarIds?: string[];
+      rechargedSpells?: string[];
       nextSpellState?: Record<'indecision' | 'reflection' | 'repulsion' | 'attraction', number | null> | null;
     };
+    alternatives?: Array<{ sequence: string[]; finalCell: { x: number; y: number }; raceOutcome: string }>;
   } | null;
 };
 
@@ -91,6 +100,13 @@ export async function solve(id: string, token: string, version: number): Promise
   });
   if (!response.ok) throw new Error((await response.json()).error?.code ?? 'Solveur indisponible');
   return response.json();
+}
+
+export async function deleteAnalysis(id: string, token: string): Promise<void> {
+  const response = await fetch(`${API}/analyses/${id}`, {
+    method: 'DELETE', headers: { Authorization: `Bearer ${token}` }
+  });
+  if (!response.ok && response.status !== 404) throw new Error('Suppression impossible');
 }
 
 

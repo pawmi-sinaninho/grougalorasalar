@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState, type MouseEvent } from 'react';
-import { command, createAnalysis, solve, uploadImage, type AnalysisEnvelope } from '../lib/api';
+import { command, createAnalysis, deleteAnalysis, solve, uploadImage, type AnalysisEnvelope } from '../lib/api';
 
 const spellKeys = ['indecision', 'reflection', 'repulsion', 'attraction'] as const;
 type SpellKey = (typeof spellKeys)[number];
@@ -93,7 +93,7 @@ export default function Home() {
   const [pillarOverlayReviewed, setPillarOverlayReviewed] = useState(false);
   const [debug, setDebug] = useState(false);
   const startedAt = useRef<number | null>(null);
-  const lastAutoSolvedVersion = useRef<number | null>(null);
+  const requestSequence = useRef(0);
 
   const turn = (data?.turnState ?? {}) as TurnState;
   const fight = data?.fight;
@@ -119,6 +119,10 @@ export default function Home() {
   const ready = checks.every(item => item.ok) && Boolean(turn.flags?.criticalFieldsConfirmed);
 
   useEffect(() => {
+    setDebug(new URLSearchParams(window.location.search).get('debug') === '1');
+  }, []);
+
+  useEffect(() => {
     if (!busy || startedAt.current === null) return;
     const timer = window.setInterval(() => setElapsedMs(performance.now() - (startedAt.current ?? performance.now())), 100);
     return () => window.clearInterval(timer);
@@ -137,12 +141,6 @@ export default function Home() {
     return () => window.removeEventListener('paste', paste);
   });
 
-  useEffect(() => {
-    if (!data || !ready || busy || data.recommendation || lastAutoSolvedVersion.current === data.session.stateVersion) return;
-    lastAutoSolvedVersion.current = data.session.stateVersion;
-    void runSolver();
-  }, [busy, data, ready]);
-
   function startLocalWorker(file: File) {
     if (typeof Worker === 'undefined') return;
     const worker = new Worker('/workers/analysis-worker.js');
@@ -154,6 +152,7 @@ export default function Home() {
   }
 
   async function begin(file: File) {
+    const requestId = ++requestSequence.current;
     startedAt.current = performance.now();
     const continuingFight = Boolean(data && token && data.recommendation);
     setElapsedMs(0); setBusy(true); setError(''); setCorrectionMode(null); setPillarOverlayReviewed(false);
@@ -179,16 +178,28 @@ export default function Home() {
         setProgress({ stage: 'session_created', elapsedMs: performance.now() - (startedAt.current ?? performance.now()) });
       }
       const uploaded = await uploadImage(analysisId, accessToken, stateVersion, file);
+      if (requestId !== requestSequence.current) return;
       setData(uploaded);
       if (uploaded.fight?.syncStatus === 'player_mismatch') {
         setError('La position du joueur ne correspond pas à la fin calculée du tour précédent. Le combat n’a pas été avancé.');
       }
       setProgress({ stage: 'recognition_complete', elapsedMs: performance.now() - (startedAt.current ?? performance.now()) });
     } catch {
-      setError('La capture n’a pas pu être analysée. Réessayez avec une capture complète du combat.');
+      if (requestId === requestSequence.current) {
+        setError('La capture n’a pas pu être analysée. Réessayez avec une capture complète du combat.');
+      }
     } finally {
-      setBusy(false); setElapsedMs(performance.now() - (startedAt.current ?? performance.now()));
+      if (requestId === requestSequence.current) {
+        setBusy(false); setElapsedMs(performance.now() - (startedAt.current ?? performance.now()));
+      }
     }
+  }
+
+  async function newFight() {
+    requestSequence.current += 1;
+    if (data && token) await deleteAnalysis(data.session.analysisId, token).catch(() => undefined);
+    if (imageUrl.startsWith('blob:')) URL.revokeObjectURL(imageUrl);
+    setData(null); setToken(''); setImageUrl(''); setError(''); setBusy(false);
   }
 
   async function send(type: string, payload: object) {
@@ -233,20 +244,20 @@ export default function Home() {
   return (
     <main>
       <header>
-        <p className="eyebrow">ASSISTANT DE TOUR · VERSION 0.9.0</p>
+        <p className="eyebrow">ASSISTANT DE TOUR</p>
         <h1>Grougalorasalar Solver</h1>
-        <p>Copiez votre capture de combat puis collez-la ici avec Ctrl+V. La détection et le calcul démarrent automatiquement.</p>
-        {fight && <p>Tour {fight.round} · Charges suivies automatiquement : bleu {fight.charges.indecision}, vert {fight.charges.reflection}, jaune {fight.charges.repulsion}, rouge {fight.charges.attraction}.</p>}
+        <p>Collez la capture du début du tour avec Ctrl+V. Votre action apparaît automatiquement.</p>
+        {fight && data && <p className="turn-label">Tour {fight.round}</p>}
       </header>
 
-      {!imageUrl && <section className="upload"><h2>Collez la capture avec Ctrl+V</h2><p>Aucune saisie manuelle n’est nécessaire.</p><button className="debug-toggle" aria-pressed={debug} onClick={() => setDebug(value => !value)}>Debug</button>{debug && <label>Fixture locale<input aria-label="Capture du combat (debug)" type="file" accept="image/png,image/jpeg,image/webp" disabled={busy} onChange={event => event.target.files?.[0] && begin(event.target.files[0])} /></label>}</section>}
+      {!imageUrl && <section className="upload"><div className="paste-key">Ctrl+V</div><h2>Capture d’écran du début du tour</h2><p>Aucune saisie ni confirmation.</p>{debug && <label>Fixture locale<input aria-label="Capture du combat (debug)" type="file" accept="image/png,image/jpeg,image/webp" disabled={busy} onChange={event => event.target.files?.[0] && begin(event.target.files[0])} /></label>}</section>}
 
       {imageUrl && <div className={data ? 'workspace' : 'workspace preview-only'}>
         <section className="board-card">
           <div className={`board-image ${correctionMode ? 'is-correcting' : ''}`}>
             <img src={imageUrl} alt="Capture du combat à vérifier" onLoad={event => setImageSize({ width: event.currentTarget.naturalWidth, height: event.currentTarget.naturalHeight })} />
             {data && registration?.originImage && <svg data-testid="detection-overlay" className="overlay" viewBox={`0 0 ${imageSize.width} ${imageSize.height}`} onClick={handleBoardClick} role="img" aria-label="Repères détectés sur la capture">
-              {pillars.map(item => {
+              {debug && pillars.map(item => {
                 const centre = project(item.cell, registration); const points = polygon(item.cell, registration);
                 const doubtful = doubtfulPillars.some(candidate => candidate.id === item.id);
                 if (!centre || !points) return null;
@@ -256,13 +267,25 @@ export default function Home() {
                   <text x={centre.x} y={centre.y + 14} className="overlay-sub">{spellLabels[item.spellType].slice(0, 3).toUpperCase()}</text>
                 </g>;
               })}
-              {blackCells.map((cell, index) => { const centre = project(cell, registration); return centre && <circle key={`b-${index}`} data-testid="glyph-overlay" cx={centre.x} cy={centre.y} r="15" className="glyph black" />; })}
-              {whiteCells.map((cell, index) => { const centre = project(cell, registration); return centre && <circle key={`w-${index}`} data-testid="glyph-overlay" cx={centre.x} cy={centre.y} r="15" className="glyph white" />; })}
-              {player && (() => { const centre = project(player, registration); const points = polygon(player, registration); return centre && points && <g data-testid="player-overlay"><polygon points={points} className="player-cell" /><circle cx={centre.x} cy={centre.y} r="9" className="player-dot" /><text x={centre.x} y={centre.y - 18} className="player-label">JOUEUR</text></g>; })()}
+              {debug && blackCells.map((cell, index) => { const centre = project(cell, registration); return centre && <circle key={`b-${index}`} data-testid="glyph-overlay" cx={centre.x} cy={centre.y} r="15" className="glyph black" />; })}
+              {debug && whiteCells.map((cell, index) => { const centre = project(cell, registration); return centre && <circle key={`w-${index}`} data-testid="glyph-overlay" cx={centre.x} cy={centre.y} r="15" className="glyph white" />; })}
+              {debug && player && (() => { const centre = project(player, registration); const points = polygon(player, registration); return centre && points && <g data-testid="player-overlay"><polygon points={points} className="player-cell" /><circle cx={centre.x} cy={centre.y} r="9" className="player-dot" /><text x={centre.x} y={centre.y - 18} className="player-label">JOUEUR</text></g>; })()}
+              {recommendation?.actions.map(action => {
+                const target = action.targetCell && project(action.targetCell, registration);
+                const source = action.sourceCell && project(action.sourceCell, registration);
+                const destination = action.destinationCell && project(action.destinationCell, registration);
+                return <g key={`solution-${action.canonicalSignature}`} data-testid="action-target-marker">
+                  {source && destination && <line x1={source.x} y1={source.y} x2={destination.x} y2={destination.y} className="movement-line" />}
+                  {target && <><circle cx={target.x} cy={target.y - 22} r="22" className="action-pin" /><text x={target.x} y={target.y - 15} className="action-number">{action.order}</text></>}
+                </g>;
+              })}
+              {recommendation?.expected.finalCell && (() => { const centre = project(recommendation.expected.finalCell, registration); return centre && <circle data-testid="final-cell-marker" cx={centre.x} cy={centre.y} r="30" className="final-cell" />; })()}
+              {(recommendation?.expected.whitePillarIds ?? []).map(id => { const pillar = pillars.find(item => item.id === id); const centre = pillar && project(pillar.cell, registration); return centre && <text key={`white-hit-${id}`} x={centre.x + 22} y={centre.y - 28} className="white-hit">+</text>; })}
+              {(recommendation?.expected.blackPillarIds ?? []).map(id => { const pillar = pillars.find(item => item.id === id); const centre = pillar && project(pillar.cell, registration); return centre && <text key={`black-hit-${id}`} x={centre.x + 22} y={centre.y - 28} className="black-hit">×</text>; })}
             </svg>}
           </div>
-          <div className="analysis-strip" aria-live="polite"><strong>{stageLabels[progress.stage] ?? 'Analyse en cours'}</strong><span>{Math.round(elapsedMs || progress.elapsedMs)} ms</span></div>
-          {data && <div className="summary-grid">
+          <div className="analysis-strip" aria-live="polite"><strong>{busy ? (data ? 'Calcul de la solution…' : 'Analyse de l’arène…') : recommendation ? 'Solution prête' : stageLabels[progress.stage] ?? 'Analyse en cours'}</strong>{debug && <span>{Math.round(elapsedMs || progress.elapsedMs)} ms</span>}</div>
+          {data && debug && <div className="summary-grid">
             <div className={player ? 'summary ok' : 'summary warn'}><strong>{player ? 'Joueur détecté' : 'Joueur à corriger'}</strong><span>Repère cyan sur la capture</span></div>
             <div className={pillars.length ? 'summary ok' : 'summary warn'}><strong>{pillars.length} piliers proposés</strong><span>{doubtfulPillars.length ? `${doubtfulPillars.length} à vérifier en orange` : 'Tous clairement positionnés'}</span></div>
             <div className={glyphCount ? 'summary ok' : 'summary warn'}><strong>{glyphCount ? `${glyphCount} cases du motif` : 'Motif à corriger'}</strong><span>{glyphCount ? 'Noires et blanches sur la capture' : 'Le motif central n’a pas été détecté.'}</span></div>
@@ -270,10 +293,10 @@ export default function Home() {
           {correctionMode && <p className="click-hint">Cliquez directement sur la bonne case de la capture.</p>}
         </section>
 
-        {data && !debug && <aside><div className="aside-heading"><div><p className="step">AUTOMATIQUE · TOUR {fight?.round ?? 1}</p><h2>{ready ? 'Calcul du tour en cours' : 'Analyse de la capture'}</h2></div><button className="debug-toggle" aria-pressed={debug} onClick={() => setDebug(true)}>Debug</button></div><p>Collez uniquement une capture au début de chaque tour. Les charges sont reprises du résultat calculé au tour précédent.</p></aside>}
+        {data && !debug && <aside className="player-panel">{recommendation ? <><p className="step">VOTRE TOUR</p><h2>{recommendation.status === 'ambiguous_input' ? 'Nouvelle capture nécessaire' : recommendation.status === 'invalid_screenshot' ? 'Capture illisible' : recommendation.status === 'no_safe_solution' ? 'Aucun coup sûr' : recommendation.status === 'capacity_error' ? 'Calcul interrompu' : recommendation.status === 'blocked_missing_data' ? 'Capture incomplète' : 'Actions à exécuter'}</h2>{recommendation.status === 'provisional_solution' && <p className="provisional">Proposition sûre pour les variantes visuelles plausibles.</p>}{recommendation.actions.length > 0 && <ol className="action-list">{recommendation.actions.map(action => <li key={action.canonicalSignature}><span>{action.order}</span><strong>{spellLabels[action.spell as SpellKey]}</strong><small>cible marquée {action.order}</small></li>)}<li className="end-turn"><span>{recommendation.actions.length + 1}</span><strong>Terminez le tour</strong></li></ol>}{recommendation.expected.finalCell && <div className="outcome"><p><strong>Position finale</strong><br />Anneau vert sur la capture</p><p><strong>Glyphes noirs</strong><br />{recommendation.expected.blackPillarIds?.length ? `${recommendation.expected.blackPillarIds.length} collision(s) marquée(s)` : 'Aucune collision'}</p><p><strong>Glyphes blancs</strong><br />{recommendation.expected.whitePillarIds?.length ? `${recommendation.expected.whitePillarIds.length} recharge(s) marquée(s)` : 'Aucune recharge'}</p><p><strong>Progression</strong><br />{recommendation.expected.raceOutcome === 'crocoburio_advance' ? 'Crocoburio avance' : recommendation.expected.raceOutcome === 'dragon_advance' ? 'Grougalorasalar avance' : 'Neutre'}</p></div>}{recommendation.expected.nextSpellState && <div className="charges"><strong>Charges au prochain tour</strong>{spellKeys.map(spell => <span key={spell}>{spellLabels[spell]} {recommendation.expected.nextSpellState?.[spell] ?? '–'}</span>)}</div>}{Boolean(recommendation.alternatives?.length) && <details className="alternatives"><summary>Autres options équivalentes</summary>{recommendation.alternatives?.slice(0, 2).map((alternative, index) => <p key={index}>Option {index + 2} · {alternative.sequence.length} action(s)</p>)}</details>}{recommendation.actions.length > 0 ? <p className="next-paste">Exécutez les actions, terminez le tour, puis collez la prochaine capture avec Ctrl+V.</p> : <p className="next-paste">Collez une nouvelle capture complète du début du tour.</p>}<button className="new-fight" onClick={newFight}>Nouveau combat</button></> : <><p className="step">ANALYSE</p><h2>Calcul en cours…</h2></>}</aside>}
 
         {data && debug && <aside>
-          <div className="aside-heading"><div><p className="step">VÉRIFICATION</p><h2>Ce qu’il reste à faire</h2></div><button className="debug-toggle" aria-pressed={debug} onClick={() => setDebug(value => !value)}>Debug</button></div>
+          <div className="aside-heading"><div><p className="step">DIAGNOSTIC</p><h2>État détecté</h2></div></div>
 
           <section className="review-block">
             <h3>Joueur</h3><p>{player ? 'Le repère cyan montre la figurine contrôlée.' : 'Aucun joueur fiable n’a été trouvé.'}</p>
@@ -307,7 +330,6 @@ export default function Home() {
         </aside>}
       </div>}
 
-      {recommendation && <section className="result" aria-live="polite"><p className="step">RECOMMANDATION</p><h2>{recommendation.status === 'solved' ? 'Votre tour est prêt' : recommendation.status === 'no_safe_solution' ? 'Aucun déplacement sûr trouvé' : 'Une vérification reste nécessaire'}</h2>{recommendation.actions.length ? <ol>{recommendation.actions.map(action => <li key={action.canonicalSignature}>{action.spell && action.targetPillarId ? `Lancez ${spellLabels[action.spell as SpellKey]} sur le pilier ${action.targetPillarId}.` : action.instruction}</li>)}</ol> : recommendation.status === 'solved' && <p>Terminez ce tour sans lancer de sort.</p>}</section>}
       {error && <p className="error" role="alert">{error}</p>}
     </main>
   );

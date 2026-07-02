@@ -16,12 +16,12 @@ async function pasteImage(page: import('@playwright/test').Page, filePath: strin
 
 test('Ctrl+V runs recognition and solver without normal manual controls', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: 'Collez la capture avec Ctrl+V' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Capture d’écran du début du tour' })).toBeVisible();
   await pasteImage(page, fixture);
 
-  await expect(page.getByTestId('player-overlay')).toBeVisible({ timeout: 5_000 });
-  await expect(page.getByTestId('pillar-overlay')).toHaveCount(24);
-  await expect(page.getByText(/Votre tour est prêt|Aucun déplacement sûr trouvé|Une vérification reste nécessaire/)).toBeVisible({ timeout: 5_000 });
+  await expect(page.getByRole('heading', { name: /Actions à exécuter|Aucun coup sûr|Nouvelle capture nécessaire/ })).toBeVisible({ timeout: 5_000 });
+  await expect(page.getByTestId('action-target-marker').first()).toBeVisible();
+  await expect(page.getByTestId('final-cell-marker')).toBeVisible();
 
   const standardText = await page.locator('body').innerText();
   for (const forbidden of ['Calculer le tour', 'Budget d’actions', 'Confirmer tous les piliers', 'Confirmer le motif affiché', 'Réflexion', 'Répulsion', 'Attirance']) {
@@ -30,8 +30,7 @@ test('Ctrl+V runs recognition and solver without normal manual controls', async 
 });
 
 test('player-facing spell labels use the binding names in Debug mode', async ({ page }) => {
-  await page.goto('/');
-  await page.getByRole('button', { name: 'Debug' }).click();
+  await page.goto('/?debug=1');
   await page.getByLabel('Capture du combat (debug)').setInputFiles(fixture);
   for (const spell of ['Indécision', 'Reflet', 'Rejet', 'Attrait']) {
     await expect(page.getByText(spell, { exact: true }).first()).toBeVisible();
