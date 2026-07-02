@@ -63,7 +63,7 @@ The target must be inside the arena and free. Diagonal, pillar-occupied and obst
 
 ### R-020 — Reflet
 
-Target any-colour pillar at exact aligned range 2, cardinal or diagonal, and move symmetrically across it.
+Target an any-colour pillar at exact aligned range 2 on one of the eight cardinal or diagonal rays, and move symmetrically across it. These are exactly eight possible target cells relative to the current player cell.
 
 Base formula:
 
@@ -77,7 +77,7 @@ The movement may not cross another pillar or obstacle. The destination must be f
 
 ### R-030 — Rejet
 
-Supported description: target a pillar at range 1–2 and move three cells away from it.
+Supported description: target an any-colour pillar at aligned range 1–2 on one of the eight cardinal or diagonal rays and move three cells away from it.
 
 For an allowed alignment, let `u` be the unit vector from pillar to player:
 
@@ -90,12 +90,12 @@ Cardinal and diagonal alignment are legal. At a blocker or arena edge, stop at t
 
 ### R-040 — Attrait
 
-Target any-colour pillar at range 1–6 on a cardinal or diagonal alignment and move up to three cells toward it.
+Target an any-colour pillar at range 1–6 on one of the four cardinal lines and move up to three cells toward it. Diagonal targets are illegal.
 
 For an allowed alignment, let `u` be the unit vector from player to pillar:
 
 ```text
-u = normalise_cardinal_or_diagonal(P -> T)
+u = normalise_cardinal(P -> T)
 raw_destination = P + 3*u
 ```
 

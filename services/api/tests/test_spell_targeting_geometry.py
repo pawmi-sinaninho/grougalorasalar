@@ -111,11 +111,13 @@ def test_rules_profile_encodes_verified_target_geometry() -> None:
 
     reflection = profile["movement"]["reflection"]
     assert reflection["targetPillarType"] == "any_pillar"
+    assert reflection["rangeMetric"] == "aligned_steps"
     assert reflection["minRange"] == reflection["maxRange"] == 2
     assert reflection["alignment"] == "cardinal_or_diagonal"
 
     repulsion = profile["movement"]["repulsion"]
     assert repulsion["targetPillarType"] == "any_pillar"
+    assert repulsion["rangeMetric"] == "aligned_steps"
     assert repulsion["minRange"] == 1
     assert repulsion["maxRange"] == 2
     assert set(repulsion["allowedAlignments"]) == {"cardinal", "diagonal"}
@@ -128,6 +130,10 @@ def test_rules_profile_encodes_verified_target_geometry() -> None:
 
 
 def test_indecision_targets_only_four_adjacent_empty_cells() -> None:
+    empty_board_actions = _actions_for("indecision", [])
+    assert _target_cells(empty_board_actions) == {(-1, 0), (0, -1), (0, 1), (1, 0)}
+    assert len(empty_board_actions) == 4
+
     actions = _actions_for(
         "indecision",
         [_pillar("P_BLOCK", (1, 0), "reflection")],
@@ -146,6 +152,7 @@ def test_reflet_targets_exactly_the_eight_radius_two_pillar_cells() -> None:
 
     actions = _actions_for("reflection", pillars)
 
+    assert len(actions) == 8
     assert _target_cells(actions) == expected
     assert all(action["targetKind"] == "pillar" for action in actions)
     assert all(
@@ -182,6 +189,7 @@ def test_rejet_targets_any_pillar_on_eight_rays_up_to_two_cells() -> None:
         for index, cell in enumerate(sorted(expected), start=1)
     ]
 
+    assert len(actions) == 16
     assert _target_cells(actions) == expected
     assert all(action["targetKind"] == "pillar" for action in actions)
 
