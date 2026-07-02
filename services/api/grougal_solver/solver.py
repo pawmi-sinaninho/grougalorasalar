@@ -633,6 +633,10 @@ class DeterministicSolver:
             return action
         cfg = profile["movement"][spell]
         destination = cell_tuple(action["destinationCell"])
+        if spell == "attraction" and destination == source:
+            # An adjacent target is legal: stopping immediately before that
+            # pillar leaves the player on the current cell.
+            return action
         dx, dy = destination[0] - source[0], destination[1] - source[1]
         steps = self._aligned_steps(dx, dy)
         unit = self._normalised_direction(dx, dy)

@@ -90,7 +90,7 @@
       "rangeMetric": "aligned_steps",
       "minRange": 1,
       "maxRange": 6,
-      "alignment": "cardinal_or_diagonal",
+      "alignment": "cardinal",
       "lineOfSight": "ignored",
       "distance": 3,
       "pathMode": "fail_if_blocked",
