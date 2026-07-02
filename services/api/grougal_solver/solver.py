@@ -435,7 +435,7 @@ class DeterministicSolver:
 
                 # Phase-3 fixtures enumerate Indécision to an adjacent pillar cell.
                 # For pillar-targeted spells, destination occupancy remains profile-controlled.
-                if action["targetKind"] == "pillar" and destination in pillar_by_cell:
+                if destination in pillar_by_cell:
                     occupancy = profile["movement"][spell].get("destinationOccupancy", "unknown")
                     if occupancy == "invalid":
                         continue
@@ -526,7 +526,7 @@ class DeterministicSolver:
                 rules.append("R-016")
                 move_distance = 3
             target_distance = self._aligned_steps(dx, dy)
-            if target_distance is not None and target_distance < move_distance:
+            if target_distance is not None and target_distance <= move_distance:
                 behaviour = cfg.get("shortRangeBehaviour")
                 if behaviour == "unknown":
                     rules.extend(["R-016", "ATTRACTION-SHORT-RANGE"])

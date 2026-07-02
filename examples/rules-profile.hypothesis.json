@@ -60,7 +60,7 @@
       "destinationOccupancy": "invalid"
     },
     "reflection": {
-      "targetPillarType": "matching_spell_type",
+      "targetPillarType": "any_pillar",
       "rangeMetric": "aligned_steps",
       "minRange": 2,
       "maxRange": 2,
@@ -71,7 +71,7 @@
       "edgeMode": "invalid"
     },
     "repulsion": {
-      "targetPillarType": "matching_spell_type",
+      "targetPillarType": "any_pillar",
       "rangeMetric": "aligned_steps",
       "minRange": 1,
       "maxRange": 2,
@@ -86,7 +86,7 @@
       "edgeMode": "invalid"
     },
     "attraction": {
-      "targetPillarType": "matching_spell_type",
+      "targetPillarType": "any_pillar",
       "rangeMetric": "aligned_steps",
       "minRange": 1,
       "maxRange": 6,
