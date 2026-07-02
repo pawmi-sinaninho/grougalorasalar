@@ -1,6 +1,7 @@
 .git/
 .agents/
 .codex/
+.codex-deps/
 .venv/
 **/.pytest_cache/
 **/__pycache__/
