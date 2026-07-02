@@ -113,7 +113,7 @@ def test_rules_profile_encodes_verified_target_geometry() -> None:
 
     reflection = profile["movement"]["reflection"]
     assert reflection["targetPillarType"] == "any_pillar"
-    assert reflection["rangeMetric"] == "aligned_steps"
+    assert reflection["rangeMetric"] == "manhattan"
     assert reflection["minRange"] == reflection["maxRange"] == 2
     assert reflection["alignment"] == "cardinal_or_diagonal"
 
@@ -160,7 +160,12 @@ def test_indecision_targets_only_four_adjacent_empty_cells() -> None:
 
 
 def test_reflet_targets_exactly_the_eight_radius_two_pillar_cells() -> None:
-    expected = {(2 * dx, 2 * dy) for dx, dy in EIGHT_DIRECTIONS}
+    expected = {
+        (x, y)
+        for x in range(-2, 3)
+        for y in range(-2, 3)
+        if abs(x) + abs(y) == 2
+    }
     pillars = [
         _pillar(f"P{index:02d}", cell, "attraction")
         for index, cell in enumerate(sorted(expected), start=1)

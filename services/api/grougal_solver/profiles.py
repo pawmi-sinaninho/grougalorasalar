@@ -90,7 +90,7 @@ def validate_profile(profile: dict[str, Any]) -> None:
         },
         "reflection": {
             "targetPillarType": "any_pillar",
-            "rangeMetric": "aligned_steps",
+            "rangeMetric": "manhattan",
             "minRange": 2,
             "maxRange": 2,
             "alignment": "cardinal_or_diagonal",

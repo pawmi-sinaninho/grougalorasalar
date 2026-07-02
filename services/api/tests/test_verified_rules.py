@@ -122,13 +122,17 @@ def test_indecision_rejects_an_occupied_destination() -> None:
 def test_reflet_accepts_any_pillar_at_exact_two_cardinal_or_diagonal() -> None:
     solver = DeterministicSolver(PROJECT_ROOT)
     profile = _profile()
-    for target in ((2, 0), (2, 2)):
+    for target in ((2, 0), (1, 1)):
         pillar = {"id": "P", "cell": {"x": target[0], "y": target[1]}, "spellType": "attraction"}
         action = solver._pillar_action("reflection", (0, 0), pillar, profile)
         assert action is not None
-    assert solver._pillar_action(
-        "reflection", (0, 0), {"id": "P", "cell": {"x": 1, "y": 0}, "spellType": "attraction"}, profile
-    ) is None
+    for target in ((1, 0), (2, 2)):
+        assert solver._pillar_action(
+            "reflection",
+            (0, 0),
+            {"id": "P", "cell": {"x": target[0], "y": target[1]}, "spellType": "attraction"},
+            profile,
+        ) is None
 
 
 def test_rejet_truncates_at_obstacle_and_map_edge() -> None:

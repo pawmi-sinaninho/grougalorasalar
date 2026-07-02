@@ -285,7 +285,7 @@
       "name": "reflection_range_metric",
       "status": "verified_direct_observation",
       "critical": true,
-      "statement": "Reflet targets exactly one of eight cardinal or diagonal ray cells at aligned distance 2."
+      "statement": "Reflet targets exactly one of the eight cells on the Manhattan-distance-2 ring around the player."
     },
     {
       "id": "R-041",

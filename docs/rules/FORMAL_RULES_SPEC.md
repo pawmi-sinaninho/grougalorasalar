@@ -63,7 +63,7 @@ The target must be inside the arena and free. Diagonal, pillar-occupied and obst
 
 ### R-020 — Reflet
 
-Target an any-colour pillar at exact aligned range 2 on one of the eight cardinal or diagonal rays, and move symmetrically across it. These are exactly eight possible target cells relative to the current player cell.
+Target an any-colour pillar on the exact Manhattan-distance-2 ring and move symmetrically across it. The eight possible relative target cells are `(±2,0)`, `(0,±2)` and `(±1,±1)`.
 
 Base formula:
 
