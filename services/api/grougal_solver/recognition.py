@@ -41,6 +41,10 @@ def blank_given(project_root: Path) -> dict[str, Any]:
             "criticalFieldsConfirmed": False,
             "multiplayerDetected": False,
             "pillarSetComplete": False,
+            "pillarHypothesisUsable": False,
+            "glyphHypothesisUsable": False,
+            "solverInputComplete": False,
+            "recognitionValidated": False,
             "modelCalibrationStatus": "unvalidated",
         },
         "profileOverrides": {},
@@ -116,13 +120,15 @@ def baseline_recognition(
             reason="FAST-PATH-PILLARS" if state["pillars"] else "MODEL-001",
         )
     )
+    completeness = result.get("pillarCompleteness") or {}
+    possible_missing = list(completeness.get("possibleMissingPillars") or [])
     observations.append(
         _obs(
             "pillars.complete",
-            False,
-            min(pillar_confidence, 0.79),
-            "independent_candidate_cell_scan_requires_review",
-            reason="VISION-PILLAR-SET-INCOMPLETE",
+            not possible_missing,
+            float(completeness.get("pillarSetCompletenessConfidence") or 0.0),
+            str(completeness.get("method") or "independent_candidate_cell_scan"),
+            reason="VISION-PILLAR-POSSIBLE-MISSING" if possible_missing else "VISION-PILLAR-CROSS-CHECK",
         )
     )
 
@@ -171,13 +177,29 @@ def baseline_recognition(
     spell_bar = recognise_spell_bar(image_path)
     if spell_bar:
         state["resources"]["spells"] = deep_copy(spell_bar["spells"])
-    glyph_complete = bool(glyph and glyph.get("completenessStatus") == "provisional_complete")
-    automatic_ready = bool(
-        result.get("matchedFixtureId") and player and state["pillars"] and glyph_complete
+    glyph_usable = bool(
+        glyph
+        and glyph.get("templateId")
+        and glyph.get("confirmedBlackCells")
+        and glyph.get("confirmedWhiteCells")
     )
-    state["flags"]["pillarSetComplete"] = automatic_ready
-    state["flags"]["anchorConfirmed"] = glyph_complete or automatic_ready
-    state["flags"]["criticalFieldsConfirmed"] = automatic_ready
+    pillar_usable = bool(state["pillars"])
+    solver_input_complete = bool(
+        registration.get("accepted") and player and pillar_usable and glyph_usable
+    )
+    recognition_validated = bool(
+        solver_input_complete
+        and not possible_missing
+        and not (glyph or {}).get("unknownCandidateCells")
+        and float((glyph or {}).get("confidence") or 0.0) >= 0.95
+        and float(completeness.get("pillarSetCompletenessConfidence") or 0.0) >= 0.95
+    )
+    state["flags"]["pillarSetComplete"] = recognition_validated
+    state["flags"]["pillarHypothesisUsable"] = pillar_usable
+    state["flags"]["anchorConfirmed"] = glyph_usable
+    state["flags"]["glyphHypothesisUsable"] = glyph_usable
+    state["flags"]["solverInputComplete"] = solver_input_complete
+    state["flags"]["recognitionValidated"] = recognition_validated
     observations.extend(
         [
             _obs("resources.actionBudget", 12, 1.0, "authoritative_rules_profile"),
@@ -212,7 +234,11 @@ def baseline_recognition(
             "glyphPattern": deep_copy(result.get("glyphPattern")),
             "spellBar": deep_copy(spell_bar),
         },
-        "automaticCriticalConfirmation": automatic_ready,
+        "automaticCriticalConfirmation": recognition_validated,
+        "recognitionComplete": bool(registration.get("accepted")),
+        "solverInputComplete": solver_input_complete,
+        "recognitionValidated": recognition_validated,
+        "pillarCompleteness": deep_copy(completeness),
         "ocrInvoked": False,
     }
     return state, observations, recognition

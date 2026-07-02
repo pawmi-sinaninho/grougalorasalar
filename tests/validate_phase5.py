@@ -102,16 +102,19 @@ for rel in required_docs:
     assert p.exists() and p.stat().st_size > 800, rel
 
 master = (ROOT / "MASTER_SPEC.md").read_text(encoding="utf-8")
-assert any(version in master for version in ("**Version:** 0.6.0", "**Version:** 0.7.0", "**Version:** 0.8.0", "**Version:** 0.9.0"))
+assert any(version in master for version in ("**Version:** 0.6.0", "**Version:** 0.7.0", "**Version:** 0.8.0", "**Version:** 0.9.0", "**Version:** 1.0.0"))
 assert "Phase 5 — Complete Pre-Live Technical & Visual Specification" in master
 assert "## 68. Phase-5 acceptance result" in master
 assert any(next_phase in master for next_phase in ("Immediate next phase: Phase 6", "Immediate next phase: Phase 7", "Immediate next phase: Phase 7B"))
 
 status = (ROOT / "CURRENT_STATUS.md").read_text(encoding="utf-8")
-assert any(version in status for version in ("Version:** 0.6.0", "Version:** 0.7.0", "Version:** 0.8.0", "Version:** 0.9.0"))
-assert any(phase in status for phase in ("First Pre-Live Implementation", "Browser-first Fast Recognition", "Canonical Arena Mask", "Boundary Refinement", "7B-R"))
+assert any(version in status for version in ("Version:** 0.6.0", "Version:** 0.7.0", "Version:** 0.8.0", "Version:** 0.9.0", "Version:** 1.0.0"))
+assert any(phase in status for phase in ("First Pre-Live Implementation", "Browser-first Fast Recognition", "Canonical Arena Mask", "Boundary Refinement", "7B-R", "ZERO-INPUT"))
 
 next_step = (ROOT / "NEXT_STEP.md").read_text(encoding="utf-8")
-assert "MODEL-001" in next_step and ("manual" in next_step.lower() or "validation" in next_step.lower())
+assert (
+    ("MODEL-001" in next_step and ("manual" in next_step.lower() or "validation" in next_step.lower()))
+    or ("provisional_solution" in next_step and "corpus" in next_step.lower())
+)
 
 print("PASS: Phase-4 regression plus Phase-5 architecture, API, UI, privacy, testing, deployment and Phase-6 backlog contracts validated.")

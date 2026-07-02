@@ -12,6 +12,8 @@ from typing import Any
 import cv2
 import numpy as np
 
+from .glyph_features import build_template, patch_features
+from .pillar_completeness import scan_pillar_completeness
 from .util import load_json
 
 
@@ -146,6 +148,21 @@ class FastRecognitionEngine:
             self.automatic_object_cells = list(self.candidate_cells)
         self.automatic_object_cell_set = set(self.automatic_object_cells)
 
+        empty_path = project_root / "assets" / "reference" / "empty_arena.jpeg"
+        empty = cv2.imread(str(empty_path), cv2.IMREAD_COLOR)
+        empty_registration = self.register(empty) if empty is not None else None
+        if empty_registration and empty_registration.accepted and empty_registration.affine_image_to_reference is not None:
+            self.neutral_reference = cv2.warpAffine(
+                empty,
+                empty_registration.affine_image_to_reference,
+                (self.reference_width, self.reference_height),
+                flags=cv2.INTER_LINEAR,
+                borderMode=cv2.BORDER_REPLICATE,
+            )
+        else:
+            self.neutral_reference = self.reference.copy()
+        self._black_glyph_template, self._white_glyph_template = self._build_glyph_templates()
+
         self.fixture_catalog = load_json(project_root / "data" / "vision" / "real-screenshot-fixtures.v0.8.0.json")
         self.glyph_appearance = load_json(
             project_root / "data" / "vision" / "glyph-appearance-reference.v1.0.0.json"
@@ -197,11 +214,24 @@ class FastRecognitionEngine:
         warp_ms = _ms(warp_started)
 
         sampling_started = time.perf_counter()
+        pillar_started = time.perf_counter()
         pillars = self.detect_pillars(canonical)
+        completeness = scan_pillar_completeness(
+            canonical,
+            self.neutral_reference,
+            self.automatic_object_cells,
+            {(int(item["cell"]["x"]), int(item["cell"]["y"])) for item in pillars},
+            REFERENCE_ORIGIN,
+            REFERENCE_BASIS_X,
+            REFERENCE_BASIS_Y,
+        )
+        pillar_ms = _ms(pillar_started)
         # Detect the blue-based player independently before resolving cell conflicts.
         # A compressed/bordered blue base can otherwise be misread as a repulsion
         # glyph and incorrectly suppress the stronger player signal on that cell.
+        player_started = time.perf_counter()
         player = self.detect_player(canonical, set())
+        player_ms = _ms(player_started)
         if player is not None:
             player_cell = (int(player["cell"]["x"]), int(player["cell"]["y"]))
             pillars = [
@@ -214,7 +244,9 @@ class FastRecognitionEngine:
         }
         if player is not None:
             occupied_cells.add((int(player["cell"]["x"]), int(player["cell"]["y"])))
+        glyph_started = time.perf_counter()
         glyph = self.detect_glyphs(canonical, occupied_cells=occupied_cells)
+        glyph_ms = _ms(glyph_started)
         sampling_ms = _ms(sampling_started)
 
         fixture_started = time.perf_counter()
@@ -228,6 +260,7 @@ class FastRecognitionEngine:
             "registration": registration.public(),
             "player": player,
             "pillars": pillars,
+            "pillarCompleteness": completeness,
             "glyphPattern": glyph,
             "matchedFixtureId": fixture["fixtureId"] if fixture else None,
             "fixtureMatchDistance": fixture_distance,
@@ -237,6 +270,9 @@ class FastRecognitionEngine:
                 "registrationMs": registration_ms,
                 "canonicalWarpMs": warp_ms,
                 "cellSamplingMs": sampling_ms,
+                "pillarMs": pillar_ms,
+                "playerMs": player_ms,
+                "glyphMs": glyph_ms,
                 "fixtureMatchMs": fixture_ms,
                 "totalRecognitionMs": _ms(total_started),
                 "ocrInvoked": False,
@@ -278,6 +314,8 @@ class FastRecognitionEngine:
             if cx - 30 < 0 or cx + 31 > hsv.shape[1] or cy - 13 < 0 or cy + 14 > hsv.shape[0]:
                 continue
             patch = hsv[cy - 13 : cy + 14, cx - 30 : cx + 31]
+            colour_patch = canonical[cy - 13 : cy + 14, cx - 30 : cx + 31]
+            neutral_patch = self.neutral_reference[cy - 13 : cy + 14, cx - 30 : cx + 31]
             yy, xx = np.mgrid[-13:14, -30:31]
             radius = np.abs(xx) / 30.0 + np.abs(yy) / 13.0
             inner = radius <= 0.74
@@ -303,6 +341,12 @@ class FastRecognitionEngine:
                     "medianValue": median_value,
                     "medianSaturation": median_saturation,
                     "occupied": cell in occupied_cells,
+                    "features": patch_features(
+                        colour_patch,
+                        neutral_patch,
+                        self._black_glyph_template,
+                        self._white_glyph_template,
+                    ),
                 }
             )
 
@@ -319,8 +363,28 @@ class FastRecognitionEngine:
             if low_fraction < presence_min:
                 continue
             strength = min(1.0, (low_fraction - presence_min) / max(0.01, 1.0 - presence_min) + 0.45)
-            colour = "black" if float(sample["medianValue"]) < dark_value_max else "white"
-            classified[cell] = (colour, strength)
+            features = sample["features"]
+            black_evidence = (
+                0.38 * features["blackTemplateSimilarity"]
+                + 0.24 * max(0.0, -features["lightnessDelta"] * 4.0)
+                + 0.18 * min(1.0, features["labDelta"] * 4.0)
+                + 0.12 * min(1.0, features["gradientDelta"])
+                + 0.08 * strength
+            )
+            white_evidence = (
+                0.38 * features["whiteTemplateSimilarity"]
+                + 0.24 * max(0.0, features["lightnessDelta"] * 4.0)
+                + 0.18 * min(1.0, features["labDelta"] * 4.0)
+                + 0.12 * min(1.0, features["gradientDelta"])
+                + 0.08 * strength
+            )
+            # Appearance medians remain one weak vote, never the decision by themselves.
+            if float(sample["medianValue"]) < dark_value_max:
+                black_evidence += 0.28
+            else:
+                white_evidence += 0.28
+            colour = "black" if black_evidence >= white_evidence else "white"
+            classified[cell] = (colour, max(strength, black_evidence, white_evidence))
 
         scored_templates: list[
             tuple[
@@ -377,13 +441,28 @@ class FastRecognitionEngine:
         key = lambda item: (item["x"] + item["y"], item["x"], item["y"])
         black = sorted((_cell_dict(cell) for cell in black_cells), key=key)
         white = sorted((_cell_dict(cell) for cell in white_cells), key=key)
+        phase_scores = [
+            {"phase": item[1], "score": round(item[0], 6), "precision": round(item[4], 6)}
+            for item in scored_templates
+        ]
+        alternatives = []
+        if len(scored_templates) > 1 and margin < 0.12:
+            alternative = scored_templates[1]
+            alternatives.append(
+                {
+                    "phase": alternative[1],
+                    "score": round(alternative[0], 6),
+                    "blackCells": [_cell_dict(cell) for cell in sorted(alternative[2])],
+                    "whiteCells": [_cell_dict(cell) for cell in sorted(alternative[3])],
+                }
+            )
         return {
             "anchorCell": {"x": 0, "y": 0},
             "confirmedBlackCells": black,
             "confirmedWhiteCells": white,
             "unknownCandidateCells": [_cell_dict(cell) for cell in unresolved],
             "completenessStatus": "provisional_complete" if not unresolved else "review_required",
-            "classifier": "registered_cell_appearance_then_geometry_v3",
+            "classifier": "background_normalised_multifeature_phase_v4",
             "templateId": template_id,
             "confidence": round(min(0.995, 0.70 + 0.20 * precision + 0.10 * min(margin / 0.20, 1.0)), 6),
             "templateScore": round(score, 6),
@@ -395,7 +474,47 @@ class FastRecognitionEngine:
             "observedWhiteCells": [
                 _cell_dict(cell) for cell, item in classified.items() if item[0] == "white"
             ],
+            "occludedCells": [_cell_dict(cell) for cell in unresolved],
+            "cellScores": [
+                {"cell": _cell_dict(cell), **sample["features"], "visibility": "partial" if sample["occupied"] else "visible"}
+                for cell, sample in sorted(by_cell.items())
+            ],
+            "phaseScores": phase_scores,
+            "selectedPhase": template_id,
+            "secondBestPhase": scored_templates[1][1] if len(scored_templates) > 1 else None,
+            "scoreMargin": round(margin, 6),
+            "alternatives": alternatives,
+            "methods": [
+                "neutral_cell_lab_delta",
+                "neutral_cell_saturation_delta",
+                "gradient_structure",
+                "reference_patch_template_similarity",
+                "global_phase_scoring",
+                "occlusion_masking",
+            ],
+            "reasonCodes": ["GLYPH-MULTIFEATURE-PHASE"],
         }
+
+    def _build_glyph_templates(self) -> tuple[np.ndarray | None, np.ndarray | None]:
+        reference_turn = load_json(self.project_root / "data" / "arena" / "reference-turn.manual.json")
+        pattern = reference_turn["glyphPattern"]
+
+        def patches(cells: list[dict[str, int]]) -> list[tuple[np.ndarray, np.ndarray]]:
+            result: list[tuple[np.ndarray, np.ndarray]] = []
+            for cell in cells:
+                centre = REFERENCE_ORIGIN + int(cell["x"]) * REFERENCE_BASIS_X + int(cell["y"]) * REFERENCE_BASIS_Y
+                cx, anchor_y = np.rint(centre).astype(int)
+                cy = int(anchor_y - 17)
+                current = self.reference[cy - 13 : cy + 14, cx - 30 : cx + 31]
+                neutral = self.neutral_reference[cy - 13 : cy + 14, cx - 30 : cx + 31]
+                if current.shape == (27, 61, 3) and neutral.shape == current.shape:
+                    result.append((current, neutral))
+            return result
+
+        return (
+            build_template(patches(pattern["physicalBlackCells"])),
+            build_template(patches(pattern["physicalWhiteCells"])),
+        )
 
     @staticmethod
     def _partial_glyph_result(

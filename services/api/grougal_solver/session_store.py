@@ -144,7 +144,15 @@ class SessionStore:
         state = document["state"]
         if recommendation:
             status = recommendation["status"]
-            if status in {"solved", "confirmation_required", "no_safe_solution"}:
+            if status in {
+                "solved",
+                "provisional_solution",
+                "ambiguous_input",
+                "no_safe_solution",
+                "invalid_screenshot",
+                "blocked_missing_data",
+                "capacity_error",
+            }:
                 state = status
             elif status == "blocked_unverified_rule":
                 state = "rules_blocked"

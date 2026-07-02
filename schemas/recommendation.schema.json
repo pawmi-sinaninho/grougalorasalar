@@ -23,11 +23,22 @@
     "status": {
       "enum": [
         "solved",
+        "provisional_solution",
+        "ambiguous_input",
+        "invalid_screenshot",
+        "blocked_missing_data",
+        "capacity_error",
         "confirmation_required",
         "blocked_unverified_rule",
         "no_safe_solution",
         "invalid_state"
       ]
+    },
+    "solverStatus": {
+      "type": "string"
+    },
+    "hypothesisSummary": {
+      "type": "object"
     },
     "statusReasonCodes": {
       "type": "array",
@@ -111,6 +122,12 @@
           },
           "instruction": {
             "type": "string"
+          },
+          "pathCells": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/cell"
+            }
           }
         },
         "additionalProperties": false

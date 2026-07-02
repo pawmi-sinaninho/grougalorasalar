@@ -135,11 +135,12 @@ def apply_command(document: dict[str, Any], command: dict[str, Any]) -> dict[str
 
 def validate_turn_state(state: dict[str, Any]) -> list[str]:
     reasons: list[str] = []
-    if not state["flags"].get("criticalFieldsConfirmed"):
+    flags = state["flags"]
+    if not flags.get("criticalFieldsConfirmed") and not flags.get("solverInputComplete"):
         reasons.append("MODEL-001")
-    if not state["flags"].get("pillarSetComplete"):
+    if not flags.get("pillarSetComplete") and not flags.get("pillarHypothesisUsable"):
         reasons.append("VISION-PILLAR-SET-INCOMPLETE")
-    if not state["flags"].get("anchorConfirmed"):
+    if not flags.get("anchorConfirmed"):
         reasons.append("S-BLOCK-ANCHOR")
     if state["resources"].get("actionBudget") is None:
         reasons.append("S-BLOCK-ACTION-BUDGET")

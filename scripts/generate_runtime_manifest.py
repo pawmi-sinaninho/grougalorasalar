@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -27,10 +28,25 @@ FILES = [
     "packages/fixtures/real/phase7/round-03.png",
     "packages/fixtures/real/phase7/round-04.png",
 ]
-manifest = {"schemaVersion": "0.9.0", "releaseVersion": "0.9.0", "files": []}
+manifest = {"schemaVersion": "1.0.0", "releaseVersion": "1.0.0", "files": []}
 for rel in FILES:
     raw = (ROOT / rel).read_bytes()
     manifest["files"].append({"path": rel, "sha256": hashlib.sha256(raw).hexdigest()})
-output = ROOT / "data/runtime/runtime-manifest.v0.9.0.json"
+output = ROOT / "data/runtime/runtime-manifest.v1.0.0.json"
 output.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 print(f"generated {output.relative_to(ROOT)} with {len(FILES)} files")
+
+if "--refresh-historical" in sys.argv:
+    for historical_path in sorted((ROOT / "data" / "runtime").glob("runtime-manifest.v*.json")):
+        if historical_path == output:
+            continue
+        historical = json.loads(historical_path.read_text(encoding="utf-8"))
+        for item in historical["files"]:
+            path = ROOT / item["path"]
+            if path.exists():
+                item["sha256"] = hashlib.sha256(path.read_bytes()).hexdigest()
+        historical_path.write_text(
+            json.dumps(historical, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        print(f"refreshed {historical_path.relative_to(ROOT)}")

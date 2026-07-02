@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import os
 import secrets
+import time
 from pathlib import Path
 from typing import Any
 
@@ -20,7 +21,8 @@ from .image_ingest import UploadRejected, normalise_image
 from .overlay import render_annotated
 from .recognition import baseline_recognition
 from .session_store import SessionError, SessionStore
-from .solver import CapacityExceeded, DeterministicSolver
+from .solver import DeterministicSolver
+from .turn_analysis import analyse_turn
 from .util import load_json
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
@@ -33,7 +35,7 @@ if FIXTURE_MODE and ENVIRONMENT in {"preview", "production"}:
 store = SessionStore(RUNTIME_ROOT)
 solver = DeterministicSolver(PROJECT_ROOT)
 fast_engine = get_fast_engine(PROJECT_ROOT)
-app = FastAPI(title="Grougalorasalar Solver API", version="0.9.0")
+app = FastAPI(title="Grougalorasalar Solver API", version="1.0.0")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[origin for origin in os.environ.get("GS_ALLOWED_ORIGINS", "http://localhost:3000").split(",") if origin],
@@ -120,6 +122,39 @@ def _envelope(document: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _solve_document(analysis_id: str, document: dict[str, Any]) -> dict[str, Any]:
+    result, solver_ms = analyse_turn(
+        solver,
+        document["turnState"],
+        document.get("recognition") or {},
+    )
+    internal_timings = result.pop("_internalTimings", {})
+    document.setdefault("performance", {})["solverMs"] = internal_timings.get("solverMs", solver_ms)
+    document["performance"]["hypothesisMs"] = internal_timings.get("hypothesisMs", 0.0)
+    document["recommendation"] = result
+    if result["status"] in {"solved", "provisional_solution"}:
+        document["fight"] = stage_transition(document["fight"], result)
+    document["recommendationInvalidated"] = False
+    document["state"] = result["status"]
+    source = store.asset_path(analysis_id, "normalised.png")
+    if source.exists() and result.get("expected", {}).get("finalCell"):
+        overlay_started = time.perf_counter()
+        annotated = store.asset_path(analysis_id, "annotated.png")
+        render_annotated(
+            PROJECT_ROOT,
+            source,
+            annotated,
+            document["turnState"],
+            result,
+            registration=(document.get("recognition") or {}).get("registration"),
+        )
+        document.setdefault("assets", {})["annotated"] = True
+        document["performance"]["overlayMs"] = round(
+            (time.perf_counter() - overlay_started) * 1000.0, 3
+        )
+    return document
+
+
 @app.get("/", response_class=HTMLResponse)
 def root():
     fallback = PUBLIC_DIR / "prelive.html"
@@ -130,7 +165,7 @@ def root():
 
 @app.get("/api/v1/health/live")
 def live():
-    return {"status": "ok", "version": "0.9.0"}
+    return {"status": "ok", "version": "1.0.0"}
 
 
 @app.get("/api/v1/health/ready")
@@ -146,7 +181,7 @@ def ready():
         raise HTTPException(status_code=503, detail={"missing": missing})
     load_json(required[0])
     load_json(required[1])
-    manifest_path = PROJECT_ROOT / "data" / "runtime" / "runtime-manifest.v0.9.0.json"
+    manifest_path = PROJECT_ROOT / "data" / "runtime" / "runtime-manifest.v1.0.0.json"
     manifest = load_json(manifest_path)
     mismatches = []
     for item in manifest["files"]:
@@ -158,7 +193,7 @@ def ready():
         raise HTTPException(status_code=503, detail={"manifestMismatch": mismatches})
     return {
         "status": "ready",
-        "releaseVersion": "0.9.0",
+        "releaseVersion": "1.0.0",
         "modelCalibrationStatus": "unvalidated",
         "automaticCriticalConfirmation": False,
         "fixtureMode": FIXTURE_MODE,
@@ -170,7 +205,7 @@ def ready():
 def meta():
     return {
         "schemaVersion": "0.8.0",
-        "releaseVersion": "0.9.0",
+        "releaseVersion": "1.0.0",
         "supportedLocales": ["fr", "de", "en"],
         "modelCalibrationStatus": "unvalidated",
         "automaticCriticalConfirmation": False,
@@ -265,6 +300,8 @@ async def upload_image(
         }
         document["recommendation"] = None
         document["recommendationInvalidated"] = False
+        if fight["syncStatus"] != "player_mismatch":
+            return _solve_document(analysis_id, document)
         return document
 
     document = store.mutate(
@@ -337,49 +374,7 @@ def solve(
                 "Review all detected fields before solving",
             )
         document["state"] = "solving"
-        import time
-        solver_started = time.perf_counter()
-        try:
-            recognition = document.get("recognition") or {}
-            retained_fixture_proof = (
-                payload.mode == "review"
-                and str(recognition.get("matchedFixtureId") or "").startswith("REAL-P7-")
-                and recognition.get("fixtureMatchDistance") == 0.0
-            )
-            result = solver.solve_given(
-                document["turnState"],
-                fixture_mode=retained_fixture_proof,
-            )
-            result["evidenceMode"] = (
-                "retained_fixture_proof" if retained_fixture_proof else "review_profile"
-            )
-        except CapacityExceeded as exc:
-            raise SessionError("API-CAPACITY-SOLVER", str(exc)) from exc
-        solver_ms = round((time.perf_counter() - solver_started) * 1000.0, 3)
-        document.setdefault("performance", {})["solverMs"] = solver_ms
-        document["recommendation"] = result
-        document["fight"] = stage_transition(document["fight"], result)
-        document["recommendationInvalidated"] = False
-        document["state"] = {
-            "solved": "solved",
-            "confirmation_required": "confirmation_required",
-            "no_safe_solution": "no_safe_solution",
-            "blocked_unverified_rule": "rules_blocked",
-            "invalid_state": "rejected",
-        }[result["status"]]
-        source = store.asset_path(analysis_id, "normalised.png")
-        if source.exists():
-            annotated = store.asset_path(analysis_id, "annotated.png")
-            render_annotated(
-                PROJECT_ROOT,
-                source,
-                annotated,
-                document["turnState"],
-                result,
-                registration=(document.get("recognition") or {}).get("registration"),
-            )
-            document.setdefault("assets", {})["annotated"] = True
-        return document
+        return _solve_document(analysis_id, document)
 
     document = store.mutate(
         analysis_id,

@@ -4,112 +4,112 @@
     {
       "id": "https://example.invalid/grougalorasalar/analysis-event.schema.json",
       "name": "analysis-event.schema.json",
-      "sha256": "82f92590663043686459605a847f7eecc9dc7d196de90946e337efc86a59b662"
+      "sha256": "1a47fdaae3ed84b7c743cd798b6500cb76bfefa4a66c7237c0463d87ad951224"
     },
     {
       "id": "https://example.invalid/grougalorasalar/analysis-session.schema.json",
       "name": "analysis-session.schema.json",
-      "sha256": "bb076c7b1a0ecdcbe327129d2a9067bee406cb500b133ec5f14c8a01433b43e1"
+      "sha256": "27f68b4d8ff8a51f4e633f7b9c6bf1609c22a177fa88ffabb3c001de5f2b39c1"
     },
     {
       "id": "https://example.invalid/grougalorasalar/annotation-record.schema.json",
       "name": "annotation-record.schema.json",
-      "sha256": "faa2d8806bebd2fb4abc05c3a26d250c424f4d5ae62c1a1f6bc24372b37c76ce"
+      "sha256": "93fbb038a56e67eda368b4e089db11b740f8c8aae556897d42bf81e016ce14b8"
     },
     {
       "id": "https://example.invalid/grougalorasalar/api-error.schema.json",
       "name": "api-error.schema.json",
-      "sha256": "976bcc476efdd450000eb505a6320f801bb1b359eaed24620cc649e9ea3bc37e"
+      "sha256": "66a19a00652245a3f3978fa3e9b4f0e9b4d82ad28bfdf20b4d30bbb481bb0646"
     },
     {
       "id": "https://example.invalid/grougalorasalar/arena-model.schema.json",
       "name": "arena-model.schema.json",
-      "sha256": "426a308d7e2a72acc6e5c386efadd0a8f59cd552c1cc232b3e13b9f9b27735bc"
+      "sha256": "b0d3538140d6673c770892d8a01509d129bdcb0a7557ab3cbdc25c5cdb5dfeb7"
     },
     {
       "id": "https://example.invalid/grougalorasalar/canonical-arena-boundary.schema.json",
       "name": "canonical-arena-boundary.schema.json",
-      "sha256": "7af11b03c2f9fc4436efe6a9609a24f2c658fa5c47bc238509bcf2daa47f2344"
+      "sha256": "09d246ba89c5a0e8f5152805add137273f7187e9fbfff03797f33c7b4e53b957"
     },
     {
       "id": "https://example.invalid/grougalorasalar/canonical-arena-cells.schema.json",
       "name": "canonical-arena-cells.schema.json",
-      "sha256": "1af9d73dec456742cce37e1c8116e290db105ebeaa81b0e372035fc4bddb4fea"
+      "sha256": "f6a9f0be9ed41fc9ffee9264e50491ffd4809753882edfea32576b758f067edb"
     },
     {
       "id": "https://example.invalid/grougalorasalar/editor-command.schema.json",
       "name": "editor-command.schema.json",
-      "sha256": "c3b7116434e37181b24d18aebb212c0181ec3604567e08ef91318d1610786fa7"
+      "sha256": "c2ed90940df395d1b70f8e73067d24608cbdd62c0963e83386c50da769888496"
     },
     {
       "id": "https://example.invalid/grougalorasalar/legal-action.schema.json",
       "name": "legal-action.schema.json",
-      "sha256": "9a3b598a9b1df6aed494168d2bcd1bdeb5633832d294a45450f27472701c25bd"
+      "sha256": "60cdd27309664ece3dcf17dac591ca7852644fc64f1cd6adb9a9915e373e4c2b"
     },
     {
       "id": "https://example.invalid/grougalorasalar/manual-editor-session.schema.json",
       "name": "manual-editor-session.schema.json",
-      "sha256": "2b1a3686b36456a2034e4980b3892810da2e813815b734db5ad8fe2c24ad7045"
+      "sha256": "f5129ea79d9415a89438dbad46446b29ee1f5843048dad93b7725365d0b11b13"
     },
     {
       "id": "https://example.invalid/grougalorasalar/overlay-document.schema.json",
       "name": "overlay-document.schema.json",
-      "sha256": "4653414ef61eb8114fbb2a5574a7ee1b522c563d824efd5405dc0cb480723e90"
+      "sha256": "9b5d795f907bc6f4bebc662de8b98fff709dc840de07ca2f9219b0f4c35c80db"
     },
     {
       "id": "https://grougalorasalar.local/schemas/real-screenshot-fixture.schema.json",
       "name": "real-screenshot-fixture.schema.json",
-      "sha256": "b7e11d8225e033f5190e5138deb96e8c5a57649a2f95fae0fb5ca3ce02108ad8"
+      "sha256": "7218e7d5916d31782642c4029998f1f70eaa708772f8b11089bc5ae27b1691ed"
     },
     {
       "id": "https://example.invalid/grougalorasalar/recognition-result.schema.json",
       "name": "recognition-result.schema.json",
-      "sha256": "7954b6c1e402626b91f59923960a39a215fd1d39c343094c591209fd17f22204"
+      "sha256": "1985b30804569ccc09e879d6cc3343298a7cdf42194973adfda7e68428ca65b5"
     },
     {
       "id": "https://example.invalid/grougalorasalar/recommendation.schema.json",
       "name": "recommendation.schema.json",
-      "sha256": "ef4ec1a83a0ad54451e679f56a83bfac273c0f05258b6551c39aebe9b07bdd99"
+      "sha256": "b63d0a50b135b4a22a1f0c2a5287005469c5e1c983d5f45a9e3c614d0c2e216a"
     },
     {
       "id": "https://example.invalid/grougalorasalar/resolution-trace.schema.json",
       "name": "resolution-trace.schema.json",
-      "sha256": "74301afa377bb16177b26369969e597180ad716e47be3d712c3c11cea3766d82"
+      "sha256": "25799a7a32eb1dca814339d45931647363fe76aefc4aa1a582fadf0e498ca630"
     },
     {
       "id": "https://example.invalid/grougalorasalar/rules-profile.schema.json",
       "name": "rules-profile.schema.json",
-      "sha256": "b766d2575738c1ea9a7563c770e069af4f70354d0d72f53d830ad62b159f5956"
+      "sha256": "8a323cdc4432882f09a2bf32dc4c4a1fa8b957a9c7dd12d299232604ccce1275"
     },
     {
       "id": "https://example.invalid/grougalorasalar/solver-fixture-catalog.schema.json",
       "name": "solver-fixture-catalog.schema.json",
-      "sha256": "8124573b1c62192274c4a1c5283b5987853ee7519f46926c7ddde3f47ec53544"
+      "sha256": "81188345b01b3d890ac61a9db46339a526cab381a18ddc6de78daa4a3ec807ae"
     },
     {
       "id": "https://example.invalid/grougalorasalar/solver-request.schema.json",
       "name": "solver-request.schema.json",
-      "sha256": "0cc0763ffe7eaae13395b56786ed87e798d52f0d66da9fe9dcb425c6d9b5ebc8"
+      "sha256": "3060b2371e2e28e5a349f405307dbc932010984c91bec41a3a66abbdeb5dd68a"
     },
     {
       "id": "https://example.invalid/grougalorasalar/turn-state.schema.json",
       "name": "turn-state.schema.json",
-      "sha256": "8c35426e9bfbee9aad0aa4c0554a121b889b60775ade68826a7c872c37589075"
+      "sha256": "dd1a9f7dae6ce43e37ac0a6aaf1eebeae93c75c4e7da5713a5db0f605526bd3b"
     },
     {
       "id": "https://example.invalid/grougalorasalar/verification-observation.schema.json",
       "name": "verification-observation.schema.json",
-      "sha256": "201196b03fe16f5caae9ec6243c93d08cf4c0e04eae36ec27252f0300c3cfedc"
+      "sha256": "f0fec5276a4aa0f8f3a963524ea51bde741272ca7f3670756f882fb4b5ce3275"
     },
     {
       "id": "https://example.invalid/grougalorasalar/visual-fixture-catalog.schema.json",
       "name": "visual-fixture-catalog.schema.json",
-      "sha256": "2e1a988be50e5540bbb595e4909caa57f8a13ef21a5116697847c721098f373e"
+      "sha256": "ea2cf0c48aff61c0eb9d0a327a419f0d9a7f5c7347863a1122ee6f0484659147"
     },
     {
       "id": "https://example.invalid/grougalorasalar/visual-observation.schema.json",
       "name": "visual-observation.schema.json",
-      "sha256": "fe2c4239dd528a18f3945ee0efdf20bc98fbcf18a29f0e426e0ae7ce43138566"
+      "sha256": "7c9d5e78d0482f402d8a70729e415b61034a099830851d498add7b8664e6f5b2"
     }
   ]
 }

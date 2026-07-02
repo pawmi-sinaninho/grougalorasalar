@@ -84,12 +84,15 @@ def test_real_screenshots_use_pixel_glyph_classifier_instead_of_fixture_annotati
         glyph = result["glyphPattern"]
         template_id = expected_templates[fixture["fixtureId"]]
         expected_black, expected_white = templates[template_id]
-        assert glyph["classifier"] == "registered_cell_appearance_then_geometry_v3"
+        assert glyph["classifier"] == "background_normalised_multifeature_phase_v4"
         assert glyph["templateId"] == template_id
         assert {(item["x"], item["y"]) for item in glyph["confirmedBlackCells"]} == expected_black
         assert {(item["x"], item["y"]) for item in glyph["confirmedWhiteCells"]} == expected_white
         assert glyph["observedBlackCells"]
         assert glyph["observedWhiteCells"]
+        assert glyph["cellScores"]
+        assert "neutral_cell_lab_delta" in glyph["methods"]
+        assert glyph["phaseScores"][0]["phase"] == template_id
 
 
 def test_user_supplied_glyph_appearance_profile_separates_black_and_white() -> None:
@@ -137,9 +140,10 @@ def test_all_five_real_screenshots_enter_the_pipeline_without_pixel_data_reachin
         assert "affine" not in serialized
         assert recognition["registration"]["referenceToImageAffine"] is not None
         blockers = validate_turn_state(state)
-        assert blockers
+        assert blockers == []
         assert state["flags"]["criticalFieldsConfirmed"] is False
         assert recognition["automaticCriticalConfirmation"] is False
+        assert recognition["solverInputComplete"] is True
 
 
 @pytest.mark.parametrize("size", [(1920, 1080), (2560, 1440), (3840, 2160)])
@@ -242,7 +246,26 @@ def test_one_visible_black_and_white_reference_resolve_the_phase() -> None:
     assert result is not None
     assert result["templateId"] == "inner-diagonal"
     assert result["completenessStatus"] == "provisional_complete"
-    assert result["classifier"] == "registered_cell_appearance_then_geometry_v3"
+    assert result["classifier"] == "background_normalised_multifeature_phase_v4"
+
+
+def test_fixture_identity_is_diagnostic_not_solver_readiness(monkeypatch: pytest.MonkeyPatch) -> None:
+    engine = get_fast_engine(PROJECT_ROOT)
+    fixture = _catalog()["fixtures"][0]
+    monkeypatch.setattr(engine, "match_fixture", lambda *args, **kwargs: (None, None, None))
+    path = PROJECT_ROOT / fixture["source"]["path"]
+    state, _, recognition = baseline_recognition(
+        PROJECT_ROOT,
+        path,
+        source_sha256="not-a-known-fixture-hash",
+        source_width=2048,
+        source_height=1151,
+        working_width=2048,
+        working_height=1151,
+    )
+    assert recognition["matchedFixtureId"] is None
+    assert recognition["solverInputComplete"] is True
+    assert validate_turn_state(state) == []
 
 
 def test_web_worker_protocol_exists_and_is_valid_javascript() -> None:

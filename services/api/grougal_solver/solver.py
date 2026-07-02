@@ -95,6 +95,7 @@ class DeterministicSolver:
         fixture_mode: bool = False,
         max_nodes: int = 100_000,
         timeout_seconds: float = 2.0,
+        prune_dominated: bool = False,
     ) -> dict[str, Any]:
         started = time.perf_counter()
         authority = RuleAuthority(self.rule_statuses, focus_rule_ids)
@@ -133,17 +134,48 @@ class DeterministicSolver:
             for spell in SPELLS
         }
 
-        root_definite, root_conditional = self._enumerate_actions(
+        # Geometry depends on the source cell and which numeric spell charges
+        # remain, not on the order used to reach that state. Caching this pure
+        # enumeration removes the dominant repeated pillar/path scan while
+        # preserving the complete deterministic graph.
+        action_cache: dict[
+            tuple[tuple[int, int], tuple[bool, ...]],
+            tuple[list[dict[str, Any]], list[dict[str, Any]]],
+        ] = {}
+
+        def enumerate_node(
+            source: tuple[int, int],
+            cast_counts: dict[str, int],
+            values: dict[str, int | None],
+            remaining_budget: int,
+        ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+            if profile["resources"]["trackingMode"] != "numeric":
+                return self._enumerate_actions(
+                    source, given, profile, arena, pillar_by_cell, cast_counts,
+                    values, remaining_budget, authority, fixture_mode,
+                )
+            key = (
+                source,
+                tuple(
+                    values.get(spell) is not None
+                    and values[spell] >= profile["resources"]["chargeCostPerCast"][spell]
+                    for spell in SPELLS
+                ),
+            )
+            cached = action_cache.get(key)
+            if cached is None:
+                cached = self._enumerate_actions(
+                    source, given, profile, arena, pillar_by_cell, cast_counts,
+                    values, remaining_budget, authority, fixture_mode,
+                )
+                action_cache[key] = cached
+            return cached
+
+        root_definite, root_conditional = enumerate_node(
             current,
-            given,
-            profile,
-            arena,
-            pillar_by_cell,
             {spell: 0 for spell in SPELLS},
             spell_values,
             budget,
-            authority,
-            fixture_mode,
         )
 
         # Some unresolved root actions are themselves sufficient to block.
@@ -161,6 +193,9 @@ class DeterministicSolver:
             ]
         )
         visited: dict[tuple[Any, ...], str] = {}
+        pareto_by_cell: dict[tuple[int, int], list[tuple[int, tuple[int, ...], str]]] = {
+            current: [(budget, tuple(int(spell_values[spell] or 0) for spell in SPELLS), "")]
+        }
         terminal_candidates: list[dict[str, Any]] = []
         conditional_sequences: list[dict[str, Any]] = []
         node_count = 0
@@ -190,17 +225,11 @@ class DeterministicSolver:
             if node.budget < movement_cost:
                 continue
 
-            definite, conditional = self._enumerate_actions(
+            definite, conditional = enumerate_node(
                 node.cell,
-                given,
-                profile,
-                arena,
-                pillar_by_cell,
                 node.cast_counts,
                 node.spell_values,
                 node.budget,
-                authority,
-                fixture_mode,
             )
             for conditional_action in conditional:
                 conditional_sequences.append(
@@ -236,6 +265,23 @@ class DeterministicSolver:
                     tuple(next_values[s] for s in SPELLS),
                 )
                 seq = sequence_key(actions)
+                if prune_dominated and profile["resources"]["trackingMode"] == "numeric":
+                    values_key = tuple(int(next_values[spell] or 0) for spell in SPELLS)
+                    dominated = any(
+                        prior_budget >= next_node.budget
+                        and all(prior >= value for prior, value in zip(prior_values, values_key))
+                        and (
+                            prior_budget > next_node.budget
+                            or prior_values != values_key
+                            or prior_sequence <= seq
+                        )
+                        for prior_budget, prior_values, prior_sequence in pareto_by_cell.get(next_node.cell, [])
+                    )
+                    if dominated:
+                        continue
+                    pareto_by_cell.setdefault(next_node.cell, []).append(
+                        (next_node.budget, values_key, seq)
+                    )
                 previous = visited.get(state_key)
                 if previous is None or seq < previous:
                     visited[state_key] = seq
@@ -353,7 +399,11 @@ class DeterministicSolver:
         spells = given.get("resources", {}).get("spells", {})
         if any(not spells.get(spell, {}).get("confirmed", False) for spell in SPELLS):
             reasons.append("S-BLOCK-SPELL-STATE")
-        if not flags.get("criticalFieldsConfirmed", False) and "S-BLOCK-SPELL-STATE" not in reasons:
+        if (
+            not flags.get("criticalFieldsConfirmed", False)
+            and not flags.get("solverInputComplete", False)
+            and "S-BLOCK-SPELL-STATE" not in reasons
+        ):
             reasons.append("S-BLOCK-CRITICAL-FIELDS")
         return reasons
 
@@ -774,6 +824,10 @@ class DeterministicSolver:
                     {
                         "order": index,
                         **{k: v for k, v in action.items() if k != "conditionalRuleIds"},
+                        "pathCells": self._path_cells(
+                            cell_tuple(action["sourceCell"]),
+                            cell_tuple(action["destinationCell"]),
+                        ),
                         "instruction": f"{action['spell']} → {target}",
                     }
                 )
@@ -836,6 +890,17 @@ class DeterministicSolver:
             "alternatives": alternatives,
             "warnings": [],
         }
+
+    @staticmethod
+    def _path_cells(source: tuple[int, int], destination: tuple[int, int]) -> list[dict[str, int]]:
+        dx, dy = destination[0] - source[0], destination[1] - source[1]
+        steps = max(abs(dx), abs(dy))
+        if steps == 0:
+            return [cell_dict(source)]
+        ux, uy = sign(dx), sign(dy)
+        if dx != 0 and dy != 0 and abs(dx) != abs(dy):
+            return [cell_dict(source), cell_dict(destination)]
+        return [cell_dict((source[0] + index * ux, source[1] + index * uy)) for index in range(steps + 1)]
 
     def _empty_result(self, status: str, reasons: list[str], profile: dict[str, Any]) -> dict[str, Any]:
         return {

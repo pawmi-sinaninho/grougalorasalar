@@ -104,7 +104,7 @@ def test_reference_upload_manual_review_solve_annotate_delete(tmp_path: Path) ->
     )
     assert solved.status_code == 200, solved.text
     solved_body = solved.json()
-    assert solved_body["recommendation"]["status"] in {"solved", "confirmation_required", "blocked_unverified_rule", "no_safe_solution"}
+    assert solved_body["recommendation"]["status"] in {"solved", "provisional_solution", "no_safe_solution"}
     assert solved_body["session"]["assets"]
 
     annotated = client.get(f"/api/v1/analyses/{analysis_id}/asset/annotated", headers=_headers(token))
@@ -169,13 +169,20 @@ def test_real_round_upload_runs_fast_registration_pipeline(tmp_path: Path) -> No
     assert len(envelope["turnState"]["glyphs"]["whiteOffsets"]) == 8
     assert (
         envelope["recognition"]["proposals"]["glyphPattern"]["classifier"]
-        == "registered_cell_appearance_then_geometry_v3"
+        == "background_normalised_multifeature_phase_v4"
     )
     assert envelope["recognition"]["proposals"]["player"]["cell"] == {"x": 1, "y": -1}
     assert len(envelope["recognition"]["proposals"]["pillars"]) == 24
     assert envelope["performance"]["serverScreenshotToStateMs"] < 5_000
     assert envelope["recognition"]["metrics"]["ocrInvoked"] is False
-    assert envelope["session"]["gate"]["status"] == "review_required"
+    assert envelope["session"]["gate"]["status"] == "ready_for_solver"
+    assert envelope["recommendation"]["status"] in {"solved", "provisional_solution"}
+    assert envelope["recommendation"]["actions"]
+    assert envelope["recommendation"]["expected"]["finalCell"]
+    recommendation_schema = json.loads(
+        (PROJECT_ROOT / "schemas" / "recommendation.schema.json").read_text(encoding="utf-8")
+    )
+    Draft202012Validator(recommendation_schema).validate(envelope["recommendation"])
 
 
 def test_nested_full_page_screenshot_keeps_source_resolution_for_recognition(tmp_path: Path) -> None:
@@ -211,7 +218,7 @@ def test_nested_full_page_screenshot_keeps_source_resolution_for_recognition(tmp
     assert len(envelope["turnState"]["glyphs"]["whiteOffsets"]) == 8
 
 
-def test_real_round_confirmed_player_flow_returns_concrete_recommendation(tmp_path: Path) -> None:
+def test_real_round_zero_input_flow_returns_concrete_recommendation(tmp_path: Path) -> None:
     app_module.store = SessionStore(tmp_path / "sessions")
     client = TestClient(app_module.app)
     created = client.post(
@@ -234,40 +241,9 @@ def test_real_round_confirmed_player_flow_returns_concrete_recommendation(tmp_pa
             data={"expectedStateVersion": "0"},
         ).json()
 
-    version = uploaded["session"]["stateVersion"]
-    for kind, payload in [
-        ("accept_detection", {}),
-        ("set_projection_anchor_confirmation", {"confirmed": True}),
-        ("set_pillar_set_complete", {"complete": True}),
-            ("set_action_budget", {"value": 12}),
-    ]:
-        uploaded = _command(client, analysis_id, token, version, kind, payload)
-        version = uploaded["session"]["stateVersion"]
-    for spell in ("indecision", "reflection", "repulsion", "attraction"):
-        uploaded = _command(
-            client,
-            analysis_id,
-            token,
-            version,
-            "set_spell_state",
-            {"spell": spell, "availability": "available", "value": None, "confirmed": True},
-        )
-        version = uploaded["session"]["stateVersion"]
-
     assert uploaded["session"]["gate"]["status"] == "ready_for_solver"
-    solved = client.post(
-        f"/api/v1/analyses/{analysis_id}/solve",
-        headers={**_headers(token), "Content-Type": "application/json"},
-        json={
-            "schemaVersion": "0.8.0",
-            "expectedStateVersion": version,
-            "mode": "review",
-            "confirmedSingleSourceRuleIds": [],
-            "maxAlternatives": 2,
-        },
-    )
-    assert solved.status_code == 200, solved.text
-    recommendation = solved.json()["recommendation"]
-    assert recommendation["status"] in {"solved", "no_safe_solution"}, recommendation
-    assert recommendation["status"] != "blocked_unverified_rule"
-    assert recommendation["evidenceMode"] == "retained_fixture_proof"
+    recommendation = uploaded["recommendation"]
+    assert recommendation["status"] in {"solved", "provisional_solution"}, recommendation
+    assert recommendation["actions"]
+    assert recommendation["expected"]["finalCell"]
+    assert recommendation["hypothesisSummary"]["tacticallyInvariant"] is True

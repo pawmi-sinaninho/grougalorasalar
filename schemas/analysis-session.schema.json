@@ -39,6 +39,11 @@
         "ready_for_solver",
         "solving",
         "solved",
+        "provisional_solution",
+        "ambiguous_input",
+        "invalid_screenshot",
+        "blocked_missing_data",
+        "capacity_error",
         "confirmation_required",
         "no_safe_solution",
         "rejected",
@@ -184,6 +189,11 @@
             "status": {
               "enum": [
                 "solved",
+                "provisional_solution",
+                "ambiguous_input",
+                "invalid_screenshot",
+                "blocked_missing_data",
+                "capacity_error",
                 "confirmation_required",
                 "blocked_unverified_rule",
                 "no_safe_solution",
