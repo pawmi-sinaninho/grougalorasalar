@@ -292,7 +292,9 @@ class FastRecognitionEngine:
         intentionally cell-local and shifted to the visual centre of the
         isometric diamond; the logical anchor itself lies near its lower tip.
         Side lobes keep the signal usable when a pillar or the player covers the
-        middle of a glyph cell.
+        middle of a glyph cell. Reliable black observations select one of four
+        legal phases; the corresponding white positions are then derived from
+        that phase instead of independently confirmed from noisy light patches.
         """
         occupied_cells = occupied_cells or set()
         policy = self.glyph_appearance["classification"]
@@ -398,27 +400,44 @@ class FastRecognitionEngine:
             ]
         ] = []
         for template_id, black_cells, white_cells in GLYPH_TEMPLATES:
-            support = 0.0
-            conflict = 0.0
-            black_support = 0.0
-            white_support = 0.0
-            for cell, (colour, strength) in classified.items():
-                expected = "black" if cell in black_cells else ("white" if cell in white_cells else None)
-                if colour == expected:
-                    support += strength
-                    if colour == "black":
-                        black_support += strength
-                    else:
-                        white_support += strength
-                else:
-                    conflict += strength * (1.15 if expected else 0.72)
-            if black_support == 0.0 or white_support == 0.0:
+            # The four legal black sets are disjoint, so even one reliable black
+            # glyph identifies a phase. White-looking floor patches are common in
+            # screenshots and must never create extra confirmed white glyphs.
+            black_support = sum(
+                strength
+                for cell, (colour, strength) in classified.items()
+                if colour == "black" and cell in black_cells
+            )
+            black_conflict = sum(
+                strength
+                for cell, (colour, strength) in classified.items()
+                if colour == "black" and cell not in black_cells
+            )
+            if black_support == 0.0:
                 continue
-            precision = support / max(0.001, support + conflict)
-            evidence = support + conflict
-            score = precision * min(1.0, evidence / 3.0)
+            observed_expected_black = sum(
+                1
+                for cell, (colour, _strength) in classified.items()
+                if colour == "black" and cell in black_cells
+            )
+            black_precision = black_support / max(0.001, black_support + black_conflict)
+            black_coverage = observed_expected_black / len(black_cells)
+            score = black_precision * (0.80 + 0.20 * black_coverage)
+            white_support = sum(
+                strength
+                for cell, (colour, strength) in classified.items()
+                if colour == "white" and cell in white_cells
+            )
             scored_templates.append(
-                (score, template_id, black_cells, white_cells, precision, black_support, white_support)
+                (
+                    score,
+                    template_id,
+                    black_cells,
+                    white_cells,
+                    black_precision,
+                    black_support,
+                    white_support,
+                )
             )
 
         if not scored_templates:
@@ -428,15 +447,6 @@ class FastRecognitionEngine:
         second_score = scored_templates[1][0] if len(scored_templates) > 1 else 0.0
         margin = score - second_score
         complete = precision >= precision_min and margin >= margin_min
-        if not complete:
-            return self._partial_glyph_result(
-                classified,
-                by_cell,
-                dark_value_max,
-                template_id=template_id,
-                template_score=score,
-                template_margin=margin,
-            )
         unresolved = sorted((black_cells | white_cells) & occupied_cells)
         key = lambda item: (item["x"] + item["y"], item["x"], item["y"])
         black = sorted((_cell_dict(cell) for cell in black_cells), key=key)
@@ -461,10 +471,18 @@ class FastRecognitionEngine:
             "confirmedBlackCells": black,
             "confirmedWhiteCells": white,
             "unknownCandidateCells": [_cell_dict(cell) for cell in unresolved],
-            "completenessStatus": "provisional_complete" if not unresolved else "review_required",
+            "completenessStatus": (
+                "provisional_complete" if complete and not unresolved else "review_required"
+            ),
             "classifier": "background_normalised_multifeature_phase_v4",
             "templateId": template_id,
-            "confidence": round(min(0.995, 0.70 + 0.20 * precision + 0.10 * min(margin / 0.20, 1.0)), 6),
+            "confidence": round(
+                min(
+                    0.995 if complete else 0.89,
+                    0.70 + 0.20 * precision + 0.10 * min(margin / 0.20, 1.0),
+                ),
+                6,
+            ),
             "templateScore": round(score, 6),
             "templateMargin": round(margin, 6),
             "clusterSeparation": round(dark_value_max, 3),
@@ -492,7 +510,11 @@ class FastRecognitionEngine:
                 "global_phase_scoring",
                 "occlusion_masking",
             ],
-            "reasonCodes": ["GLYPH-MULTIFEATURE-PHASE"],
+            "reasonCodes": [
+                "GLYPH-BLACK-DRIVEN-PHASE",
+                "GLYPH-WHITE-GEOMETRY-DERIVED",
+                *([] if complete else ["GLYPH-PHASE-TEMPLATE-RECONSTRUCTED"]),
+            ],
         }
 
     def _build_glyph_templates(self) -> tuple[np.ndarray | None, np.ndarray | None]:

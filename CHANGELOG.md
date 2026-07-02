@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.0.2 - Black-driven glyph phases
+
+- Selected the legal glyph phase from the more reliable black glyph observations.
+- Derived the exact white-glyph positions from that phase instead of promoting noisy white-looking floor patches.
+- Added a regression proving that ten spurious white candidates cannot expand the phase-defined set of eight white glyphs.
+
 ## 1.0.0 — Zero-input end-user flow
 
 - Decoupled solver readiness and tactical authority from fixture matching.

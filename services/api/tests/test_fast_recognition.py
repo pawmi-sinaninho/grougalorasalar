@@ -249,6 +249,52 @@ def test_one_visible_black_and_white_reference_resolve_the_phase() -> None:
     assert result["classifier"] == "background_normalised_multifeature_phase_v4"
 
 
+def test_black_phase_derives_exact_whites_despite_spurious_white_candidates() -> None:
+    engine = get_fast_engine(PROJECT_ROOT)
+    hsv = np.zeros((engine.reference_height, engine.reference_width, 3), dtype=np.uint8)
+    hsv[:, :] = (21, 155, 205)
+    _, expected_black, expected_white = GLYPH_TEMPLATES[1]
+    spurious_white = frozenset(
+        {
+            (-3, -3),
+            (-2, -2),
+            (-1, -3),
+            (0, -1),
+            (0, 0),
+            (1, -2),
+            (2, 2),
+            (3, -3),
+            (3, -1),
+            (3, 3),
+        }
+    )
+    for colour, cells in (
+        ("black", expected_black),
+        ("white", expected_white | spurious_white),
+    ):
+        fill = (20, 96, 138) if colour == "black" else (22, 104, 205)
+        for x, y in cells:
+            centre = REFERENCE_ORIGIN + x * REFERENCE_BASIS_X + y * REFERENCE_BASIS_Y
+            cx, anchor_y = np.rint(centre).astype(int)
+            cy = int(anchor_y - 17)
+            points = np.array(
+                [[cx - 30, cy], [cx, cy - 13], [cx + 30, cy], [cx, cy + 13]],
+                dtype=np.int32,
+            )
+            cv2.fillConvexPoly(hsv, points, fill)
+
+    result = engine.detect_glyphs(cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR))
+
+    assert result is not None
+    assert result["templateId"] == "inner-diagonal"
+    assert {(item["x"], item["y"]) for item in result["confirmedBlackCells"]} == expected_black
+    assert {(item["x"], item["y"]) for item in result["confirmedWhiteCells"]} == expected_white
+    assert len(result["confirmedWhiteCells"]) == 8
+    assert len(result["observedWhiteCells"]) > len(result["confirmedWhiteCells"])
+    assert "GLYPH-BLACK-DRIVEN-PHASE" in result["reasonCodes"]
+    assert "GLYPH-WHITE-GEOMETRY-DERIVED" in result["reasonCodes"]
+
+
 def test_fixture_identity_is_diagnostic_not_solver_readiness(monkeypatch: pytest.MonkeyPatch) -> None:
     engine = get_fast_engine(PROJECT_ROOT)
     fixture = _catalog()["fixtures"][0]
