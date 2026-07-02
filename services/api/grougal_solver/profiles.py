@@ -81,3 +81,45 @@ def validate_profile(profile: dict[str, Any]) -> None:
         max_range = item.get("maxRange")
         if min_range is not None and max_range is not None and min_range > max_range:
             raise ProfileError(f"{spell} minRange exceeds maxRange")
+
+    movement = profile.get("movement", {})
+    exact_geometry = {
+        "indecision": {
+            "contactMetric": "orthogonal",
+            "destinationOccupancy": "invalid",
+        },
+        "reflection": {
+            "targetPillarType": "any_pillar",
+            "rangeMetric": "aligned_steps",
+            "minRange": 2,
+            "maxRange": 2,
+            "alignment": "cardinal_or_diagonal",
+            "destinationOccupancy": "invalid",
+        },
+        "repulsion": {
+            "targetPillarType": "any_pillar",
+            "rangeMetric": "aligned_steps",
+            "minRange": 1,
+            "maxRange": 2,
+            "destinationOccupancy": "invalid",
+        },
+        "attraction": {
+            "targetPillarType": "any_pillar",
+            "rangeMetric": "aligned_steps",
+            "minRange": 1,
+            "maxRange": 6,
+            "alignment": "cardinal",
+            "distance": 3,
+            "destinationOccupancy": "invalid",
+        },
+    }
+    for spell, required in exact_geometry.items():
+        item = movement.get(spell, {})
+        for field, expected in required.items():
+            if item.get(field) != expected:
+                raise ProfileError(f"{spell} {field} must be {expected!r}")
+    if set(movement.get("repulsion", {}).get("allowedAlignments", [])) != {
+        "cardinal",
+        "diagonal",
+    }:
+        raise ProfileError("repulsion allowedAlignments must be cardinal and diagonal")

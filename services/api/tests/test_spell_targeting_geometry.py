@@ -3,7 +3,9 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Iterable
 
-from grougal_solver.profiles import RuleAuthority, compile_profile
+import pytest
+
+from grougal_solver.profiles import ProfileError, RuleAuthority, compile_profile
 from grougal_solver.solver import ArenaSets, DeterministicSolver
 
 
@@ -127,6 +129,20 @@ def test_rules_profile_encodes_verified_target_geometry() -> None:
     assert attraction["minRange"] == 1
     assert attraction["maxRange"] == 6
     assert attraction["alignment"] == "cardinal"
+
+
+@pytest.mark.parametrize(
+    ("override", "value"),
+    (
+        ("movement.indecision.contactMetric", "chebyshev"),
+        ("movement.reflection.minRange", 1),
+        ("movement.repulsion.maxRange", 3),
+        ("movement.attraction.alignment", "cardinal_or_diagonal"),
+    ),
+)
+def test_profile_rejects_spell_geometry_drift(override: str, value: object) -> None:
+    with pytest.raises(ProfileError):
+        compile_profile(PROJECT_ROOT, overrides={override: value}, fixture_mode=True)
 
 
 def test_indecision_targets_only_four_adjacent_empty_cells() -> None:
