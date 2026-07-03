@@ -170,13 +170,14 @@ The search enumerates sequences until:
 
 Candidate ranking is lexicographic:
 
-1. no adverse black outcome;
-2. Crocoburio advances;
-3. required low-resource spells are recharged;
-4. next-turn resource resilience;
-5. next-turn geometric mobility;
-6. fewer casts;
-7. higher confidence targets.
+1. require at least one movement and reject every projected/direct black outcome;
+2. minimize casts and therefore charges spent this round;
+3. among equally short sequences, maximize the minimum and total next-turn charges;
+4. prefer Crocoburio progress over a neutral safe ending;
+5. prefer next-turn geometric mobility;
+6. use the canonical sequence as deterministic tie-break.
+
+Touching a white glyph is optional. A moved ending touching neither black nor white remains legal and can win when it uses fewer charges.
 
 A candidate that depends on an unknown rule is not `solved`; it is `confirmation_required` or `blocked_unverified_rule`.
 

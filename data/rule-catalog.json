@@ -131,10 +131,10 @@
     },
     {
       "id": "R-018",
-      "name": "stationary_uses_projected_resolution",
+      "name": "mandatory_movement_each_round",
       "status": "verified_direct_observation",
       "critical": true,
-      "statement": "The final player position, including an unchanged position, is resolved by relative pattern projection."
+      "statement": "The player must use at least one movement spell every round; standing still for the complete round is illegal."
     },
     {
       "id": "R-019",

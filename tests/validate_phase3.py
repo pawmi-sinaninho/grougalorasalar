@@ -55,7 +55,12 @@ assert len(catalog['indecision']['illegalDiagonalOffsets']) == 4
 
 ranking=load('data/solver/ranking-policy.v0.5.0.json')
 assert ranking['rankingPolicyId']=='ranking-lexicographic-v0.5.0'
-assert [k['index'] for k in ranking['keys']]==list(range(1,8))
+assert [k['index'] for k in ranking['keys']]==list(range(1,len(ranking['keys'])+1))
+assert [k['id'] for k in ranking['keys']][:3]==[
+    'mandatory_movement_and_black_safety',
+    'cast_count',
+    'resource_resilience',
+]
 assert ranking['canonicalSpellOrder']==['indecision','reflection','repulsion','attraction']
 
 status=load('data/solver/status-precedence.v0.5.0.json')

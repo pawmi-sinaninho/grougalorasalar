@@ -208,9 +208,9 @@ class DeterministicSolver:
             if node_count > max_nodes:
                 raise CapacityExceeded("solver node cap exceeded")
 
-            # End-turn is available at every node. The zero-action terminal is
-            # relevant only when no legal movement exists or budget is zero.
-            if node.actions or budget == 0 or not root_definite:
+            # At least one movement spell is mandatory every round. Standing
+            # still is never a legal terminal, even when it would avoid black.
+            if node.actions:
                 terminal_candidates.append(
                     self._resolve_terminal(
                         node,
@@ -287,8 +287,7 @@ class DeterministicSolver:
                     visited[state_key] = seq
                     queue.append(next_node)
 
-        safe = [c for c in terminal_candidates if c["raceOutcome"] == "crocoburio_advance"]
-        adverse = [c for c in terminal_candidates if c["raceOutcome"] == "dragon_advance"]
+        safe = [c for c in terminal_candidates if self._is_black_safe(c)]
         unresolved_terminals = [c for c in terminal_candidates if c["classification"] == "conditional"]
 
         # Determine status. Unknown/conditional branches are blocking when they
@@ -302,7 +301,9 @@ class DeterministicSolver:
             status = "blocked_unverified_rule"
             reasons.extend(self._conditional_reason_codes_from_sequences(conditional_sequences))
 
-        best_pool = safe if safe else [c for c in terminal_candidates if c["classification"] != "conditional"]
+        # Never expose an adverse black-ending sequence as a recommendation.
+        # No white collision is required: a moved, black-safe ending is valid.
+        best_pool = safe
         ordered = sorted(best_pool, key=lambda c: self._ranking_key(c, arena))
         recommendations = ordered[:3]
 
@@ -326,9 +327,8 @@ class DeterministicSolver:
             reasons.extend(self._rule_reason(rule_id, confirm=True) for rule_id in confirmable_rules)
 
         if status == "solved" and not safe and not root_block_reasons and not conditional_sequences:
-            if adverse or (budget == 0 and terminal_candidates):
-                status = "no_safe_solution"
-                reasons = ["S-NO-LEGAL-MOVEMENT"] if not root_definite else ["S-NO-SAFE-SOLUTION"]
+            status = "no_safe_solution"
+            reasons = ["S-NO-LEGAL-MOVEMENT"] if not root_definite else ["S-NO-SAFE-SOLUTION"]
 
         if status == "solved":
             reasons = ["S-SOLVED-CONTRACT"]
@@ -817,12 +817,32 @@ class DeterministicSolver:
             for offset in [(-1, 0), (0, -1), (0, 1), (1, 0)]
             if arena.classification((cell[0] + offset[0], cell[1] + offset[1])) == "walkable"
         )
+        next_spell_state = candidate.get("nextSpellState") or {}
+        known_charges = [
+            int(next_spell_state[spell])
+            for spell in SPELLS
+            if isinstance(next_spell_state.get(spell), int)
+        ]
+        resource_unknown = len(known_charges) != len(SPELLS)
+        minimum_charge = min(known_charges) if known_charges else -1
+        total_charges = sum(known_charges)
         return (
-            race_rank,
-            -len(candidate.get("rechargedSpells", [])),
-            -mobility,
+            # All candidates reaching ranking are already black-safe. Spending
+            # fewer spell charges is the primary tactical objective.
             candidate["castCount"],
+            resource_unknown,
+            -minimum_charge,
+            -total_charges,
+            race_rank,
+            -mobility,
             tuple(candidate["sequence"]),
+        )
+
+    @staticmethod
+    def _is_black_safe(candidate: dict[str, Any]) -> bool:
+        return (
+            not candidate.get("blackPillarIds")
+            and candidate.get("directCenterEffect") != "black_adverse"
         )
 
     def _build_recommendation(
@@ -889,8 +909,14 @@ class DeterministicSolver:
                 "conditionalRootActions": root_conditional_count,
                 "definiteTerminalCandidates": sum(c["classification"] == "definite" for c in terminals),
                 "conditionalTerminalCandidates": sum(c["classification"] == "conditional" for c in terminals) + len(conditional_sequences),
-                "adverseDefiniteCandidates": sum(c["classification"] == "definite" and c["raceOutcome"] == "dragon_advance" for c in terminals),
-                "safeDefiniteCandidates": sum(c["classification"] == "definite" and c["raceOutcome"] == "crocoburio_advance" for c in terminals),
+                "adverseDefiniteCandidates": sum(
+                    c["classification"] == "definite" and not self._is_black_safe(c)
+                    for c in terminals
+                ),
+                "safeDefiniteCandidates": sum(
+                    c["classification"] == "definite" and self._is_black_safe(c)
+                    for c in terminals
+                ),
             },
             "rankingKey": list(self._ranking_key(best, ArenaSets(frozenset(), frozenset(), frozenset(), frozenset()))) if best else None,
             "trace": [

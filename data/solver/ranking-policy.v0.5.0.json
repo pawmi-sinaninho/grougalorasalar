@@ -6,42 +6,36 @@
   "keys": [
     {
       "index": 1,
-      "id": "race_safety",
-      "expression": "0 if crocoburio_advance, 1 if neutral, 2 if dragon_advance, null if unknown",
+      "id": "mandatory_movement_and_black_safety",
+      "expression": "exclude zero-cast candidates and every candidate with a projected black-pillar collision or direct physical black effect",
       "unknownEffect": "ranking_blocked"
     },
     {
       "index": 2,
-      "id": "terminal_fight_state",
-      "expression": "0 if crocoburio_win, 1 if nonterminal, 2 if unknown, 3 if dragon_win",
-      "unknownEffect": "value_is_2"
-    },
-    {
-      "index": 3,
-      "id": "resource_resilience",
-      "expression": "negative of the ascending per-spell post-turn resource vector; numeric values are capped at known max, availability-only maps available=1 unavailable=0",
-      "unknownEffect": "ranking_blocked_if_reached"
-    },
-    {
-      "index": 4,
-      "id": "verified_local_degree",
-      "expression": "negative count of orthogonally adjacent walkable_confirmed or walkable_observed cells at finalCell",
-      "unknownEffect": "exclude uncertain cells from count"
-    },
-    {
-      "index": 5,
       "id": "cast_count",
       "expression": "number of movement casts",
       "unknownEffect": "never_unknown"
     },
     {
-      "index": 6,
-      "id": "target_confidence",
-      "expression": "negative minimum confidence of player, used pillars/cells, glyph pattern and calibration",
+      "index": 3,
+      "id": "resource_resilience",
+      "expression": "maximize the minimum next-turn spell charge, then maximize total next-turn charges",
       "unknownEffect": "ranking_blocked_if_reached"
     },
     {
-      "index": 7,
+      "index": 4,
+      "id": "safe_progress",
+      "expression": "0 if crocoburio_advance, 1 if neutral, 2 if unknown; black-adverse candidates were already excluded",
+      "unknownEffect": "value_is_2"
+    },
+    {
+      "index": 5,
+      "id": "verified_local_degree",
+      "expression": "negative count of orthogonally adjacent walkable_confirmed or walkable_observed cells at finalCell",
+      "unknownEffect": "exclude uncertain cells from count"
+    },
+    {
+      "index": 6,
       "id": "sequence_key",
       "expression": "lexicographic comparison of action tuples [spellOrdinal,targetKindOrdinal,x,y,pillarId], repeated per action; empty sequence is []",
       "unknownEffect": "never_unknown"
@@ -56,8 +50,11 @@
   "canonicalCellOrder": "ascending x, then ascending y",
   "sequenceKeyFormat": "Display signature remains <spell>@<target-kind>:<x>,<y>:<pillar-id-or-dash>; comparison uses parsed typed tuples, not raw string ordering.",
   "notes": [
+    "At least one movement cast is mandatory every round; standing still is not a candidate.",
+    "Projected black-pillar collisions and direct physical black effects are hard exclusions, never ranking fallbacks.",
+    "A white collision is optional. Among equally short safe sequences it improves resource resilience.",
     "Pillar-based next-turn mobility is not ranked because pillar positions change each turn.",
-    "Unknown future resources block only when the resource key is reached after all earlier keys tie."
+    "Unknown future resources block only when cast count ties and the resource key is reached."
   ],
   "canonicalSpellOrdinals": {
     "indecision": 0,

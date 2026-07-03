@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 1.0.4 - Charge-conserving safe turns
+
+- Enforced at least one movement spell per round; standing still is never a terminal candidate.
+- Made projected black-pillar collisions and direct black effects hard exclusions instead of adverse fallback recommendations.
+- Ranked black-safe turns by fewest casts first; white glyphs and next-turn charge resilience only break ties between equally short sequences.
+- Kept moved endings without any glyph collision legal.
+- Added a 14-round strategy regression proving one mandatory safe cast per round without negative or over-cap charges.
+
 ## 1.0.3 - Exact Rejet movement
 
 - Made Rejet illegal when any pillar, obstacle or arena edge blocks its complete movement path.

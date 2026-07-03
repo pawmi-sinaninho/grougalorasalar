@@ -28,7 +28,7 @@
 | R-015 | Attrait targets pillar at range 1–6 | SS | DofusPourLesNoobs explicit | Tooltip/current cast |
 | R-016 | Attrait moves player 3 cells toward pillar | VM | Both guides | Short-range behaviour |
 | R-017 | Attrait is line-only | SS | Guide wording/baseline | Current tooltip/cast |
-| R-018 | Player may not finish on same cell | VM | Both guides | Exact comparison semantics |
+| R-018 | Player must use at least one movement spell each round | VO | User gameplay confirmation | Zero-cast terminals excluded |
 | R-019 | No black and no white collision advances Crocoburio | SS | DofusPourLesNoobs example | Direct replay |
 | R-020 | Physical central black cell is adverse | SS | DofusPourLesNoobs note | Direct replay |
 | R-021 | Physical central white cell recharges spells by 1 | SS | DofusPourLesNoobs note | Scope and timing |

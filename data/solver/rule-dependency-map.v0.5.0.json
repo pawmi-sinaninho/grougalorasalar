@@ -152,10 +152,16 @@
     {
       "path": "resolution.stationaryReference",
       "ruleIds": [
-        "R-018",
         "R-046"
       ],
       "effect": "resolution"
+    },
+    {
+      "path": "search.minimumCastCount",
+      "ruleIds": [
+        "R-018"
+      ],
+      "effect": "legality"
     },
     {
       "path": "resolution.centerBlack*",

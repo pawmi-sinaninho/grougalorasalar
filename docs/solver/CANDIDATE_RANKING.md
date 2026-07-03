@@ -6,15 +6,14 @@ The normative machine-readable policy is `data/solver/ranking-policy.v0.5.0.json
 
 Candidates are compared by these keys in order:
 
-1. race safety: Crocoburio advance, neutral, dragon advance;
-2. terminal fight state: immediate Crocoburio win, nonterminal, unknown, immediate dragon win;
+1. hard eligibility: at least one movement and no projected or direct black effect;
+2. movement-cast count, ascending;
 3. post-turn resource resilience;
-4. verified local degree of the final cell;
-5. movement-cast count;
-6. minimum confidence among used critical inputs;
-7. canonical sequence key.
+4. safe progress: Crocoburio advance, then neutral;
+5. verified local degree of the final cell;
+6. canonical sequence key.
 
-A later key may not compensate for a worse earlier key.
+A later key may not compensate for a worse earlier key. A white collision is optional and cannot justify an additional cast when a shorter black-safe sequence exists.
 
 ## Resource resilience
 

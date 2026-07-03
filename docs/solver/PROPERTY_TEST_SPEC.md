@@ -31,8 +31,8 @@
 18. Deduplication does not change the set of reachable node states.
 19. Reordering input pillars does not change ordered recommendations.
 20. Re-running the same request yields byte-equivalent canonical action signatures and ranking keys.
-21. A candidate with better race-safety key always outranks one with worse race safety.
-22. Canonical sequence key is consulted only after keys 1–6 tie.
+21. A zero-cast or black-adverse candidate is never recommendable.
+22. Among black-safe candidates, fewer casts always outrank more casts; canonical sequence is consulted only after keys 1–5 tie.
 23. Unknown lower keys do not block when a higher key establishes strict order.
 24. `no_safe_solution` is impossible while a conditional safe candidate exists.
 

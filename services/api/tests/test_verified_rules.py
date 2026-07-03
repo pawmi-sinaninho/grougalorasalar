@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from copy import deepcopy
 from pathlib import Path
 
 import pytest
@@ -66,6 +67,96 @@ def test_solver_spends_one_ap_per_cast_from_the_twelve_ap_budget() -> None:
     two_cast = [item for item in result["diagnostics"]["terminalCandidates"] if item["castCount"] == 2]
     assert two_cast
     assert all(item["remainingBudget"] == 10 for item in two_cast)
+
+
+def test_solver_requires_movement_but_uses_the_fewest_safe_charges() -> None:
+    result = run_fixture(PROJECT_ROOT, get_fixture(PROJECT_ROOT, "F-101"))
+
+    assert result["status"] == "solved"
+    assert len(result["actions"]) == 1
+    assert result["expected"]["blackPillarIds"] == []
+    assert result["expected"]["whitePillarIds"] == []
+    assert result["expected"]["nextSpellState"]["indecision"] == 1
+    assert all(
+        candidate["castCount"] >= 1
+        for candidate in result["diagnostics"]["terminalCandidates"]
+    )
+
+
+def test_solver_never_recommends_a_black_adverse_fallback() -> None:
+    fixture = deepcopy(get_fixture(PROJECT_ROOT, "F-101"))
+    fixture["given"]["glyphs"]["physicalBlackCells"] = deepcopy(
+        fixture["given"]["arena"]["walkable"]
+    )
+
+    result = run_fixture(PROJECT_ROOT, fixture)
+
+    assert result["status"] == "no_safe_solution"
+    assert result["actions"] == []
+    assert result["expected"]["finalCell"] is None
+
+
+def test_white_is_optional_and_only_breaks_ties_between_equally_short_sequences() -> None:
+    solver = DeterministicSolver(PROJECT_ROOT)
+    arena = _arena({(0, 0), (1, 0), (2, 0)})
+    one_cast_no_white = {
+        "raceOutcome": "neutral", "finalCell": {"x": 1, "y": 0},
+        "castCount": 1, "sequence": ["one"],
+        "nextSpellState": {spell: 1 for spell in SPELLS},
+    }
+    two_cast_with_white = {
+        "raceOutcome": "crocoburio_advance", "finalCell": {"x": 2, "y": 0},
+        "castCount": 2, "sequence": ["two-a", "two-b"],
+        "nextSpellState": {spell: 4 for spell in SPELLS},
+    }
+    one_cast_with_white = {
+        **one_cast_no_white,
+        "sequence": ["one-white"],
+        "nextSpellState": {spell: 2 for spell in SPELLS},
+    }
+
+    assert solver._ranking_key(one_cast_no_white, arena) < solver._ranking_key(two_cast_with_white, arena)
+    assert solver._ranking_key(one_cast_with_white, arena) < solver._ranking_key(one_cast_no_white, arena)
+    assert solver._is_black_safe({"blackPillarIds": [], "directCenterEffect": "none"})
+    assert not solver._is_black_safe({"blackPillarIds": ["P1"], "directCenterEffect": "none"})
+
+
+def test_charge_conserving_ranking_stays_safe_and_one_cast_through_round_fourteen() -> None:
+    solver = DeterministicSolver(PROJECT_ROOT)
+    arena = _arena({(0, 0), (1, 0)})
+    charges = {spell: 2 for spell in SPELLS}
+
+    for round_number in range(1, 15):
+        candidates = []
+        for spell in SPELLS:
+            if charges[spell] == 0:
+                continue
+            next_charges = dict(charges)
+            next_charges[spell] -= 1
+            # Half the rounds deliberately have no white recharge. On the
+            # others an equally short white-safe ending restores the used spell.
+            if round_number % 2 == 0:
+                next_charges[spell] = min(4, next_charges[spell] + 1)
+            candidates.append(
+                {
+                    "raceOutcome": "crocoburio_advance",
+                    "finalCell": {"x": 1, "y": 0},
+                    "castCount": 1,
+                    "sequence": [spell],
+                    "nextSpellState": next_charges,
+                    "blackPillarIds": [],
+                    "directCenterEffect": "none",
+                }
+            )
+
+        assert candidates, f"no charge-conserving move remained in round {round_number}"
+        best = min(candidates, key=lambda item: solver._ranking_key(item, arena))
+        assert best["castCount"] == 1
+        assert solver._is_black_safe(best)
+        charges = best["nextSpellState"]
+        assert all(0 <= value <= 4 for value in charges.values())
+
+    assert sum(charges.values()) == 1
 
 
 @pytest.mark.parametrize(

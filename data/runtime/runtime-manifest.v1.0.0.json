@@ -2,7 +2,7 @@
   "files": [
     {
       "path": "data/rule-catalog.json",
-      "sha256": "db1d95b98f5c204be33ecee6e576a7d3c9e3c2d504f10028f98ffdf2c19e1480"
+      "sha256": "c50465df49b7eaee53282e5da71661f867b7653383af06e96216f57e98cce7f2"
     },
     {
       "path": "data/arena/grougalorasalar.cells.json",
@@ -22,11 +22,11 @@
     },
     {
       "path": "data/solver/ranking-policy.v0.5.0.json",
-      "sha256": "3900f820d02b9318177f281bac6864c74a8051e5e1418e84e0ad796a6b864799"
+      "sha256": "68085adebdac552a0c854f15b38304aee112823217456bdb5492a96db3a318e2"
     },
     {
       "path": "data/solver/rule-dependency-map.v0.5.0.json",
-      "sha256": "9a7e301512137da8c5e4c62bdb1cc137ed04f02df70c4464e65c607879dd46e1"
+      "sha256": "40b057280029a933b4f653f75d4b60e1b5429aa9472a1ba94272f6a20173b91c"
     },
     {
       "path": "data/solver/status-precedence.v0.5.0.json",
