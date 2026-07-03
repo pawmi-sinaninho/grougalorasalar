@@ -273,6 +273,30 @@ def test_rejet_moves_three_cardinal_cells_but_only_two_diagonal_cells() -> None:
     assert diagonal and diagonal["destinationCell"] == {"x": 2, "y": 2}
 
 
+def test_diagonal_rejet_is_invalid_when_either_corner_side_is_blocked() -> None:
+    solver = DeterministicSolver(PROJECT_ROOT)
+    profile = _profile()
+    target = {"id": "T", "cell": {"x": -1, "y": -1}, "spellType": "indecision"}
+    raw = solver._pillar_action("repulsion", (0, 0), target, profile)
+    assert raw and raw["destinationCell"] == {"x": 2, "y": 2}
+    walkable = {
+        (-1, -1), (0, 0), (1, 0), (0, 1), (1, 1),
+        (2, 1), (1, 2), (2, 2),
+    }
+
+    for blocker_cell in ((1, 0), (0, 1), (2, 1), (1, 2)):
+        blocker = {
+            "id": f"B{blocker_cell}",
+            "cell": {"x": blocker_cell[0], "y": blocker_cell[1]},
+            "spellType": "reflection",
+        }
+        constrained = solver._apply_movement_constraints(
+            raw.copy(), (0, 0), profile, _arena(walkable),
+            {(-1, -1): target, blocker_cell: blocker},
+        )
+        assert constrained is None
+
+
 def test_attrait_stops_before_target_and_reflet_cannot_cross_another_pillar() -> None:
     solver = DeterministicSolver(PROJECT_ROOT)
     profile = _profile()
