@@ -673,9 +673,9 @@ class DeterministicSolver:
             # pillar leaves the player on the current cell.
             return action
         if spell == "repulsion" and destination == source:
-            # Rejet normally displaces from the current player cell. Keep this
-            # defensive branch for malformed profiles or manually overridden
-            # fixtures without converting it into an end-turn movement.
+            # A diagonal range-two target already places the player at the
+            # verified two-cell final radius. The cast is mechanically legal,
+            # but does not satisfy the mandatory movement for ending the turn.
             return action
         dx, dy = destination[0] - source[0], destination[1] - source[1]
         steps = self._aligned_steps(dx, dy)
