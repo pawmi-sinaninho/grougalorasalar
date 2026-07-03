@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.0.5 - Target-relative Rejet radius
+
+- Corrected Rejet's `3/2` geometry from source-relative displacement to final distance from the targeted pillar.
+- Added the reported adjacent yellow-pillar regression: one Rejet use plus the outer white glyph at radius three leaves yellow charges unchanged (`2 - 1 + 1 = 2`).
+- Distinguished a legal zero-displacement cast from the actual displacement required before ending a round.
+
 ## 1.0.4 - Charge-conserving safe turns
 
 - Enforced at least one movement spell per round; standing still is never a terminal candidate.
@@ -11,7 +17,7 @@
 ## 1.0.3 - Exact Rejet movement
 
 - Made Rejet illegal when any pillar, obstacle or arena edge blocks its complete movement path.
-- Split Rejet movement into three cardinal cells and two diagonal cells.
+- Split Rejet's final target-relative radius into three cardinal cells and two diagonal cells.
 - Clarified charge output as current charges versus the projected next-turn charges after casts and glyph recharges.
 - Added a 14-round model check covering every reachable charge value, caps, zero charges and single-commit round transitions.
 

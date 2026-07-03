@@ -80,8 +80,8 @@
         "diagonal"
       ],
       "lineOfSight": "ignored",
-      "cardinalDistance": 3,
-      "diagonalDistance": 2,
+      "cardinalFinalDistanceFromPillar": 3,
+      "diagonalFinalDistanceFromPillar": 2,
       "pathMode": "fail_if_blocked",
       "destinationOccupancy": "invalid",
       "edgeMode": "invalid"

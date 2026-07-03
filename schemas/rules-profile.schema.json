@@ -179,8 +179,8 @@
             "maxRange",
             "allowedAlignments",
             "lineOfSight",
-            "cardinalDistance",
-            "diagonalDistance",
+            "cardinalFinalDistanceFromPillar",
+            "diagonalFinalDistanceFromPillar",
             "pathMode",
             "destinationOccupancy",
             "edgeMode"
@@ -235,14 +235,14 @@
                 "unknown"
               ]
             },
-            "cardinalDistance": {
+            "cardinalFinalDistanceFromPillar": {
               "type": [
                 "integer",
                 "null"
               ],
               "minimum": 1
             },
-            "diagonalDistance": {
+            "diagonalFinalDistanceFromPillar": {
               "type": [
                 "integer",
                 "null"

@@ -232,19 +232,19 @@ def test_rejet_is_invalid_at_obstacle_pillar_and_map_edge() -> None:
     pillar = {"id": "P", "cell": {"x": -1, "y": 0}, "spellType": "indecision"}
     raw = solver._pillar_action("repulsion", (0, 0), pillar, profile)
     assert raw is not None
-    clear_arena = _arena({(-1, 0), (0, 0), (1, 0), (2, 0), (3, 0)})
+    clear_arena = _arena({(-1, 0), (0, 0), (1, 0), (2, 0)})
     clear = solver._apply_movement_constraints(raw.copy(), (0, 0), profile, clear_arena, {(-1, 0): pillar})
-    assert clear and clear["destinationCell"] == {"x": 3, "y": 0}
+    assert clear and clear["destinationCell"] == {"x": 2, "y": 0}
 
     edge = solver._apply_movement_constraints(
         raw.copy(), (0, 0), profile,
-        _arena({(-1, 0), (0, 0), (1, 0), (2, 0)}),
+        _arena({(-1, 0), (0, 0), (1, 0)}),
         {(-1, 0): pillar},
     )
     assert edge is None
     obstacle = solver._apply_movement_constraints(
         raw.copy(), (0, 0), profile,
-        _arena({(-1, 0), (0, 0), (1, 0), (3, 0)}, {(2, 0)}),
+        _arena({(-1, 0), (0, 0), (1, 0)}, {(2, 0)}),
         {(-1, 0): pillar},
     )
     assert obstacle is None
@@ -256,7 +256,22 @@ def test_rejet_is_invalid_at_obstacle_pillar_and_map_edge() -> None:
     assert blocked_by_pillar is None
 
 
-def test_rejet_moves_three_cardinal_cells_but_only_two_diagonal_cells() -> None:
+def test_reflet_rejects_unverified_boundary_destination() -> None:
+    solver = DeterministicSolver(PROJECT_ROOT)
+    profile = _profile()
+    pillar = {"id": "P", "cell": {"x": -2, "y": 0}, "spellType": "reflection"}
+    raw = solver._pillar_action("reflection", (0, 0), pillar, profile)
+    assert raw is not None
+    arena = ArenaSets(
+        walkable=frozenset({(0, 0), (-1, 0), (-2, 0), (-3, 0)}),
+        boundary=frozenset({(-4, 0)}),
+        occluded=frozenset(),
+        blocked=frozenset(),
+    )
+    assert solver._apply_movement_constraints(raw, (0, 0), profile, arena, {(-2, 0): pillar}) is None
+
+
+def test_rejet_finishes_three_cardinal_or_two_diagonal_cells_from_pillar() -> None:
     solver = DeterministicSolver(PROJECT_ROOT)
     profile = _profile()
     cardinal = solver._pillar_action(
@@ -269,8 +284,22 @@ def test_rejet_moves_three_cardinal_cells_but_only_two_diagonal_cells() -> None:
         {"id": "D", "cell": {"x": -1, "y": -1}, "spellType": "indecision"},
         profile,
     )
-    assert cardinal and cardinal["destinationCell"] == {"x": 3, "y": 0}
-    assert diagonal and diagonal["destinationCell"] == {"x": 2, "y": 2}
+    assert cardinal and cardinal["destinationCell"] == {"x": 2, "y": 0}
+    assert diagonal and diagonal["destinationCell"] == {"x": 1, "y": 1}
+
+    cardinal_at_two = solver._pillar_action(
+        "repulsion", (0, 0),
+        {"id": "C2", "cell": {"x": -2, "y": 0}, "spellType": "indecision"},
+        profile,
+    )
+    assert cardinal_at_two and cardinal_at_two["destinationCell"] == {"x": 1, "y": 0}
+
+    diagonal_at_two = solver._pillar_action(
+        "repulsion", (0, 0),
+        {"id": "D2", "cell": {"x": -2, "y": -2}, "spellType": "indecision"},
+        profile,
+    )
+    assert diagonal_at_two and diagonal_at_two["destinationCell"] == {"x": 0, "y": 0}
 
 
 def test_diagonal_rejet_is_invalid_when_either_corner_side_is_blocked() -> None:
@@ -278,13 +307,13 @@ def test_diagonal_rejet_is_invalid_when_either_corner_side_is_blocked() -> None:
     profile = _profile()
     target = {"id": "T", "cell": {"x": -1, "y": -1}, "spellType": "indecision"}
     raw = solver._pillar_action("repulsion", (0, 0), target, profile)
-    assert raw and raw["destinationCell"] == {"x": 2, "y": 2}
+    assert raw and raw["destinationCell"] == {"x": 1, "y": 1}
     walkable = {
         (-1, -1), (0, 0), (1, 0), (0, 1), (1, 1),
         (2, 1), (1, 2), (2, 2),
     }
 
-    for blocker_cell in ((1, 0), (0, 1), (2, 1), (1, 2)):
+    for blocker_cell in ((1, 0), (0, 1)):
         blocker = {
             "id": f"B{blocker_cell}",
             "cell": {"x": blocker_cell[0], "y": blocker_cell[1]},
@@ -295,6 +324,38 @@ def test_diagonal_rejet_is_invalid_when_either_corner_side_is_blocked() -> None:
             {(-1, -1): target, blocker_cell: blocker},
         )
         assert constrained is None
+
+
+def test_adjacent_linear_rejet_recharges_its_yellow_target_on_outer_white_three() -> None:
+    solver = DeterministicSolver(PROJECT_ROOT)
+    profile = _profile()
+    yellow = {"id": "Y", "cell": {"x": -1, "y": 0}, "spellType": "repulsion"}
+    action = solver._pillar_action("repulsion", (0, 0), yellow, profile)
+    assert action and action["destinationCell"] == {"x": 2, "y": 0}
+
+    node = SearchNode(
+        cell=(2, 0),
+        budget=11,
+        actions=[action],
+        cast_counts={"indecision": 0, "reflection": 0, "repulsion": 1, "attraction": 0},
+        spell_values={"indecision": 1, "reflection": 2, "repulsion": 1, "attraction": 3},
+    )
+    given = {
+        "player": {"current": {"x": 0, "y": 0}},
+        "glyphs": {
+            "blackOffsets": [],
+            "whiteOffsets": [{"dx": -3, "dy": 0}],
+            "physicalBlackCells": [],
+            "physicalWhiteCells": [],
+        },
+    }
+    terminal = solver._resolve_terminal(
+        node, given, profile, {(-1, 0): yellow}, RuleAuthority({}), True
+    )
+
+    assert terminal["whitePillarIds"] == ["Y"]
+    assert terminal["rechargedSpells"] == ["repulsion"]
+    assert terminal["nextSpellState"]["repulsion"] == 2
 
 
 def test_attrait_stops_before_target_and_reflet_cannot_cross_another_pillar() -> None:

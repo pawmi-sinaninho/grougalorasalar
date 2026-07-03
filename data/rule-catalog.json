@@ -106,7 +106,7 @@
       "name": "repulsion_distance",
       "status": "verified_multi_source",
       "critical": true,
-      "statement": "Rejet moves the player three cells away on a cardinal cast and two diagonal cells away on a diagonal cast."
+      "statement": "Rejet ends three cardinal cells or two diagonal cells from the targeted pillar; this is a target-relative final radius, not a displacement added from the player's source cell."
     },
     {
       "id": "R-015",

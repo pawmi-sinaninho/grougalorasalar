@@ -317,19 +317,15 @@
       ],
       "expectedActions": "deterministic_current_oracle",
       "expectedFinalCell": {
-        "x": 4,
-        "y": -2
+        "x": 2,
+        "y": -1
       },
       "expectedBlackHits": [],
       "expectedWhiteHits": [
-        "P13",
-        "P16",
-        "P17"
+        "P11"
       ],
       "expectedRecharges": [
-        "indecision",
-        "reflection",
-        "repulsion"
+        "attraction"
       ]
     },
     {
@@ -666,16 +662,14 @@
       ],
       "expectedActions": "deterministic_current_oracle",
       "expectedFinalCell": {
-        "x": 3,
-        "y": 0
+        "x": 1,
+        "y": -1
       },
       "expectedBlackHits": [],
       "expectedWhiteHits": [
-        "P17",
-        "P21"
+        "P14"
       ],
       "expectedRecharges": [
-        "indecision",
         "reflection"
       ]
     },
@@ -1033,18 +1027,14 @@
       ],
       "expectedActions": "deterministic_current_oracle",
       "expectedFinalCell": {
-        "x": 1,
-        "y": -2
+        "x": 0,
+        "y": 1
       },
       "expectedBlackHits": [],
       "expectedWhiteHits": [
-        "P08",
-        "P12",
-        "P18"
+        "P15"
       ],
       "expectedRecharges": [
-        "attraction",
-        "reflection",
         "repulsion"
       ]
     },
@@ -1408,18 +1398,15 @@
       ],
       "expectedActions": "deterministic_current_oracle",
       "expectedFinalCell": {
-        "x": 4,
+        "x": 0,
         "y": -2
       },
       "expectedBlackHits": [],
       "expectedWhiteHits": [
-        "P14",
-        "P22",
-        "P23"
+        "P10",
+        "P14"
       ],
       "expectedRecharges": [
-        "attraction",
-        "indecision",
         "reflection"
       ]
     }

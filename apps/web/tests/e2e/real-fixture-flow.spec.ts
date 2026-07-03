@@ -16,6 +16,7 @@ async function pasteImage(page: import('@playwright/test').Page, filePath: strin
 
 test('Ctrl+V runs recognition and solver without normal manual controls', async ({ page }) => {
   await page.goto('/');
+  await expect(page.getByText('© 2026 Pawmi (Sinaninho)', { exact: true })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Capture d’écran du début du tour' })).toBeVisible();
   await pasteImage(page, fixture);
 
@@ -23,7 +24,7 @@ test('Ctrl+V runs recognition and solver without normal manual controls', async 
   await expect(page.getByTestId('action-target-marker').first()).toBeVisible();
   await expect(page.getByTestId('final-cell-marker')).toBeVisible();
   await expect(page.locator('.overlay-legend')).toBeVisible();
-  await expect(page.locator('.target-line').first()).toBeVisible();
+  await expect(page.locator('.movement-line').first()).toBeVisible();
 
   const actionNumbers = page.getByTestId('action-number');
   const actionCount = await actionNumbers.count();
@@ -35,6 +36,7 @@ test('Ctrl+V runs recognition and solver without normal manual controls', async 
   await expect(page.locator('.charges')).toContainText('Indécision 2 →');
 
   const standardText = await page.locator('body').innerText();
+  expect(standardText).not.toContain('Autres options équivalentes');
   for (const forbidden of ['Calculer le tour', 'Budget d’actions', 'Confirmer tous les piliers', 'Confirmer le motif affiché', 'Réflexion', 'Répulsion', 'Attirance']) {
     expect(standardText).not.toContain(forbidden);
   }

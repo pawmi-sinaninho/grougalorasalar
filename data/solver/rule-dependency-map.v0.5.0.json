@@ -50,14 +50,14 @@
       "effect": "legality"
     },
     {
-      "path": "movement.repulsion.cardinalDistance",
+      "path": "movement.repulsion.cardinalFinalDistanceFromPillar",
       "ruleIds": [
         "R-014"
       ],
       "effect": "destination"
     },
     {
-      "path": "movement.repulsion.diagonalDistance",
+      "path": "movement.repulsion.diagonalFinalDistanceFromPillar",
       "ruleIds": [
         "R-014"
       ],

@@ -199,6 +199,7 @@ class DeterministicSolver:
         terminal_candidates: list[dict[str, Any]] = []
         conditional_sequences: list[dict[str, Any]] = []
         node_count = 0
+        best_safe_cast_count: int | None = None
 
         while queue:
             if time.perf_counter() - started > timeout_seconds:
@@ -208,11 +209,14 @@ class DeterministicSolver:
             if node_count > max_nodes:
                 raise CapacityExceeded("solver node cap exceeded")
 
-            # At least one movement spell is mandatory every round. Standing
-            # still is never a legal terminal, even when it would avoid black.
-            if node.actions:
-                terminal_candidates.append(
-                    self._resolve_terminal(
+            # At least one actual displacement is mandatory every round. A
+            # legal zero-displacement cast (Rejet already at its final radius)
+            # does not make a stationary terminal recommendable.
+            if any(
+                cell_tuple(item["sourceCell"]) != cell_tuple(item["destinationCell"])
+                for item in node.actions
+            ):
+                terminal = self._resolve_terminal(
                         node,
                         given,
                         profile,
@@ -220,7 +224,16 @@ class DeterministicSolver:
                         authority,
                         fixture_mode,
                     )
-                )
+                terminal_candidates.append(terminal)
+                if prune_dominated and terminal["classification"] == "definite" and self._is_black_safe(terminal):
+                    depth = len(node.actions)
+                    best_safe_cast_count = depth if best_safe_cast_count is None else min(best_safe_cast_count, depth)
+
+            # Cast count is the primary ranking key. Breadth-first search has
+            # now evaluated every equally cheap state; costlier continuations
+            # cannot become the recommendation and need not be generated.
+            if prune_dominated and best_safe_cast_count is not None and len(node.actions) >= best_safe_cast_count:
+                continue
 
             if node.budget < movement_cost:
                 continue
@@ -305,7 +318,7 @@ class DeterministicSolver:
         # No white collision is required: a moved, black-safe ending is valid.
         best_pool = safe
         ordered = sorted(best_pool, key=lambda c: self._ranking_key(c, arena))
-        recommendations = ordered[:3]
+        recommendations = ordered[:1]
 
         confirmable_rules = unique_preserve(
             rule_id
@@ -355,7 +368,7 @@ class DeterministicSolver:
                 }
                 for a in root_conditional
             ],
-            "terminalCandidates": terminal_candidates,
+            "terminalCandidates": terminal_candidates if not prune_dominated else [],
             "conditionalSequences": conditional_sequences,
             "nodeCount": node_count,
         }
@@ -589,13 +602,20 @@ class DeterministicSolver:
             unit = self._normalised_direction(source[0] - target[0], source[1] - target[1])
             if unit is None:
                 return None
-            alignment_distance_key = (
-                "cardinalDistance" if alignment == "cardinal" else "diagonalDistance"
+            final_distance_key = (
+                "cardinalFinalDistanceFromPillar"
+                if alignment == "cardinal"
+                else "diagonalFinalDistanceFromPillar"
             )
-            move_distance = cfg.get(alignment_distance_key)
-            if move_distance is None:
+            final_distance = cfg.get(final_distance_key)
+            target_distance = self._aligned_steps(target[0] - source[0], target[1] - source[1])
+            if final_distance is None or target_distance is None:
                 rules.append("R-014")
-                move_distance = cfg.get("distance", 3)
+                final_distance = cfg.get("distance", 3)
+                target_distance = 0
+            # Rejet places the player at a fixed radius from the target pillar;
+            # it does not add that radius to the player's current distance.
+            move_distance = max(0, final_distance - target_distance)
             destination = source[0] + move_distance * unit[0], source[1] + move_distance * unit[1]
         else:
             unit = self._normalised_direction(dx, dy)
@@ -650,11 +670,16 @@ class DeterministicSolver:
                     source[0] + distance * target_unit[0],
                     source[1] + distance * target_unit[1],
                 )
-                if cell in pillar_by_cell or arena.classification(cell) in {"blocked", "outside"}:
+                if cell in pillar_by_cell or arena.classification(cell) != "walkable":
                     return None
         if spell == "attraction" and destination == source:
             # An adjacent target is legal: stopping immediately before that
             # pillar leaves the player on the current cell.
+            return action
+        if spell == "repulsion" and destination == source:
+            # A diagonal range-two target already places the player at the
+            # verified two-cell final radius. The cast is mechanically legal,
+            # but does not satisfy the mandatory movement for ending the turn.
             return action
         dx, dy = destination[0] - source[0], destination[1] - source[1]
         steps = self._aligned_steps(dx, dy)
@@ -681,13 +706,13 @@ class DeterministicSolver:
                 )
                 if any(
                     side_cell in pillar_by_cell
-                    or arena.classification(side_cell) in {"blocked", "outside"}
+                    or arena.classification(side_cell) != "walkable"
                     for side_cell in diagonal_side_cells
                 ):
                     return None
 
             target_pillar_exempt = spell == "reflection" and cell == target
-            blocked = arena.classification(cell) in {"blocked", "outside"}
+            blocked = arena.classification(cell) != "walkable"
             blocked = blocked or (cell in pillar_by_cell and not target_pillar_exempt)
             if blocked:
                 if cfg.get("pathMode") == "truncate_before_blocker" or cfg.get("edgeMode") == "truncate_to_last_walkable":
@@ -904,15 +929,6 @@ class DeterministicSolver:
             "directCenterEffect": best["directCenterEffect"] if best else "unknown",
             "nextSpellState": best.get("nextSpellState") if best else None,
         }
-        alternatives = []
-        for candidate in recommendations[1:3]:
-            alternatives.append(
-                {
-                    "sequence": candidate["sequence"],
-                    "finalCell": candidate["finalCell"],
-                    "raceOutcome": candidate["raceOutcome"],
-                }
-            )
         return {
             "schemaVersion": "0.5.0",
             "status": status,
@@ -956,7 +972,7 @@ class DeterministicSolver:
                     "data": {"reasonCodes": reasons},
                 },
             ],
-            "alternatives": alternatives,
+            "alternatives": [],
             "warnings": [],
         }
 

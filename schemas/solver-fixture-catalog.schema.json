@@ -43,7 +43,7 @@
     },
     "movement": {
       "type": "object",
-      "required": ["refletExactRange", "refletAlignments", "rejetDistance", "rejetBlockedThirdStepDestination", "attraitMaximumDistance", "attraitStopsBeforePillar"]
+      "required": ["refletExactRange", "refletAlignments", "rejetCardinalFinalDistanceFromPillar", "rejetDiagonalFinalDistanceFromPillar", "rejetAdjacentCardinalDisplacement", "attraitMaximumDistance", "attraitStopsBeforePillar"]
     }
   },
   "additionalProperties": false

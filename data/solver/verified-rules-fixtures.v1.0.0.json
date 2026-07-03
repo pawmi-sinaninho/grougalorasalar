@@ -47,8 +47,9 @@
   "movement": {
     "refletExactRange": 2,
     "refletAlignments": ["cardinal", "diagonal"],
-    "rejetDistance": 3,
-    "rejetBlockedThirdStepDestination": 2,
+    "rejetCardinalFinalDistanceFromPillar": 3,
+    "rejetDiagonalFinalDistanceFromPillar": 2,
+    "rejetAdjacentCardinalDisplacement": 2,
     "attraitMaximumDistance": 3,
     "attraitStopsBeforePillar": true
   }

@@ -25,6 +25,12 @@ REFERENCE_BASIS_INV = np.linalg.inv(REFERENCE_BASIS)
 WORK_MIN_WIDTH = 960
 WORK_MAX_WIDTH = 1280
 CANONICAL_BOARD_BOTTOM = 880
+CHARGE_TRACK_CENTRES = {
+    "indecision": ((150, 1110), (225, 1070), (300, 1030), (370, 990), (440, 950)),
+    "reflection": ((400, 1110), (470, 1070), (545, 1030), (620, 995), (695, 960)),
+    "repulsion": ((1500, 1110), (1430, 1070), (1360, 1030), (1290, 990), (1220, 950)),
+    "attraction": ((1765, 1110), (1700, 1070), (1630, 1030), (1560, 990), (1495, 950)),
+}
 
 INNER_CARDINAL = frozenset({(-1, 0), (0, -1), (0, 1), (1, 0)})
 INNER_DIAGONAL = frozenset({(-1, -1), (-1, 1), (1, -1), (1, 1)})
@@ -246,6 +252,7 @@ class FastRecognitionEngine:
             occupied_cells.add((int(player["cell"]["x"]), int(player["cell"]["y"])))
         glyph_started = time.perf_counter()
         glyph = self.detect_glyphs(canonical, occupied_cells=occupied_cells)
+        charge_tracks = self.detect_charge_tracks(canonical)
         glyph_ms = _ms(glyph_started)
         sampling_ms = _ms(sampling_started)
 
@@ -262,6 +269,7 @@ class FastRecognitionEngine:
             "pillars": pillars,
             "pillarCompleteness": completeness,
             "glyphPattern": glyph,
+            "chargeTracks": charge_tracks,
             "matchedFixtureId": fixture["fixtureId"] if fixture else None,
             "fixtureMatchDistance": fixture_distance,
             "fixtureMatchMargin": fixture_margin,
@@ -279,6 +287,31 @@ class FastRecognitionEngine:
                 "templatesReloaded": False,
             },
         }
+
+    def detect_charge_tracks(self, canonical: np.ndarray) -> dict[str, Any] | None:
+        """Read the flat rail tokens; the tall value-four pillars are legends."""
+        detected: dict[str, int] = {}
+        details: dict[str, Any] = {}
+        for spell, centres in CHARGE_TRACK_CENTRES.items():
+            scores: list[float] = []
+            for cx, cy in centres:
+                patch = canonical[max(0, cy - 20):cy + 20, max(0, cx - 35):cx + 35]
+                if not patch.size:
+                    scores.append(0.0)
+                    continue
+                grey = cv2.cvtColor(patch, cv2.COLOR_BGR2GRAY)
+                # Plain rail cells are smooth. The flat counter token contains
+                # both a stone outline and a crisp coloured glyph, producing a
+                # strong cell-local high-frequency response.
+                scores.append(float(cv2.Laplacian(grey, cv2.CV_64F).var()))
+            order = np.argsort(scores)[::-1]
+            best = int(order[0])
+            second = float(scores[int(order[1])])
+            margin = float(scores[best] - second)
+            confidence = min(1.0, max(0.0, 0.55 + margin / max(1.0, scores[best])))
+            detected[spell] = best
+            details[spell] = {"value": best, "confidence": round(confidence, 6), "scores": [round(score, 6) for score in scores]}
+        return {"values": detected, "confirmed": all(item["confidence"] >= 0.72 for item in details.values()), "confidence": round(min(item["confidence"] for item in details.values()), 6), "details": details, "method": "registered_flat_charge_track_token"}
 
     def detect_glyphs(
         self,

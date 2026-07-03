@@ -4,14 +4,14 @@
 
 **Primary metric:** 4/4 (100%) retained real starts produced an executable recommendation with zero interaction.
 
-Latency: p50 1320.436 ms, p95 1397.795 ms, max 1397.795 ms.
+Latency: p50 611.356 ms, p95 814.223 ms, max 814.223 ms.
 
 | Screenshot | Player | Pillars | Types | Black | White | Status | Actions | Final | Latency |
 |---|---:|---:|---:|---:|---:|---|---:|---|---:|
-| REAL-P7-01 | True | True | True | True | True | provisional_solution | 2 | 4,-2 | 1397.795 ms |
-| REAL-P7-02 | True | True | True | True | True | provisional_solution | 1 | 3,0 | 1289.542 ms |
-| REAL-P7-03 | True | True | True | True | True | provisional_solution | 2 | 1,-2 | 1351.331 ms |
-| REAL-P7-04 | True | True | True | True | True | provisional_solution | 2 | 4,-2 | 1276.03 ms |
+| REAL-P7-01 | True | True | True | True | True | provisional_solution | 1 | 2,-1 | 814.223 ms |
+| REAL-P7-02 | True | True | True | True | True | provisional_solution | 1 | 1,-1 | 615.656 ms |
+| REAL-P7-03 | True | True | True | True | True | provisional_solution | 1 | 0,1 | 607.057 ms |
+| REAL-P7-04 | True | True | True | True | True | provisional_solution | 1 | 0,-2 | 588.223 ms |
 
 ## Known limits
 
@@ -24,12 +24,12 @@ Latency: p50 1320.436 ms, p95 1397.795 ms, max 1397.795 ms.
 
 | Stage | p50 | p95 | max |
 |---|---:|---:|---:|
-| decodeMs | 29.641 ms | 55.789 ms | 55.789 ms |
-| registrationMs | 139.734 ms | 146.816 ms | 146.816 ms |
-| playerMs | 11.666 ms | 12.612 ms | 12.612 ms |
-| pillarMs | 154.734 ms | 241.678 ms | 241.678 ms |
-| glyphMs | 44.105 ms | 47.317 ms | 47.317 ms |
-| hypothesisMs | 0.001 ms | 0.001 ms | 0.001 ms |
-| solverMs | 545.216 ms | 568.075 ms | 568.075 ms |
-| overlayMs | 123.094 ms | 129.087 ms | 129.087 ms |
-| totalMs | 1320.436 ms | 1397.795 ms | 1397.795 ms |
+| decodeMs | 25.253 ms | 43.5 ms | 43.5 ms |
+| registrationMs | 98.492 ms | 107.714 ms | 107.714 ms |
+| playerMs | 8.867 ms | 9.601 ms | 9.601 ms |
+| pillarMs | 117.37 ms | 238.041 ms | 238.041 ms |
+| glyphMs | 35.402 ms | 38.365 ms | 38.365 ms |
+| hypothesisMs | 0.0 ms | 0.001 ms | 0.001 ms |
+| solverMs | 1.387 ms | 2.023 ms | 2.023 ms |
+| overlayMs | 102.126 ms | 107.764 ms | 107.764 ms |
+| totalMs | 611.356 ms | 814.223 ms | 814.223 ms |

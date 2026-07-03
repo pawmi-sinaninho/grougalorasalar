@@ -2,7 +2,7 @@
   "files": [
     {
       "path": "data/rule-catalog.json",
-      "sha256": "c50465df49b7eaee53282e5da71661f867b7653383af06e96216f57e98cce7f2"
+      "sha256": "a47f8b78c358b3a0e8b23565cfc8088651b61e5af8c1252971cbf0c2224d5918"
     },
     {
       "path": "data/arena/grougalorasalar.cells.json",
@@ -26,7 +26,7 @@
     },
     {
       "path": "data/solver/rule-dependency-map.v0.5.0.json",
-      "sha256": "40b057280029a933b4f653f75d4b60e1b5429aa9472a1ba94272f6a20173b91c"
+      "sha256": "8d8b827c75fd69f7eeffa719c286bb7e3576dc40486a41b951e7a6852cc87db0"
     },
     {
       "path": "data/solver/status-precedence.v0.5.0.json",

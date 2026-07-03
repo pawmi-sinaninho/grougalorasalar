@@ -18,9 +18,9 @@
     "ambiguousInputCount": 0,
     "falseSafeCount": 0,
     "manualInteractionCount": 0,
-    "p50LatencyMs": 1320.436,
-    "p95LatencyMs": 1397.795,
-    "maxLatencyMs": 1397.795,
+    "p50LatencyMs": 611.356,
+    "p95LatencyMs": 814.223,
+    "maxLatencyMs": 814.223,
     "zeroInputExecutableRecommendationRate": 1.0
   },
   "screenshots": [
@@ -34,35 +34,30 @@
       "whiteGlyphSetExact": true,
       "solutionStatus": "provisional_solution",
       "actions": [
-        "repulsion@pillar:0,-1:P11",
-        "indecision@cell:4,-2:-"
+        "indecision@cell:2,-1:-"
       ],
       "finalCell": {
-        "x": 4,
-        "y": -2
+        "x": 2,
+        "y": -1
       },
       "blackHits": [],
       "whiteHits": [
-        "P13",
-        "P16",
-        "P17"
+        "P11"
       ],
       "recharges": [
-        "indecision",
-        "reflection",
-        "repulsion"
+        "attraction"
       ],
-      "latencyMs": 1397.795,
+      "latencyMs": 814.223,
       "timings": {
-        "decodeMs": 55.789,
-        "registrationMs": 137.005,
-        "playerMs": 11.456,
-        "pillarMs": 241.678,
-        "glyphMs": 44.018,
+        "decodeMs": 43.5,
+        "registrationMs": 98.925,
+        "playerMs": 9.601,
+        "pillarMs": 238.041,
+        "glyphMs": 38.365,
         "hypothesisMs": 0.001,
-        "solverMs": 467.498,
-        "overlayMs": 117.597,
-        "totalMs": 1397.795
+        "solverMs": 2.023,
+        "overlayMs": 107.764,
+        "totalMs": 814.223
       },
       "manualInteractions": 0,
       "falseSafe": false
@@ -77,32 +72,30 @@
       "whiteGlyphSetExact": true,
       "solutionStatus": "provisional_solution",
       "actions": [
-        "attraction@pillar:4,1:P21"
+        "indecision@cell:1,-1:-"
       ],
       "finalCell": {
-        "x": 3,
-        "y": 0
+        "x": 1,
+        "y": -1
       },
       "blackHits": [],
       "whiteHits": [
-        "P17",
-        "P21"
+        "P14"
       ],
       "recharges": [
-        "indecision",
         "reflection"
       ],
-      "latencyMs": 1289.542,
+      "latencyMs": 615.656,
       "timings": {
-        "decodeMs": 27.948,
-        "registrationMs": 140.196,
-        "playerMs": 11.877,
-        "pillarMs": 140.409,
-        "glyphMs": 47.317,
-        "hypothesisMs": 0.001,
-        "solverMs": 546.352,
-        "overlayMs": 129.087,
-        "totalMs": 1289.542
+        "decodeMs": 25.232,
+        "registrationMs": 107.714,
+        "playerMs": 8.979,
+        "pillarMs": 115.617,
+        "glyphMs": 34.352,
+        "hypothesisMs": 0.0,
+        "solverMs": 0.98,
+        "overlayMs": 99.354,
+        "totalMs": 615.656
       },
       "manualInteractions": 0,
       "falseSafe": false
@@ -117,35 +110,30 @@
       "whiteGlyphSetExact": true,
       "solutionStatus": "provisional_solution",
       "actions": [
-        "attraction@pillar:2,-2:P13",
-        "indecision@cell:1,-2:-"
+        "indecision@cell:0,1:-"
       ],
       "finalCell": {
-        "x": 1,
-        "y": -2
+        "x": 0,
+        "y": 1
       },
       "blackHits": [],
       "whiteHits": [
-        "P08",
-        "P12",
-        "P18"
+        "P15"
       ],
       "recharges": [
-        "attraction",
-        "reflection",
         "repulsion"
       ],
-      "latencyMs": 1351.331,
+      "latencyMs": 607.057,
       "timings": {
-        "decodeMs": 28.818,
-        "registrationMs": 146.816,
-        "playerMs": 10.749,
-        "pillarMs": 165.934,
-        "glyphMs": 44.191,
+        "decodeMs": 25.274,
+        "registrationMs": 98.059,
+        "playerMs": 8.756,
+        "pillarMs": 119.122,
+        "glyphMs": 36.452,
         "hypothesisMs": 0.0,
-        "solverMs": 568.075,
-        "overlayMs": 124.77,
-        "totalMs": 1351.331
+        "solverMs": 1.304,
+        "overlayMs": 104.238,
+        "totalMs": 607.057
       },
       "manualInteractions": 0,
       "falseSafe": false
@@ -160,35 +148,31 @@
       "whiteGlyphSetExact": true,
       "solutionStatus": "provisional_solution",
       "actions": [
-        "indecision@cell:0,-2:-",
-        "reflection@pillar:2,-2:P14"
+        "indecision@cell:0,-2:-"
       ],
       "finalCell": {
-        "x": 4,
+        "x": 0,
         "y": -2
       },
       "blackHits": [],
       "whiteHits": [
-        "P14",
-        "P22",
-        "P23"
+        "P10",
+        "P14"
       ],
       "recharges": [
-        "attraction",
-        "indecision",
         "reflection"
       ],
-      "latencyMs": 1276.03,
+      "latencyMs": 588.223,
       "timings": {
-        "decodeMs": 30.463,
-        "registrationMs": 139.273,
-        "playerMs": 12.612,
-        "pillarMs": 143.534,
-        "glyphMs": 41.351,
+        "decodeMs": 25.22,
+        "registrationMs": 97.64,
+        "playerMs": 8.458,
+        "pillarMs": 105.69,
+        "glyphMs": 33.967,
         "hypothesisMs": 0.0,
-        "solverMs": 544.08,
-        "overlayMs": 121.419,
-        "totalMs": 1276.03
+        "solverMs": 1.47,
+        "overlayMs": 100.013,
+        "totalMs": 588.223
       },
       "manualInteractions": 0,
       "falseSafe": false
@@ -196,49 +180,49 @@
   ],
   "stageLatencyMs": {
     "decodeMs": {
-      "p50": 29.641,
-      "p95": 55.789,
-      "max": 55.789
+      "p50": 25.253,
+      "p95": 43.5,
+      "max": 43.5
     },
     "registrationMs": {
-      "p50": 139.734,
-      "p95": 146.816,
-      "max": 146.816
+      "p50": 98.492,
+      "p95": 107.714,
+      "max": 107.714
     },
     "playerMs": {
-      "p50": 11.666,
-      "p95": 12.612,
-      "max": 12.612
+      "p50": 8.867,
+      "p95": 9.601,
+      "max": 9.601
     },
     "pillarMs": {
-      "p50": 154.734,
-      "p95": 241.678,
-      "max": 241.678
+      "p50": 117.37,
+      "p95": 238.041,
+      "max": 238.041
     },
     "glyphMs": {
-      "p50": 44.105,
-      "p95": 47.317,
-      "max": 47.317
+      "p50": 35.402,
+      "p95": 38.365,
+      "max": 38.365
     },
     "hypothesisMs": {
-      "p50": 0.001,
+      "p50": 0.0,
       "p95": 0.001,
       "max": 0.001
     },
     "solverMs": {
-      "p50": 545.216,
-      "p95": 568.075,
-      "max": 568.075
+      "p50": 1.387,
+      "p95": 2.023,
+      "max": 2.023
     },
     "overlayMs": {
-      "p50": 123.094,
-      "p95": 129.087,
-      "max": 129.087
+      "p50": 102.126,
+      "p95": 107.764,
+      "max": 107.764
     },
     "totalMs": {
-      "p50": 1320.436,
-      "p95": 1397.795,
-      "max": 1397.795
+      "p50": 611.356,
+      "p95": 814.223,
+      "max": 814.223
     }
   },
   "verification": {

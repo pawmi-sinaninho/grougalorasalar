@@ -396,6 +396,7 @@ export default function Home() {
       </div>}
 
       {error && <p className="error" role="alert">{error}</p>}
+      <footer className="site-credit">© 2026 Pawmi (Sinaninho)</footer>
     </main>
   );
 }

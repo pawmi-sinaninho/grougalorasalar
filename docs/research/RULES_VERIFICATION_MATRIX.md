@@ -24,7 +24,7 @@
 | R-011 | Reflet targets pillar at exact range 2 | SS | DofusPourLesNoobs explicit | Tooltip/current cast |
 | R-012 | Reflet destination is symmetric across pillar | VM | Both guides | Edge/occupancy cases |
 | R-013 | Rejet targets pillar at range 1–2 | SS | DofusPourLesNoobs explicit | Tooltip/current cast |
-| R-014 | Rejet moves 3 cardinal cells or 2 diagonal cells | VO | User gameplay captures | Full-path blocking |
+| R-014 | Rejet ends at target-relative radius 3 cardinal or 2 diagonal | VO | User gameplay captures | Adjacent yellow-target recharge regression |
 | R-015 | Attrait targets pillar at range 1–6 | SS | DofusPourLesNoobs explicit | Tooltip/current cast |
 | R-016 | Attrait moves player 3 cells toward pillar | VM | Both guides | Short-range behaviour |
 | R-017 | Attrait is line-only | SS | Guide wording/baseline | Current tooltip/cast |

@@ -77,7 +77,7 @@ The movement may not cross another pillar or obstacle. The destination must be f
 
 ### R-030 — Rejet
 
-Supported description: target an any-colour pillar at aligned range 1–2 on one of the eight cardinal or diagonal rays; move three cells away on a cardinal cast or two diagonal cells away on a diagonal cast.
+Supported description: target an any-colour pillar at aligned range 1–2 on one of the eight cardinal or diagonal rays; finish at radius three from a cardinal target or radius two from a diagonal target.
 
 For an allowed alignment, let `u` be the unit vector from pillar to player:
 
@@ -86,7 +86,7 @@ u = normalise_cardinal_or_diagonal(P - T)
 destination = P + 3*u
 ```
 
-Cardinal and diagonal alignment are legal. Cardinal Rejet moves exactly three cells; diagonal Rejet moves exactly two diagonal cells. Every traversed cell must be free and inside the arena. A blocker or arena edge makes the cast illegal; Rejet never truncates.
+Cardinal and diagonal alignment are legal. Rejet's `3/2` value is measured from the target pillar to the destination, not added to the player's source cell. For target distance `d`, displacement is `3-d` cardinal cells or `2-d` diagonal cells in the direction away from the pillar. Every traversed cell must be free and inside the arena. A blocker or arena edge makes the cast illegal; Rejet never truncates.
 
 ### R-040 — Attrait
 

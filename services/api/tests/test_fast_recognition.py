@@ -13,6 +13,7 @@ import pytest
 
 from grougal_solver.editor import validate_turn_state
 from grougal_solver.fast_recognition import (
+    CHARGE_TRACK_CENTRES,
     GLYPH_TEMPLATES,
     REFERENCE_BASIS_X,
     REFERENCE_BASIS_Y,
@@ -23,6 +24,20 @@ from grougal_solver.recognition import REFERENCE_SHA256, baseline_recognition
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 CATALOG_PATH = PROJECT_ROOT / "data" / "vision" / "real-screenshot-fixtures.v0.8.0.json"
+
+
+def test_charge_tracks_read_flat_token_at_zero_through_four() -> None:
+    engine = get_fast_engine(PROJECT_ROOT)
+    canonical = np.full((engine.reference_height, engine.reference_width, 3), 150, dtype=np.uint8)
+    expected = {"indecision": 0, "reflection": 4, "repulsion": 2, "attraction": 1}
+    for spell, value in expected.items():
+        cx, cy = CHARGE_TRACK_CENTRES[spell][value]
+        cv2.rectangle(canonical, (cx - 30, cy - 16), (cx + 30, cy + 12), (35, 35, 35), 3)
+        cv2.putText(canonical, spell[0].upper(), (cx - 10, cy + 5), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (245, 245, 245), 3)
+    result = engine.detect_charge_tracks(canonical)
+    assert result is not None
+    assert result["confirmed"] is True
+    assert result["values"] == expected
 
 
 def _catalog() -> dict:

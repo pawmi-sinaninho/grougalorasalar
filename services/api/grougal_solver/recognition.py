@@ -177,6 +177,15 @@ def baseline_recognition(
     spell_bar = recognise_spell_bar(image_path)
     if spell_bar:
         state["resources"]["spells"] = deep_copy(spell_bar["spells"])
+    charge_tracks = result.get("chargeTracks")
+    if charge_tracks and charge_tracks.get("confirmed"):
+        state["resources"] = {
+            "actionBudget": 12,
+            "spells": {
+                spell: {"availability": "available" if int(value) > 0 else "unavailable", "value": int(value), "confirmed": True}
+                for spell, value in charge_tracks["values"].items()
+            },
+        }
     glyph_usable = bool(
         glyph
         and glyph.get("templateId")
@@ -233,6 +242,7 @@ def baseline_recognition(
             "pillars": deep_copy(result.get("pillars", [])),
             "glyphPattern": deep_copy(result.get("glyphPattern")),
             "spellBar": deep_copy(spell_bar),
+            "chargeTracks": deep_copy(charge_tracks),
         },
         "automaticCriticalConfirmation": recognition_validated,
         "recognitionComplete": bool(registration.get("accepted")),

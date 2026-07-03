@@ -251,7 +251,14 @@ async def upload_image(
             document["fight"],
             (state.get("player") or {}).get("current"),
         )
-        state["resources"] = resource_state(fight["charges"])
+        visual_charges = {spell: item.get("value") for spell, item in (state.get("resources", {}).get("spells") or {}).items() if item.get("confirmed") and isinstance(item.get("value"), int)}
+        if len(visual_charges) == 4:
+            fight["charges"] = visual_charges
+            state["resources"] = resource_state(visual_charges)
+            resource_method = "visual_charge_tracks_round_start"
+        else:
+            state["resources"] = resource_state(fight["charges"])
+            resource_method = "stateful_fight_transition"
         observations.append(
             {
                 "observationId": f"obs_fight_resources_r{fight['round']}",
@@ -260,7 +267,7 @@ async def upload_image(
                 "confidence": 1.0,
                 "critical": True,
                 "decisionState": "auto_confirmed",
-                "method": "stateful_fight_transition",
+                "method": resource_method,
                 "reasonCodes": ["FIGHT-STATE-SYNCHRONISED"],
                 "autoConfirmed": True,
             }
