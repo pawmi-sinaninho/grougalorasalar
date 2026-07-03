@@ -4,6 +4,15 @@ body { margin:0; background:radial-gradient(circle at 18% 0,#23362d 0,#0b100e 38
 button,input { font:inherit; }
 main { max-width:1560px; margin:auto; padding:28px; }
 header { border-left:5px solid #bce565; padding-left:20px; margin-bottom:24px; }
+.capture-controls { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+.capture-controls button { width:auto; margin:0; padding:10px 14px; text-align:center; }
+.capture-controls .capture-turn { border-color:#bce565; background:#bce565; color:#08100c; font-weight:900; }
+.capture-controls .stop-window { background:transparent; }
+.capture-source { position:fixed; width:1px; height:1px; opacity:0; pointer-events:none; }
+.loading-banner { position:sticky; z-index:20; top:10px; display:flex; align-items:center; gap:14px; margin:0 0 16px; padding:14px 18px; border:1px solid #bce565; background:#172219f2; box-shadow:0 12px 34px #0009; }
+.loading-banner div { display:grid; gap:2px; }.loading-banner strong { color:#dff8a9; }.loading-banner small { color:#b8c7be; }
+.spinner { width:28px; height:28px; flex:0 0 auto; border:4px solid #53665b; border-top-color:#bce565; border-radius:50%; animation:spin .75s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
 h1 { font-size:clamp(2rem,5vw,4.6rem); margin:.06em 0; letter-spacing:-.05em; }
 h2,h3,p { margin-top:0; }
 .eyebrow,.step { color:#bce565; font-weight:850; letter-spacing:.16em; font-size:.76rem; }

@@ -127,8 +127,11 @@ export default function Home() {
   const [correctionMode, setCorrectionMode] = useState<CorrectionMode>(null);
   const [pillarOverlayReviewed, setPillarOverlayReviewed] = useState(false);
   const [debug, setDebug] = useState(false);
+  const [captureActive, setCaptureActive] = useState(false);
   const startedAt = useRef<number | null>(null);
   const requestSequence = useRef(0);
+  const captureStream = useRef<MediaStream | null>(null);
+  const captureVideo = useRef<HTMLVideoElement | null>(null);
 
   const turn = (data?.turnState ?? {}) as TurnState;
   const fight = data?.fight;
@@ -165,6 +168,8 @@ export default function Home() {
 
   useEffect(() => () => { if (imageUrl.startsWith('blob:')) URL.revokeObjectURL(imageUrl); }, [imageUrl]);
 
+  useEffect(() => () => captureStream.current?.getTracks().forEach(track => track.stop()), []);
+
   useEffect(() => {
     const paste = (event: ClipboardEvent) => {
       const image = Array.from(event.clipboardData?.items ?? []).find(item => item.type.startsWith('image/'))?.getAsFile();
@@ -184,6 +189,56 @@ export default function Home() {
       if (event.data.type === 'complete' || event.data.type === 'error') worker.terminate();
     };
     worker.postMessage({ file });
+  }
+
+  function stopWindowCapture() {
+    captureStream.current?.getTracks().forEach(track => track.stop());
+    captureStream.current = null;
+    if (captureVideo.current) captureVideo.current.srcObject = null;
+    setCaptureActive(false);
+  }
+
+  async function chooseGameWindow() {
+    setError('');
+    if (!navigator.mediaDevices?.getDisplayMedia) {
+      setError('La capture de fenêtre n’est pas disponible dans ce navigateur. Utilisez Ctrl+V.');
+      return;
+    }
+    try {
+      stopWindowCapture();
+      const stream = await navigator.mediaDevices.getDisplayMedia({
+        video: { displaySurface: 'window' }, audio: false,
+      });
+      captureStream.current = stream;
+      if (captureVideo.current) {
+        captureVideo.current.srcObject = stream;
+        await captureVideo.current.play();
+      }
+      stream.getVideoTracks()[0]?.addEventListener('ended', stopWindowCapture, { once: true });
+      setCaptureActive(true);
+    } catch (reason) {
+      if ((reason as DOMException)?.name !== 'NotAllowedError') {
+        setError('La fenêtre de jeu n’a pas pu être ouverte. Réessayez ou utilisez Ctrl+V.');
+      }
+    }
+  }
+
+  async function captureGameWindow() {
+    const video = captureVideo.current;
+    if (!captureStream.current || !video || !video.videoWidth || !video.videoHeight) {
+      setError('La fenêtre de jeu n’est pas encore prête. Réessayez dans un instant.');
+      return;
+    }
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext('2d')?.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, 'image/png'));
+    if (!blob) {
+      setError('La capture n’a pas pu être créée.');
+      return;
+    }
+    await begin(new File([blob], `tour-${(fight?.round ?? 0) + 1}.png`, { type: 'image/png' }));
   }
 
   async function begin(file: File) {
@@ -302,7 +357,15 @@ export default function Home() {
         <h1>Grougalorasalar Solver</h1>
         <p>Collez la capture du début du tour avec Ctrl+V. Votre action apparaît automatiquement.</p>
         {fight && data && <p className="turn-label">Tour {fight.round}</p>}
+        <div className="capture-controls">
+          <button type="button" className="choose-window" onClick={chooseGameWindow} disabled={busy}>{captureActive ? 'Changer la fenêtre Dofus' : 'Choisir la fenêtre Dofus'}</button>
+          <button type="button" className="capture-turn" onClick={captureGameWindow} disabled={!captureActive || busy}>Capturer ce tour</button>
+          {captureActive && <button type="button" className="stop-window" onClick={stopWindowCapture} disabled={busy}>Arrêter</button>}
+        </div>
+        <video ref={captureVideo} className="capture-source" muted playsInline aria-hidden="true" />
       </header>
+
+      {busy && <div className="loading-banner" role="status" aria-live="polite"><span className="spinner" aria-hidden="true" /><div><strong>{data ? 'Calcul de la solution…' : 'Analyse de l’arène…'}</strong><small>La capture est en cours de traitement.</small></div></div>}
 
       {!imageUrl && <section className="upload"><div className="paste-key">Ctrl+V</div><h2>Capture d’écran du début du tour</h2><p>Aucune saisie ni confirmation.</p>{debug && <label>Fixture locale<input aria-label="Capture du combat (debug)" type="file" accept="image/png,image/jpeg,image/webp" disabled={busy} onChange={event => event.target.files?.[0] && begin(event.target.files[0])} /></label>}</section>}
 
