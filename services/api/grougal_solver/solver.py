@@ -665,6 +665,27 @@ class DeterministicSolver:
         last_free = source
         for distance in range(1, steps + 1):
             cell = source[0] + distance * unit[0], source[1] + distance * unit[1]
+
+            # A diagonal Rejet crosses the corner shared by two orthogonal
+            # cells. Dofus rejects the complete push when either side of that
+            # corner is occupied or outside the arena; checking only the
+            # diagonal landing cells permits impossible corner clipping.
+            if spell == "repulsion" and unit[0] != 0 and unit[1] != 0:
+                previous = (
+                    source[0] + (distance - 1) * unit[0],
+                    source[1] + (distance - 1) * unit[1],
+                )
+                diagonal_side_cells = (
+                    (previous[0] + unit[0], previous[1]),
+                    (previous[0], previous[1] + unit[1]),
+                )
+                if any(
+                    side_cell in pillar_by_cell
+                    or arena.classification(side_cell) in {"blocked", "outside"}
+                    for side_cell in diagonal_side_cells
+                ):
+                    return None
+
             target_pillar_exempt = spell == "reflection" and cell == target
             blocked = arena.classification(cell) in {"blocked", "outside"}
             blocked = blocked or (cell in pillar_by_cell and not target_pillar_exempt)
