@@ -26,6 +26,7 @@ type TurnState = {
 };
 
 type Registration = { originImage?: Point; basisXImage?: Point; basisYImage?: Point };
+type RecommendationAction = NonNullable<AnalysisEnvelope['recommendation']>['actions'][number];
 type PillarProposal = { id: string; cell: Cell; spellType: SpellKey; confidence?: number; snapResidualCell?: number };
 type Recognition = NonNullable<AnalysisEnvelope['recognition']> & {
   registration?: Registration;
@@ -78,6 +79,40 @@ function unproject(point: Point, registration?: Registration): Cell | null {
     x: Math.round((dx * by.y - dy * by.x) / determinant),
     y: Math.round((bx.x * dy - bx.y * dx) / determinant),
   };
+}
+
+function layoutActionPins(
+  actions: RecommendationAction[],
+  registration: Registration | undefined,
+  imageSize: { width: number; height: number },
+  finalCell?: Cell | null,
+): Array<Point | null> {
+  const offsets = [
+    { x: 0, y: -42 }, { x: 44, y: -28 }, { x: -44, y: -28 },
+    { x: 44, y: 28 }, { x: -44, y: 28 }, { x: 0, y: 42 },
+    { x: 72, y: 0 }, { x: -72, y: 0 },
+  ];
+  const occupied: Point[] = [];
+  const finalPoint = finalCell ? project(finalCell, registration) : null;
+  if (finalPoint) occupied.push(finalPoint);
+  return actions.map(action => {
+    const target = action.targetCell && project(action.targetCell, registration);
+    if (!target) return null;
+    const candidates = offsets
+      .map(offset => ({ x: target.x + offset.x, y: target.y + offset.y }))
+      .filter(point => point.x >= 28 && point.x <= imageSize.width - 28 && point.y >= 28 && point.y <= imageSize.height - 28);
+    const fallback = {
+      x: Math.max(28, Math.min(imageSize.width - 28, target.x)),
+      y: Math.max(28, Math.min(imageSize.height - 28, target.y - 42)),
+    };
+    const pin = (candidates.length ? candidates : [fallback]).reduce((best, candidate) => {
+      const clearance = Math.min(...occupied.map(point => Math.hypot(candidate.x - point.x, candidate.y - point.y)), Number.POSITIVE_INFINITY);
+      const bestClearance = Math.min(...occupied.map(point => Math.hypot(best.x - point.x, best.y - point.y)), Number.POSITIVE_INFINITY);
+      return clearance > bestClearance ? candidate : best;
+    });
+    occupied.push(pin);
+    return pin;
+  });
 }
 
 export default function Home() {
@@ -239,7 +274,22 @@ export default function Home() {
     setCorrectionMode(null);
   }
 
-  const recommendation = data?.recommendation;
+  const recommendation = data?.recommendation ? {
+    ...data.recommendation,
+    actions: data.recommendation.actions.map((action, index) => ({
+      ...action,
+      order: index + 1,
+      // Public canonical signatures describe mechanics and may repeat when a
+      // spell targets the same pillar twice. React keys must remain unique.
+      canonicalSignature: `${action.canonicalSignature}::display-${index + 1}`,
+    })),
+  } : undefined;
+  const actionPins = layoutActionPins(
+    recommendation?.actions ?? [],
+    registration,
+    imageSize,
+    recommendation?.expected.finalCell,
+  );
 
   return (
     <main>
@@ -270,21 +320,32 @@ export default function Home() {
               {debug && blackCells.map((cell, index) => { const centre = project(cell, registration); return centre && <circle key={`b-${index}`} data-testid="glyph-overlay" cx={centre.x} cy={centre.y} r="15" className="glyph black" />; })}
               {debug && whiteCells.map((cell, index) => { const centre = project(cell, registration); return centre && <circle key={`w-${index}`} data-testid="glyph-overlay" cx={centre.x} cy={centre.y} r="15" className="glyph white" />; })}
               {debug && player && (() => { const centre = project(player, registration); const points = polygon(player, registration); return centre && points && <g data-testid="player-overlay"><polygon points={points} className="player-cell" /><circle cx={centre.x} cy={centre.y} r="9" className="player-dot" /><text x={centre.x} y={centre.y - 18} className="player-label">JOUEUR</text></g>; })()}
-              {recommendation?.actions.map(action => {
+              {recommendation?.actions.map((action, index) => {
                 const target = action.targetCell && project(action.targetCell, registration);
                 const source = action.sourceCell && project(action.sourceCell, registration);
                 const destination = action.destinationCell && project(action.destinationCell, registration);
-                return <g key={`solution-${action.canonicalSignature}`} data-testid="action-target-marker">
+                return <g key={`solution-path-${index}-${action.canonicalSignature}`}>
+                  {source && target && action.targetKind === 'pillar' && <line x1={source.x} y1={source.y} x2={target.x} y2={target.y} className="target-line" />}
                   {source && destination && <line x1={source.x} y1={source.y} x2={destination.x} y2={destination.y} className="movement-line" />}
-                  {target && <><circle cx={target.x} cy={target.y - 22} r="22" className="action-pin" /><text x={target.x} y={target.y - 15} className="action-number">{action.order}</text></>}
                 </g>;
               })}
               {recommendation?.expected.finalCell && (() => { const centre = project(recommendation.expected.finalCell, registration); return centre && <circle data-testid="final-cell-marker" cx={centre.x} cy={centre.y} r="30" className="final-cell" />; })()}
               {(recommendation?.expected.whitePillarIds ?? []).map(id => { const pillar = pillars.find(item => item.id === id); const centre = pillar && project(pillar.cell, registration); return centre && <text key={`white-hit-${id}`} x={centre.x + 22} y={centre.y - 28} className="white-hit">+</text>; })}
               {(recommendation?.expected.blackPillarIds ?? []).map(id => { const pillar = pillars.find(item => item.id === id); const centre = pillar && project(pillar.cell, registration); return centre && <text key={`black-hit-${id}`} x={centre.x + 22} y={centre.y - 28} className="black-hit">×</text>; })}
+              {recommendation?.actions.map((action, index) => {
+                const target = action.targetCell && project(action.targetCell, registration);
+                const pin = actionPins[index];
+                const displayOrder = index + 1;
+                return target && pin && <g key={`solution-pin-${displayOrder}-${action.canonicalSignature}`} data-testid="action-target-marker" data-action-order={displayOrder}>
+                  <line x1={target.x} y1={target.y} x2={pin.x} y2={pin.y} className="pin-callout" />
+                  <circle cx={pin.x} cy={pin.y} r="22" className="action-pin" />
+                  <text data-testid="action-number" x={pin.x} y={pin.y + 8} className="action-number">{displayOrder}</text>
+                </g>;
+              })}
             </svg>}
           </div>
           <div className="analysis-strip" aria-live="polite"><strong>{busy ? (data ? 'Calcul de la solution…' : 'Analyse de l’arène…') : recommendation ? 'Solution prête' : stageLabels[progress.stage] ?? 'Analyse en cours'}</strong>{debug && <span>{Math.round(elapsedMs || progress.elapsedMs)} ms</span>}</div>
+          {recommendation?.actions.length ? <div className="overlay-legend" aria-label="Légende des trajets"><span><i className="target-swatch" />Orange : portée jusqu’à la cible</span><span><i className="movement-swatch" />Blanc : déplacement du joueur</span></div> : null}
           {data && debug && <div className="summary-grid">
             <div className={player ? 'summary ok' : 'summary warn'}><strong>{player ? 'Joueur détecté' : 'Joueur à corriger'}</strong><span>Repère cyan sur la capture</span></div>
             <div className={pillars.length ? 'summary ok' : 'summary warn'}><strong>{pillars.length} piliers proposés</strong><span>{doubtfulPillars.length ? `${doubtfulPillars.length} à vérifier en orange` : 'Tous clairement positionnés'}</span></div>

@@ -36,7 +36,7 @@ export type AnalysisEnvelope = {
     statusReasonCodes: string[];
     actions: Array<{
       order: number; instruction: string; canonicalSignature: string; spell?: string;
-      targetPillarId?: string | null; targetCell?: { x: number; y: number };
+      targetKind?: 'cell' | 'pillar'; targetPillarId?: string | null; targetCell?: { x: number; y: number };
       sourceCell?: { x: number; y: number }; destinationCell?: { x: number; y: number };
     }>;
     expected: {

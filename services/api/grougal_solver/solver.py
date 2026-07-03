@@ -633,6 +633,22 @@ class DeterministicSolver:
             return action
         cfg = profile["movement"][spell]
         destination = cell_tuple(action["destinationCell"])
+        target = cell_tuple(action["targetCell"])
+        if spell == "attraction":
+            target_dx, target_dy = target[0] - source[0], target[1] - source[1]
+            target_steps = self._aligned_steps(target_dx, target_dy)
+            target_unit = self._normalised_direction(target_dx, target_dy)
+            if target_steps is None or target_unit is None:
+                return None
+            # Attrait cannot be cast through a nearer pillar or obstacle, even
+            # when that blocker lies beyond the three cells the player moves.
+            for distance in range(1, target_steps):
+                cell = (
+                    source[0] + distance * target_unit[0],
+                    source[1] + distance * target_unit[1],
+                )
+                if cell in pillar_by_cell or arena.classification(cell) in {"blocked", "outside"}:
+                    return None
         if spell == "attraction" and destination == source:
             # An adjacent target is legal: stopping immediately before that
             # pillar leaves the player on the current cell.
@@ -643,7 +659,6 @@ class DeterministicSolver:
         if steps is None or unit is None:
             return None
 
-        target = cell_tuple(action["targetCell"])
         last_free = source
         for distance in range(1, steps + 1):
             cell = source[0] + distance * unit[0], source[1] + distance * unit[1]

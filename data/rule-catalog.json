@@ -320,7 +320,7 @@
       "name": "target_line_of_sight",
       "status": "verified_direct_observation",
       "critical": true,
-      "statement": "Line-of-sight requirements for movement-spell targets are unknown."
+      "statement": "Attrait requires a clear cardinal ray to the target pillar; no pillar or obstacle may lie between player and target."
     },
     {
       "id": "R-046",

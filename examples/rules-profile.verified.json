@@ -91,7 +91,7 @@
       "minRange": 1,
       "maxRange": 6,
       "alignment": "cardinal",
-      "lineOfSight": "ignored",
+      "lineOfSight": "required_clear",
       "distance": 3,
       "pathMode": "fail_if_blocked",
       "destinationOccupancy": "invalid",

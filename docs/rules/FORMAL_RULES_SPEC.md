@@ -99,7 +99,7 @@ u = normalise_cardinal(P -> T)
 raw_destination = P + 3*u
 ```
 
-When the pillar is closer than three steps, stop on the free cell immediately before it. Movement may not cross a pillar or obstacle.
+When the pillar is closer than three steps, stop on the free cell immediately before it. The complete target ray must be clear: another pillar or obstacle anywhere between player and target makes the cast illegal, even beyond the three-cell movement destination.
 
 ## 5. Occupancy and paths
 

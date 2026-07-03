@@ -109,6 +109,7 @@ def validate_profile(profile: dict[str, Any]) -> None:
             "minRange": 1,
             "maxRange": 6,
             "alignment": "cardinal",
+            "lineOfSight": "required_clear",
             "distance": 3,
             "destinationOccupancy": "invalid",
         },

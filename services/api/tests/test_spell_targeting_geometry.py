@@ -129,6 +129,7 @@ def test_rules_profile_encodes_verified_target_geometry() -> None:
     assert attraction["minRange"] == 1
     assert attraction["maxRange"] == 6
     assert attraction["alignment"] == "cardinal"
+    assert attraction["lineOfSight"] == "required_clear"
 
 
 @pytest.mark.parametrize(
@@ -138,6 +139,7 @@ def test_rules_profile_encodes_verified_target_geometry() -> None:
         ("movement.reflection.minRange", 1),
         ("movement.repulsion.maxRange", 3),
         ("movement.attraction.alignment", "cardinal_or_diagonal"),
+        ("movement.attraction.lineOfSight", "ignored"),
     ),
 )
 def test_profile_rejects_spell_geometry_drift(override: str, value: object) -> None:
@@ -247,3 +249,15 @@ def test_attrait_rejects_diagonal_and_out_of_range_pillars() -> None:
     ]
 
     assert _actions_for("attraction", pillars) == []
+
+
+def test_attrait_rejects_target_behind_an_intermediate_pillar() -> None:
+    actions = _actions_for(
+        "attraction",
+        [
+            _pillar("P_BLOCKER", (4, 0), "indecision"),
+            _pillar("P_TARGET", (6, 0), "reflection"),
+        ],
+    )
+
+    assert {action["targetPillarId"] for action in actions} == {"P_BLOCKER"}

@@ -22,6 +22,15 @@ test('Ctrl+V runs recognition and solver without normal manual controls', async 
   await expect(page.getByRole('heading', { name: /Actions à exécuter|Aucun coup sûr|Nouvelle capture nécessaire/ })).toBeVisible({ timeout: 5_000 });
   await expect(page.getByTestId('action-target-marker').first()).toBeVisible();
   await expect(page.getByTestId('final-cell-marker')).toBeVisible();
+  await expect(page.locator('.overlay-legend')).toBeVisible();
+  await expect(page.locator('.target-line').first()).toBeVisible();
+
+  const actionNumbers = page.getByTestId('action-number');
+  const actionCount = await actionNumbers.count();
+  expect(actionCount).toBeGreaterThan(0);
+  expect(await actionNumbers.allTextContents()).toEqual(
+    Array.from({ length: actionCount }, (_value, index) => String(index + 1)),
+  );
 
   const standardText = await page.locator('body').innerText();
   for (const forbidden of ['Calculer le tour', 'Budget d’actions', 'Confirmer tous les piliers', 'Confirmer le motif affiché', 'Réflexion', 'Répulsion', 'Attirance']) {
