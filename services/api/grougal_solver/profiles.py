@@ -101,6 +101,10 @@ def validate_profile(profile: dict[str, Any]) -> None:
             "rangeMetric": "aligned_steps",
             "minRange": 1,
             "maxRange": 2,
+            "cardinalDistance": 3,
+            "diagonalDistance": 2,
+            "pathMode": "fail_if_blocked",
+            "edgeMode": "invalid",
             "destinationOccupancy": "invalid",
         },
         "attraction": {

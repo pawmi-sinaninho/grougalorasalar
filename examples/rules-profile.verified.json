@@ -80,10 +80,11 @@
         "diagonal"
       ],
       "lineOfSight": "ignored",
-      "distance": 3,
-      "pathMode": "truncate_before_blocker",
+      "cardinalDistance": 3,
+      "diagonalDistance": 2,
+      "pathMode": "fail_if_blocked",
       "destinationOccupancy": "invalid",
-      "edgeMode": "truncate_to_last_walkable"
+      "edgeMode": "invalid"
     },
     "attraction": {
       "targetPillarType": "any_pillar",

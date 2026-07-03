@@ -106,7 +106,7 @@
       "name": "repulsion_distance",
       "status": "verified_multi_source",
       "critical": true,
-      "statement": "Rejet moves the player three cells away from the targeted pillar."
+      "statement": "Rejet moves the player three cells away on a cardinal cast and two diagonal cells away on a diagonal cast."
     },
     {
       "id": "R-015",
@@ -236,7 +236,7 @@
       "name": "movement_path_blocking",
       "status": "verified_direct_observation",
       "critical": true,
-      "statement": "Movement cannot pass through pillars or obstacles; Rejet truncates before a blocker."
+      "statement": "Rejet is illegal when any traversed cell or its destination contains a pillar or obstacle; it never truncates before a blocker."
     },
     {
       "id": "R-034",
@@ -250,7 +250,7 @@
       "name": "edge_truncation",
       "status": "verified_direct_observation",
       "critical": true,
-      "statement": "Rejet truncates to the last free arena cell at the board edge."
+      "statement": "Rejet is illegal when its movement path reaches the arena edge; it never truncates to a shorter movement."
     },
     {
       "id": "R-036",

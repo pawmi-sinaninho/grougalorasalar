@@ -589,10 +589,13 @@ class DeterministicSolver:
             unit = self._normalised_direction(source[0] - target[0], source[1] - target[1])
             if unit is None:
                 return None
-            move_distance = cfg.get("distance")
+            alignment_distance_key = (
+                "cardinalDistance" if alignment == "cardinal" else "diagonalDistance"
+            )
+            move_distance = cfg.get(alignment_distance_key)
             if move_distance is None:
                 rules.append("R-014")
-                move_distance = 3
+                move_distance = cfg.get("distance", 3)
             destination = source[0] + move_distance * unit[0], source[1] + move_distance * unit[1]
         else:
             unit = self._normalised_direction(dx, dy)

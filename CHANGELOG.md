@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.0.3 - Exact Rejet movement
+
+- Made Rejet illegal when any pillar, obstacle or arena edge blocks its complete movement path.
+- Split Rejet movement into three cardinal cells and two diagonal cells.
+- Clarified charge output as current charges versus the projected next-turn charges after casts and glyph recharges.
+
 ## 1.0.2 - Black-driven glyph phases
 
 - Selected the legal glyph phase from the more reliable black glyph observations.

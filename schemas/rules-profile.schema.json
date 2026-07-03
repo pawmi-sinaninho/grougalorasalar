@@ -179,7 +179,8 @@
             "maxRange",
             "allowedAlignments",
             "lineOfSight",
-            "distance",
+            "cardinalDistance",
+            "diagonalDistance",
             "pathMode",
             "destinationOccupancy",
             "edgeMode"
@@ -234,7 +235,14 @@
                 "unknown"
               ]
             },
-            "distance": {
+            "cardinalDistance": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 1
+            },
+            "diagonalDistance": {
               "type": [
                 "integer",
                 "null"

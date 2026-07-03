@@ -135,16 +135,51 @@ def test_reflet_accepts_any_pillar_at_exact_two_cardinal_or_diagonal() -> None:
         ) is None
 
 
-def test_rejet_truncates_at_obstacle_and_map_edge() -> None:
+def test_rejet_is_invalid_at_obstacle_pillar_and_map_edge() -> None:
     solver = DeterministicSolver(PROJECT_ROOT)
     profile = _profile()
     pillar = {"id": "P", "cell": {"x": -1, "y": 0}, "spellType": "indecision"}
     raw = solver._pillar_action("repulsion", (0, 0), pillar, profile)
     assert raw is not None
-    edge = solver._apply_movement_constraints(raw.copy(), (0, 0), profile, _arena({(-1, 0), (0, 0), (1, 0), (2, 0)}), {(-1, 0): pillar})
-    assert edge and edge["destinationCell"] == {"x": 2, "y": 0}
-    obstacle = solver._apply_movement_constraints(raw.copy(), (0, 0), profile, _arena({(-1, 0), (0, 0), (1, 0), (2, 0)}, {(3, 0)}), {(-1, 0): pillar})
-    assert obstacle and obstacle["destinationCell"] == {"x": 2, "y": 0}
+    clear_arena = _arena({(-1, 0), (0, 0), (1, 0), (2, 0), (3, 0)})
+    clear = solver._apply_movement_constraints(raw.copy(), (0, 0), profile, clear_arena, {(-1, 0): pillar})
+    assert clear and clear["destinationCell"] == {"x": 3, "y": 0}
+
+    edge = solver._apply_movement_constraints(
+        raw.copy(), (0, 0), profile,
+        _arena({(-1, 0), (0, 0), (1, 0), (2, 0)}),
+        {(-1, 0): pillar},
+    )
+    assert edge is None
+    obstacle = solver._apply_movement_constraints(
+        raw.copy(), (0, 0), profile,
+        _arena({(-1, 0), (0, 0), (1, 0), (3, 0)}, {(2, 0)}),
+        {(-1, 0): pillar},
+    )
+    assert obstacle is None
+    blocker = {"id": "B", "cell": {"x": 1, "y": 0}, "spellType": "reflection"}
+    blocked_by_pillar = solver._apply_movement_constraints(
+        raw.copy(), (0, 0), profile, clear_arena,
+        {(-1, 0): pillar, (1, 0): blocker},
+    )
+    assert blocked_by_pillar is None
+
+
+def test_rejet_moves_three_cardinal_cells_but_only_two_diagonal_cells() -> None:
+    solver = DeterministicSolver(PROJECT_ROOT)
+    profile = _profile()
+    cardinal = solver._pillar_action(
+        "repulsion", (0, 0),
+        {"id": "C", "cell": {"x": -1, "y": 0}, "spellType": "indecision"},
+        profile,
+    )
+    diagonal = solver._pillar_action(
+        "repulsion", (0, 0),
+        {"id": "D", "cell": {"x": -1, "y": -1}, "spellType": "indecision"},
+        profile,
+    )
+    assert cardinal and cardinal["destinationCell"] == {"x": 3, "y": 0}
+    assert diagonal and diagonal["destinationCell"] == {"x": 2, "y": 2}
 
 
 def test_attrait_stops_before_target_and_reflet_cannot_cross_another_pillar() -> None:

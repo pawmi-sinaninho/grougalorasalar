@@ -50,6 +50,20 @@
       "effect": "legality"
     },
     {
+      "path": "movement.repulsion.cardinalDistance",
+      "ruleIds": [
+        "R-014"
+      ],
+      "effect": "destination"
+    },
+    {
+      "path": "movement.repulsion.diagonalDistance",
+      "ruleIds": [
+        "R-014"
+      ],
+      "effect": "destination"
+    },
+    {
       "path": "movement.attraction.rangeMetric",
       "ruleIds": [
         "R-015",

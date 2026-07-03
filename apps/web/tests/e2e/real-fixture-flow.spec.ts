@@ -31,6 +31,8 @@ test('Ctrl+V runs recognition and solver without normal manual controls', async 
   expect(await actionNumbers.allTextContents()).toEqual(
     Array.from({ length: actionCount }, (_value, index) => String(index + 1)),
   );
+  await expect(page.getByText('Charges : maintenant → prochain tour', { exact: true })).toBeVisible();
+  await expect(page.locator('.charges')).toContainText('Indécision 2 →');
 
   const standardText = await page.locator('body').innerText();
   for (const forbidden of ['Calculer le tour', 'Budget d’actions', 'Confirmer tous les piliers', 'Confirmer le motif affiché', 'Réflexion', 'Répulsion', 'Attirance']) {

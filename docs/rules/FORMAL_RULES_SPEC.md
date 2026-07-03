@@ -77,7 +77,7 @@ The movement may not cross another pillar or obstacle. The destination must be f
 
 ### R-030 — Rejet
 
-Supported description: target an any-colour pillar at aligned range 1–2 on one of the eight cardinal or diagonal rays and move three cells away from it.
+Supported description: target an any-colour pillar at aligned range 1–2 on one of the eight cardinal or diagonal rays; move three cells away on a cardinal cast or two diagonal cells away on a diagonal cast.
 
 For an allowed alignment, let `u` be the unit vector from pillar to player:
 
@@ -86,7 +86,7 @@ u = normalise_cardinal_or_diagonal(P - T)
 destination = P + 3*u
 ```
 
-Cardinal and diagonal alignment are legal. At a blocker or arena edge, stop at the last free cell; the destination is never occupied.
+Cardinal and diagonal alignment are legal. Cardinal Rejet moves exactly three cells; diagonal Rejet moves exactly two diagonal cells. Every traversed cell must be free and inside the arena. A blocker or arena edge makes the cast illegal; Rejet never truncates.
 
 ### R-040 — Attrait
 
@@ -103,7 +103,7 @@ When the pillar is closer than three steps, stop on the free cell immediately be
 
 ## 5. Occupancy and paths
 
-A destination is always checked against the arena mask and must be free. Pillars and permanent obstacles block intermediate movement; only Rejet truncates before a blocker or edge.
+A destination is always checked against the arena mask and must be free. Pillars and permanent obstacles block intermediate movement; movement spells do not truncate before a blocker or edge.
 
 Typed rejection reasons include:
 

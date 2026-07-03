@@ -123,6 +123,9 @@ def test_rules_profile_encodes_verified_target_geometry() -> None:
     assert repulsion["minRange"] == 1
     assert repulsion["maxRange"] == 2
     assert set(repulsion["allowedAlignments"]) == {"cardinal", "diagonal"}
+    assert repulsion["cardinalDistance"] == 3
+    assert repulsion["diagonalDistance"] == 2
+    assert repulsion["pathMode"] == "fail_if_blocked"
 
     attraction = profile["movement"]["attraction"]
     assert attraction["targetPillarType"] == "any_pillar"
@@ -138,6 +141,8 @@ def test_rules_profile_encodes_verified_target_geometry() -> None:
         ("movement.indecision.contactMetric", "chebyshev"),
         ("movement.reflection.minRange", 1),
         ("movement.repulsion.maxRange", 3),
+        ("movement.repulsion.diagonalDistance", 3),
+        ("movement.repulsion.pathMode", "truncate_before_blocker"),
         ("movement.attraction.alignment", "cardinal_or_diagonal"),
         ("movement.attraction.lineOfSight", "ignored"),
     ),
