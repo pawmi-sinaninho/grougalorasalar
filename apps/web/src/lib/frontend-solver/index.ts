@@ -3,3 +3,8 @@ export * from "./config";
 export * from "./geometry-cache";
 export * from "./pipeline";
 export * from "./types";
+export * from "./backend-adapter";
+export * from "./debug-format";
+export * from "./paste";
+export * from "./runtime";
+export * from "./worker-client";
