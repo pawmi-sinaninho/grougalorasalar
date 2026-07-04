@@ -8,6 +8,9 @@ export type CaptureRejectReason =
   | "pillar_detection_low_confidence"
   | "solver_failed"
   | "frontend_not_implemented"
+  | "frontend_vision_rejected"
+  | "frontend_vision_state_missing"
+  | "frontend_pipeline_exception"
   | "unknown";
 
 export type CaptureWarningCode =
@@ -40,7 +43,7 @@ export interface CaptureWarning {
 }
 
 export interface CaptureDebug {
-  reason?: CaptureRejectReason;
+  reason?: CaptureRejectReason | string;
   image_size?: { width: number; height: number };
   arena_bbox?: { x: number; y: number; width: number; height: number };
   cells_expected?: number;
@@ -52,6 +55,7 @@ export interface CaptureDebug {
   confidence?: number;
   overlay_data_url?: string;
   notes?: string[];
+  [key: string]: unknown;
 }
 
 export interface FrontendCaptureInput {
