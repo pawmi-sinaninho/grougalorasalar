@@ -8,3 +8,4 @@ export * from "./debug-format";
 export * from "./paste";
 export * from "./runtime";
 export * from "./worker-client";
+export * from "./local-solver";

@@ -1,15 +1,21 @@
 import { FRONTEND_SOLVER_CONFIG } from "./config";
 import { getCachedGeometry } from "./geometry-cache";
 import { imageBitmapToCanvas, inputToImageBitmap } from "./image";
+import { localSolverResultToFrontendResult, solveLocalGiven, type LocalGivenState } from "./local-solver";
 import { createStageTimer } from "./timing";
 import type { FrontendCaptureInput, FrontendSolveResult } from "./types";
+
+function hasManualState(input: FrontendCaptureInput): input is FrontendCaptureInput & { manualState: LocalGivenState } {
+  return Boolean(input.manualState && typeof input.manualState === "object");
+}
 
 /**
  * Browser-local pipeline entrypoint.
  *
- * This file intentionally starts as a strict contract and safe shell.
- * The next migration patch should wire existing arena/grid/glyph/player detection
- * logic into the marked stages below.
+ * Current status:
+ * - image decode/canvas path runs locally;
+ * - TypeScript tactical solver is ported and can solve a complete logical state;
+ * - visual detection still has to produce that logical state from the screenshot.
  */
 export async function analyzeAndSolveFrontend(input: FrontendCaptureInput): Promise<FrontendSolveResult> {
   const timer = createStageTimer();
@@ -25,32 +31,38 @@ export async function analyzeAndSolveFrontend(input: FrontendCaptureInput): Prom
 
     if (cached) {
       warnings.push({
-        code: "used_cached_geometry" as const,
+        code: "used_cached_geometry",
         message: "Cached arena geometry is available for this screenshot size.",
       });
     }
 
-    // TODO phase 2/3:
-    // 1. arena_detect_ms: locate or reuse arena bbox
-    // 2. grid_detect_ms: generate/reuse 338 cell centres
-    // 3. glyph_detect_ms: classify white/black glyphs per known cell
-    // 4. pillar_detect_ms: classify pillar cells
-    // 5. player_detect_ms: locate player cell
-    // 6. solver_ms: run local TypeScript solver
+    if (hasManualState(input)) {
+      const local = timer.measure("solver_ms", () => solveLocalGiven(input.manualState));
+      const result = localSolverResultToFrontendResult(local, timer.finish(), {
+        width: canvasImage.width,
+        height: canvasImage.height,
+      });
+      return { ...result, warnings: [...warnings, ...result.warnings] };
+    }
 
     return {
       ok: false,
       source: "frontend",
       status: "not_implemented",
-      message: "Frontend-only pipeline shell is installed. Port detection and solver stages next.",
+      message: "Frontend-only image pipeline is installed. The local tactical solver is ported; visual detection must now feed it a logical state.",
+      reason: "frontend_not_implemented",
+      confidence: 0,
+      actions: [],
       warnings,
       debug: {
         reason: "frontend_not_implemented",
         image_size: { width: canvasImage.width, height: canvasImage.height },
         cells_expected: FRONTEND_SOLVER_CONFIG.cellsExpected,
+        confidence: 0,
         notes: [
-          "This is the migration shell, not the final solver.",
-          "Next patch must wire concrete browser-local detection and solver logic into pipeline.ts.",
+          "Image stayed in the browser; no backend call is required.",
+          "TypeScript tactical solver is available through solveLocalGiven(...).",
+          "Next migration patch must port browser visual detection and pass manualState into this pipeline.",
         ],
       },
       timings_ms: timer.finish(),
@@ -61,6 +73,9 @@ export async function analyzeAndSolveFrontend(input: FrontendCaptureInput): Prom
       source: "frontend",
       status: "rejected",
       message: error instanceof Error ? error.message : "Unknown frontend pipeline error.",
+      reason: "unknown",
+      confidence: 0,
+      actions: [],
       warnings,
       debug: { reason: "unknown" },
       timings_ms: timer.finish(),

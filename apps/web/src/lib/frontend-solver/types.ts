@@ -61,6 +61,8 @@ export interface FrontendCaptureInput {
   dataUrl?: string;
   debug?: boolean;
   preferCachedGeometry?: boolean;
+  /** Internal migration hook: lets tests/future recognition feed a complete logical state directly into the browser solver. */
+  manualState?: unknown;
 }
 
 export interface SolverActionStep {
