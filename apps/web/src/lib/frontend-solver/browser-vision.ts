@@ -1,4 +1,3 @@
-
 import type { CanvasImage } from "./image";
 import { getImageData } from "./image";
 import type { LocalCell, LocalGivenState, LocalPillar, LocalSpellKey } from "./local-solver";
@@ -13,12 +12,28 @@ const EXPECTED_CELL_COUNT = 338;
 
 type Hsv = { h: number; s: number; v: number };
 type Point = { x: number; y: number };
+type GlyphColour = "black" | "white";
+type GlyphTemplate = {
+  id: string;
+  black: readonly (readonly [number, number])[];
+  white: readonly (readonly [number, number])[];
+};
 type SpellThreshold = {
   spellType: LocalSpellKey;
   lower: Hsv;
   upper: Hsv;
   offset: Point;
   minimumFraction: number;
+};
+
+type GlyphEvidence = {
+  black: number;
+  white: number;
+  lowSatFraction: number;
+  darkFraction: number;
+  brightFraction: number;
+  medianValue: number;
+  medianSaturation: number;
 };
 
 export interface BrowserVisionResult {
@@ -38,7 +53,7 @@ const PILLAR_THRESHOLDS: SpellThreshold[] = [
   { spellType: "attraction", lower: { h: 0, s: 160, v: 70 }, upper: { h: 14, s: 255, v: 255 }, offset: { x: -0.76, y: -41.06 }, minimumFraction: 0.08 },
 ];
 
-const GLYPH_TEMPLATES = [
+const GLYPH_TEMPLATES: readonly GlyphTemplate[] = [
   {
     id: "inner-cardinal",
     black: [[-1, 0], [0, -1], [0, 1], [1, 0]],
@@ -77,8 +92,16 @@ function cellKey(cell: LocalCell): string {
   return `${cell.x},${cell.y}`;
 }
 
+function addCells(a: LocalCell, offset: readonly [number, number]): LocalCell {
+  return { x: a.x + Number(offset[0]), y: a.y + Number(offset[1]) };
+}
+
 function fromTuple(tuple: readonly [number, number] | readonly number[]): LocalCell {
   return { x: Number(tuple[0]), y: Number(tuple[1]) };
+}
+
+function offsetObjects(templateOffsets: readonly (readonly [number, number])[]): Array<{ dx: number; dy: number }> {
+  return templateOffsets.map(([dx, dy]) => ({ dx: Number(dx), dy: Number(dy) }));
 }
 
 function imageScale(image: { width: number; height: number }): { sx: number; sy: number; area: number } {
@@ -120,9 +143,19 @@ function clampInt(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, Math.round(value)));
 }
 
+function clamp01(value: number): number {
+  return Math.max(0, Math.min(1, value));
+}
+
 function readRgb(data: Uint8ClampedArray, width: number, x: number, y: number): [number, number, number] {
   const offset = (y * width + x) * 4;
   return [data[offset] ?? 0, data[offset + 1] ?? 0, data[offset + 2] ?? 0];
+}
+
+function median(values: number[], fallback = 0): number {
+  if (!values.length) return fallback;
+  const copy = [...values].sort((a, b) => a - b);
+  return copy[Math.floor(copy.length / 2)] ?? fallback;
 }
 
 function sampleRect(
@@ -157,25 +190,67 @@ function sampleRect(
   return { count, total, saturationSum, valueValues, saturationValues };
 }
 
-function median(values: number[], fallback = 0): number {
-  if (!values.length) return fallback;
-  const copy = [...values].sort((a, b) => a - b);
-  return copy[Math.floor(copy.length / 2)] ?? fallback;
+function sampleGlyphEvidence(imageData: ImageData, cell: LocalCell): GlyphEvidence {
+  const scale = imageScale(imageData);
+  const centre = projectCell(cell, imageData);
+  const x0 = clampInt(centre.x - 36 * scale.sx, 0, imageData.width - 1);
+  const x1 = clampInt(centre.x + 36 * scale.sx, 0, imageData.width - 1);
+  const y0 = clampInt(centre.y - 31 * scale.sy, 0, imageData.height - 1);
+  const y1 = clampInt(centre.y - 5 * scale.sy, 0, imageData.height - 1);
+
+  let total = 0;
+  let lowSat = 0;
+  let dark = 0;
+  let bright = 0;
+  let veryDark = 0;
+  let veryBright = 0;
+  const values: number[] = [];
+  const saturations: number[] = [];
+
+  for (let y = y0; y <= y1; y += 1) {
+    for (let x = x0; x <= x1; x += 1) {
+      const [r, g, b] = readRgb(imageData.data, imageData.width, x, y);
+      const hsv = rgbToHsv(r, g, b);
+      total += 1;
+      values.push(hsv.v);
+      saturations.push(hsv.s);
+      if (hsv.s <= 120) lowSat += 1;
+      if (hsv.v <= 118 && hsv.s <= 145) dark += 1;
+      if (hsv.v <= 82 && hsv.s <= 160) veryDark += 1;
+      if (hsv.v >= 158 && hsv.s <= 118) bright += 1;
+      if (hsv.v >= 195 && hsv.s <= 92) veryBright += 1;
+    }
+  }
+
+  const medianValue = median(values, 128);
+  const medianSaturation = median(saturations, 255);
+  const lowSatFraction = total ? lowSat / total : 0;
+  const darkFraction = total ? dark / total : 0;
+  const brightFraction = total ? bright / total : 0;
+  const veryDarkFraction = total ? veryDark / total : 0;
+  const veryBrightFraction = total ? veryBright / total : 0;
+
+  const backgroundPenalty = Math.max(0, medianSaturation - 135) / 255;
+  const black = clamp01(darkFraction * 1.45 + veryDarkFraction * 0.90 + Math.max(0, 125 - medianValue) / 260 + lowSatFraction * 0.12 - backgroundPenalty * 0.25);
+  const white = clamp01(brightFraction * 1.30 + veryBrightFraction * 0.85 + Math.max(0, medianValue - 150) / 280 + lowSatFraction * 0.10 - backgroundPenalty * 0.20);
+
+  return { black, white, lowSatFraction, darkFraction, brightFraction, medianValue, medianSaturation };
 }
 
-function detectPlayer(imageData: ImageData, cells: LocalCell[], pillars: LocalPillar[]): { cell: LocalCell; confidence: number; count: number; ratio: number } | null {
-  const pillarCells = new Set(pillars.map(item => cellKey(item.cell)));
+function detectPlayer(imageData: ImageData, cells: LocalCell[]): { cell: LocalCell; confidence: number; count: number; ratio: number; candidates: number } | null {
   const scale = imageScale(imageData);
   const scores: Array<{ score: number; cell: LocalCell; count: number }> = [];
   for (const cell of cells) {
-    if (pillarCells.has(cellKey(cell))) continue;
     const centre = projectCell(cell, imageData);
     const sample = sampleRect(
       imageData,
       { x: centre.x, y: centre.y + 7 * scale.sy },
-      48 * scale.sx,
-      24 * scale.sy,
-      hsv => hsv.h >= 85 && hsv.h <= 115 && hsv.s >= 75 && hsv.v >= 55,
+      50 * scale.sx,
+      26 * scale.sy,
+      (hsv, r, g, b) => (
+        (hsv.h >= 82 && hsv.h <= 120 && hsv.s >= 55 && hsv.v >= 45)
+        || (b >= 92 && b > r * 1.12 && b > g * 1.02)
+      ),
     );
     if (!sample.count) continue;
     scores.push({ score: sample.count + 0.01 * sample.saturationSum, cell, count: sample.count });
@@ -185,20 +260,23 @@ function detectPlayer(imageData: ImageData, cells: LocalCell[], pillars: LocalPi
   if (!best) return null;
   const second = scores[1]?.score ?? 1;
   const ratio = best.score / Math.max(second, 1);
-  const minimumCount = 80 * scale.area;
-  if (best.count < minimumCount || ratio < 1.45) return null;
+  const minimumCount = 65 * scale.area;
+  if (best.count < minimumCount || ratio < 1.22) return null;
   return {
     cell: best.cell,
-    confidence: Math.min(0.995, 0.72 + Math.min(best.count / Math.max(1, 500 * scale.area), 1) * 0.16 + Math.min((ratio - 1.45) / 4, 1) * 0.10),
+    confidence: Math.min(0.995, 0.68 + Math.min(best.count / Math.max(1, 500 * scale.area), 1) * 0.17 + Math.min((ratio - 1.22) / 4, 1) * 0.10),
     count: best.count,
     ratio,
+    candidates: scores.length,
   };
 }
 
-function detectPillars(imageData: ImageData, cells: LocalCell[]): LocalPillar[] {
+function detectPillars(imageData: ImageData, cells: LocalCell[], playerCell: LocalCell | null): { pillars: LocalPillar[]; rawCount: number } {
   const scale = imageScale(imageData);
   const proposals = new Map<string, LocalPillar & { score: number; confidence: number }>();
+  const playerKey = playerCell ? cellKey(playerCell) : null;
   for (const cell of cells) {
+    if (playerKey && cellKey(cell) === playerKey) continue;
     const centre = projectCell(cell, imageData);
     for (const threshold of PILLAR_THRESHOLDS) {
       const sample = sampleRect(
@@ -207,13 +285,13 @@ function detectPillars(imageData: ImageData, cells: LocalCell[]): LocalPillar[] 
           x: centre.x + threshold.offset.x * scale.sx,
           y: centre.y + threshold.offset.y * scale.sy,
         },
-        36 * scale.sx,
-        30 * scale.sy,
+        34 * scale.sx,
+        28 * scale.sy,
         hsv => inRange(hsv, threshold.lower, threshold.upper),
       );
       const fraction = sample.total ? sample.count / sample.total : 0;
       const score = fraction * Math.min(1.25, Math.sqrt(sample.count / Math.max(1, 160 * scale.area)));
-      if (fraction < threshold.minimumFraction || sample.count < 65 * scale.area) continue;
+      if (fraction < threshold.minimumFraction || sample.count < 70 * scale.area) continue;
       const confidence = Math.min(0.995, 0.56 + score * 0.75);
       const key = cellKey(cell);
       const previous = proposals.get(key);
@@ -228,72 +306,124 @@ function detectPillars(imageData: ImageData, cells: LocalCell[]): LocalPillar[] 
       }
     }
   }
-  const selected = [...proposals.values()].sort((a, b) => (a.cell.x + a.cell.y) - (b.cell.x + b.cell.y) || a.cell.x - b.cell.x || a.cell.y - b.cell.y);
-  return selected.map((item, index) => ({ id: `P${String(index + 1).padStart(2, "0")}`, cell: item.cell, spellType: item.spellType }));
+  const raw = [...proposals.values()].sort((a, b) => b.score - a.score);
+  const selected = raw
+    .slice(0, 32)
+    .sort((a, b) => (a.cell.x + a.cell.y) - (b.cell.x + b.cell.y) || a.cell.x - b.cell.x || a.cell.y - b.cell.y);
+  return {
+    rawCount: raw.length,
+    pillars: selected.map((item, index) => ({ id: `P${String(index + 1).padStart(2, "0")}`, cell: item.cell, spellType: item.spellType })),
+  };
 }
 
-function detectGlyphs(imageData: ImageData, occupiedCells: Set<string>): {
+function legalCell(cell: LocalCell, cellSet: Set<string>): boolean {
+  return cellSet.has(cellKey(cell));
+}
+
+function detectGlyphs(
+  imageData: ImageData,
+  cells: LocalCell[],
+  occupiedCells: Set<string>,
+  playerCell: LocalCell,
+): {
   blackOffsets: Array<{ dx: number; dy: number }>;
   whiteOffsets: Array<{ dx: number; dy: number }>;
   physicalBlackCells: LocalCell[];
   physicalWhiteCells: LocalCell[];
   confidence: number;
   templateId: string;
+  anchorCell: LocalCell;
   observedBlack: LocalCell[];
   observedWhite: LocalCell[];
+  scores: Array<{ templateId: string; anchor: string; score: number; blackSupport: number; whiteSupport: number; conflict: number }>;
+  provisional: boolean;
 } | null {
-  const scale = imageScale(imageData);
-  const observed: Array<{ cell: LocalCell; colour: "black" | "white"; strength: number }> = [];
-  for (let x = -3; x <= 3; x += 1) {
-    for (let y = -3; y <= 3; y += 1) {
-      const cell = { x, y };
-      if (occupiedCells.has(cellKey(cell))) continue;
-      const centre = projectCell(cell, imageData);
-      const sample = sampleRect(
-        imageData,
-        { x: centre.x, y: centre.y - 17 * scale.sy },
-        30 * scale.sx,
-        13 * scale.sy,
-        hsv => hsv.s < 82,
-      );
-      const lowFraction = sample.total ? sample.count / sample.total : 0;
-      if (lowFraction < 0.20) continue;
-      const value = median(sample.valueValues, 255);
-      const saturation = median(sample.saturationValues, 255);
-      const darkness = Math.max(0, (145 - value) / 145);
-      const lightness = Math.max(0, (value - 145) / 110);
-      const strength = Math.min(1, 0.35 + lowFraction * 0.65 + Math.max(darkness, lightness) * 0.25 - Math.max(0, saturation - 70) / 400);
-      observed.push({ cell, colour: darkness >= lightness ? "black" : "white", strength });
+  const cellSet = new Set(cells.map(cellKey));
+  const anchors: LocalCell[] = [playerCell, { x: 0, y: 0 }]
+    .filter((item, index, array) => array.findIndex(other => cellKey(other) === cellKey(item)) === index);
+
+  const scored: Array<{
+    template: GlyphTemplate;
+    anchor: LocalCell;
+    score: number;
+    blackSupport: number;
+    whiteSupport: number;
+    conflict: number;
+    physicalBlackCells: LocalCell[];
+    physicalWhiteCells: LocalCell[];
+    observedBlack: LocalCell[];
+    observedWhite: LocalCell[];
+  }> = [];
+
+  for (const anchor of anchors) {
+    for (const template of GLYPH_TEMPLATES) {
+      const physicalBlackCells = template.black.map(offset => addCells(anchor, offset)).filter(cell => legalCell(cell, cellSet));
+      const physicalWhiteCells = template.white.map(offset => addCells(anchor, offset)).filter(cell => legalCell(cell, cellSet));
+      if (!physicalBlackCells.length || !physicalWhiteCells.length) continue;
+
+      let blackSupport = 0;
+      let whiteSupport = 0;
+      let conflict = 0;
+      const observedBlack: LocalCell[] = [];
+      const observedWhite: LocalCell[] = [];
+
+      for (const cell of physicalBlackCells) {
+        if (occupiedCells.has(cellKey(cell))) continue;
+        const evidence = sampleGlyphEvidence(imageData, cell);
+        blackSupport += evidence.black;
+        conflict += evidence.white * 0.70;
+        if (evidence.black >= 0.22) observedBlack.push(cell);
+      }
+      for (const cell of physicalWhiteCells) {
+        if (occupiedCells.has(cellKey(cell))) continue;
+        const evidence = sampleGlyphEvidence(imageData, cell);
+        whiteSupport += evidence.white;
+        conflict += evidence.black * 0.55;
+        if (evidence.white >= 0.22) observedWhite.push(cell);
+      }
+
+      const blackAvg = blackSupport / Math.max(1, physicalBlackCells.length);
+      const whiteAvg = whiteSupport / Math.max(1, physicalWhiteCells.length);
+      const conflictAvg = conflict / Math.max(1, physicalBlackCells.length + physicalWhiteCells.length);
+      const observedBonus = (observedBlack.length / Math.max(1, physicalBlackCells.length)) * 0.08
+        + (observedWhite.length / Math.max(1, physicalWhiteCells.length)) * 0.06;
+      const anchorBonus = cellKey(anchor) === cellKey(playerCell) ? 0.045 : 0;
+      const score = clamp01(blackAvg * 0.56 + whiteAvg * 0.44 + observedBonus + anchorBonus - conflictAvg * 0.24);
+
+      scored.push({ template, anchor, score, blackSupport, whiteSupport, conflict, physicalBlackCells, physicalWhiteCells, observedBlack, observedWhite });
     }
   }
 
-  const observedBlack = observed.filter(item => item.colour === "black");
-  if (!observedBlack.length) return null;
-
-  const templateScores = GLYPH_TEMPLATES.map(template => {
-    const blackKeys = new Set(template.black.map(item => `${item[0]},${item[1]}`));
-    const support = observedBlack.filter(item => blackKeys.has(cellKey(item.cell))).reduce((sum, item) => sum + item.strength, 0);
-    const conflict = observedBlack.filter(item => !blackKeys.has(cellKey(item.cell))).reduce((sum, item) => sum + item.strength, 0);
-    const expectedHits = observedBlack.filter(item => blackKeys.has(cellKey(item.cell))).length;
-    const precision = support / Math.max(0.001, support + conflict);
-    const coverage = expectedHits / template.black.length;
-    return { template, score: precision * (0.8 + 0.2 * coverage), precision, coverage, support };
-  }).filter(item => item.support > 0).sort((a, b) => b.score - a.score);
-
-  const best = templateScores[0];
+  scored.sort((a, b) => b.score - a.score);
+  const best = scored[0];
   if (!best) return null;
-  const second = templateScores[1]?.score ?? 0;
-  const margin = best.score - second;
-  const confidence = Math.min(0.92, 0.58 + best.precision * 0.24 + Math.min(margin / 0.20, 1) * 0.10);
+  const second = scored[1]?.score ?? 0;
+  const margin = Math.max(0, best.score - second);
+  const confidence = Math.max(0.18, Math.min(0.90, 0.26 + best.score * 0.52 + Math.min(margin / 0.18, 1) * 0.12));
+
+  // During the frontend migration a low-confidence phase is still usable as a provisional hypothesis.
+  // The old backend rejected here, which surfaced as "Capture incomplète" even though grid/player/pillars were available.
+  if (best.score < 0.015 && best.observedBlack.length + best.observedWhite.length === 0) return null;
+
   return {
-    blackOffsets: best.template.black.map(([dx, dy]) => ({ dx, dy })),
-    whiteOffsets: best.template.white.map(([dx, dy]) => ({ dx, dy })),
-    physicalBlackCells: best.template.black.map(fromTuple),
-    physicalWhiteCells: best.template.white.map(fromTuple),
+    blackOffsets: offsetObjects(best.template.black),
+    whiteOffsets: offsetObjects(best.template.white),
+    physicalBlackCells: best.physicalBlackCells,
+    physicalWhiteCells: best.physicalWhiteCells,
     confidence,
     templateId: best.template.id,
-    observedBlack: observedBlack.map(item => item.cell),
-    observedWhite: observed.filter(item => item.colour === "white").map(item => item.cell),
+    anchorCell: best.anchor,
+    observedBlack: best.observedBlack,
+    observedWhite: best.observedWhite,
+    provisional: confidence < 0.58,
+    scores: scored.slice(0, 4).map(item => ({
+      templateId: item.template.id,
+      anchor: cellKey(item.anchor),
+      score: Math.round(item.score * 1000) / 1000,
+      blackSupport: Math.round(item.blackSupport * 1000) / 1000,
+      whiteSupport: Math.round(item.whiteSupport * 1000) / 1000,
+      conflict: Math.round(item.conflict * 1000) / 1000,
+    })),
   };
 }
 
@@ -324,14 +454,14 @@ function maybeOverlay(canvasImage: CanvasImage, cells: LocalCell[], pillars: Loc
     ctx.fillStyle = "rgba(0,0,0,0.90)";
     for (const cell of glyphBlack) {
       const point = projectCell(cell, canvasImage);
-      ctx.fillRect(point.x - 7, point.y - 24, 14, 14);
+      ctx.fillRect(point.x - 8, point.y - 27 * imageScale(canvasImage).sy, 16, 16);
     }
-    ctx.fillStyle = "rgba(255,255,255,0.95)";
     for (const cell of glyphWhite) {
       const point = projectCell(cell, canvasImage);
+      ctx.fillStyle = "rgba(255,255,255,0.95)";
       ctx.strokeStyle = "rgba(0,0,0,0.8)";
-      ctx.strokeRect(point.x - 7, point.y - 24, 14, 14);
-      ctx.fillRect(point.x - 5, point.y - 22, 10, 10);
+      ctx.strokeRect(point.x - 8, point.y - 27 * imageScale(canvasImage).sy, 16, 16);
+      ctx.fillRect(point.x - 6, point.y - 25 * imageScale(canvasImage).sy, 12, 12);
     }
     if (player) {
       const point = projectCell(player, canvasImage);
@@ -339,6 +469,7 @@ function maybeOverlay(canvasImage: CanvasImage, cells: LocalCell[], pillars: Loc
       ctx.beginPath();
       ctx.arc(point.x, point.y, 9, 0, Math.PI * 2);
       ctx.fill();
+      ctx.fillText("PLAYER", point.x + 12, point.y + 4);
     }
     return canvas.toDataURL("image/png");
   } catch {
@@ -351,26 +482,31 @@ export function recogniseScreenshotToLocalState(canvasImage: CanvasImage): Brows
   const cells = canonicalArenaCells();
   const warnings: CaptureWarning[] = [];
   const debugNotes: string[] = [
-    "Browser vision Patch B executed locally; no backend call was used.",
-    "Registration is a fixed-reference projection scaled to the current screenshot size. This is fast, but less tolerant than the old ORB backend path.",
+    "Browser vision executed locally; no backend call was used.",
+    "Glyph Patch C anchors the phase detector on the detected player cell first, then falls back to arena centre.",
   ];
 
-  const pillarsRaw = detectPillars(imageData, cells);
-  const playerRaw = detectPlayer(imageData, cells, pillarsRaw);
+  const playerRaw = detectPlayer(imageData, cells);
   const playerCell = playerRaw?.cell ?? null;
-  const pillars = playerCell ? pillarsRaw.filter(item => cellKey(item.cell) !== cellKey(playerCell)) : pillarsRaw;
+  const pillarDetection = detectPillars(imageData, cells, playerCell);
+  const pillars = pillarDetection.pillars;
   const occupied = new Set<string>(pillars.map(item => cellKey(item.cell)));
   if (playerCell) occupied.add(cellKey(playerCell));
-  const glyphs = detectGlyphs(imageData, occupied);
+  const glyphs = playerCell ? detectGlyphs(imageData, cells, occupied, playerCell) : null;
 
   if (pillars.length < 8) {
     warnings.push({ code: "pillar_uncertain", message: `Only ${pillars.length} pillars detected locally.`, confidence: Math.min(0.5, pillars.length / 24) });
+  }
+  if (pillars.length > 26) {
+    warnings.push({ code: "pillar_uncertain", message: `Local pillar detector found ${pillars.length} candidates; result is provisional.`, confidence: Math.min(0.8, 24 / Math.max(1, pillars.length)) });
   }
   if (!playerRaw) {
     warnings.push({ code: "player_uncertain", message: "Player cell was not detected by local blue-base sampling.", confidence: 0 });
   }
   if (!glyphs) {
-    warnings.push({ code: "glyph_uncertain", message: "Glyph phase was not detected by local cell sampling.", confidence: 0 });
+    warnings.push({ code: "glyph_uncertain", message: "Glyph phase was not detected by local player-anchored sampling.", confidence: 0 });
+  } else if (glyphs.provisional) {
+    warnings.push({ code: "glyph_uncertain", message: `Glyph phase is provisional: ${glyphs.templateId} anchored at ${glyphs.anchorCell.x},${glyphs.anchorCell.y}.`, confidence: glyphs.confidence });
   }
 
   const confidenceParts = [
@@ -385,9 +521,14 @@ export function recogniseScreenshotToLocalState(canvasImage: CanvasImage): Brows
     cells_expected: EXPECTED_CELL_COUNT,
     cells_detected: cells.length,
     pillars_detected: pillars.length,
+    pillars_raw_detected: pillarDetection.rawCount,
     player_detected: Boolean(playerRaw),
+    player_candidate_cells: playerRaw?.candidates ?? 0,
     black_glyphs_detected: glyphs?.blackOffsets.length ?? 0,
     white_glyphs_detected: glyphs?.whiteOffsets.length ?? 0,
+    glyph_template: glyphs?.templateId ?? "none",
+    glyph_anchor_cell: glyphs ? `${glyphs.anchorCell.x},${glyphs.anchorCell.y}` : "none",
+    glyph_scores: glyphs?.scores ?? [],
     confidence,
     overlay_data_url: overlay,
     notes: debugNotes,
@@ -487,18 +628,22 @@ export function recogniseScreenshotToLocalState(canvasImage: CanvasImage): Brows
       notes: [
         ...debugNotes,
         `Player: ${playerRaw.cell.x},${playerRaw.cell.y}`,
-        `Pillars: ${pillars.length}`,
+        `Pillars: ${pillars.length} (raw ${pillarDetection.rawCount})`,
         `Glyph template: ${glyphs.templateId}`,
+        `Glyph anchor: ${glyphs.anchorCell.x},${glyphs.anchorCell.y}`,
       ],
     },
     metrics: {
       cells: cells.length,
       pillars: pillars.length,
+      pillarsRaw: pillarDetection.rawCount,
       playerConfidence: playerRaw.confidence,
       playerBluePixelCount: playerRaw.count,
       playerSeparationRatio: playerRaw.ratio,
       glyphTemplate: glyphs.templateId,
       glyphConfidence: glyphs.confidence,
+      glyphProvisional: glyphs.provisional,
     },
   };
 }
+
