@@ -17,6 +17,7 @@ from .pillar_completeness import scan_pillar_completeness
 from .util import load_json
 
 
+from .solver_perf import solver_memoize
 REFERENCE_ORIGIN = np.array([964.895, 441.7425], dtype=np.float64)
 REFERENCE_BASIS_X = np.array([66.75, 33.375], dtype=np.float64)
 REFERENCE_BASIS_Y = np.array([-66.75, 33.375], dtype=np.float64)

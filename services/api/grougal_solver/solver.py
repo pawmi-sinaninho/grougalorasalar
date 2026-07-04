@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from .solver_perf import solver_memoize
 import time
 from collections import Counter, deque
 from dataclasses import dataclass
@@ -642,6 +643,7 @@ class DeterministicSolver:
 
         return self._make_action(spell, source, target, "pillar", destination, pillar["id"], rules)
 
+    @solver_memoize(max_entries=8192)
     def _apply_movement_constraints(
         self,
         action: dict[str, Any],
