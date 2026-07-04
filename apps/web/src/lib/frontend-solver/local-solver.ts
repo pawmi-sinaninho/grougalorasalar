@@ -349,38 +349,76 @@ function pillarAction(spell: LocalSpellKey, source: CellTuple, pillar: LocalPill
   return null;
 }
 
-function applyMovementConstraints(action: InternalAction, source: CellTuple, arena: ArenaSets, pillarByCell: Map<string, LocalPillar>): InternalAction | null {
-  const destination = cellTuple(action.destinationCell);
-  const target = cellTuple(action.targetCell);
+/* FRONTEND_SPELL_CONTRACT_GATE_START */
+function frontendPillarTargetSpell(spell: InternalAction["spell"]): boolean {
+  return spell === "reflection" || spell === "repulsion" || spell === "attraction";
+}
 
-  const isFree = (cell: CellTuple): boolean => arena.classification(cell) === "walkable" && !pillarByCell.has(cellKey(cell));
+function frontendTargetKind(action: Pick<InternalAction, "spell" | "targetKind"> & { targetPillarId?: string | null }): "cell" | "pillar" {
+  if (frontendPillarTargetSpell(action.spell)) return "pillar";
+  if (action.targetPillarId) return "pillar";
+  return action.targetKind === "pillar" ? "pillar" : "cell";
+}
+
+function frontendCellFree(cell: CellTuple, arena: ArenaSets, pillarByCell: Map<string, LocalPillar>): boolean {
+  return arena.classification(cell) === "walkable" && !pillarByCell.has(cellKey(cell));
+}
+
+function frontendLineClearExclusive(source: CellTuple, target: CellTuple, unit: CellTuple, arena: ArenaSets, pillarByCell: Map<string, LocalPillar>): boolean {
+  const steps = alignedSteps(target[0] - source[0], target[1] - source[1]);
+  if (steps === null) return false;
+
+  for (let distance = 1; distance < steps; distance += 1) {
+    const cell: CellTuple = [source[0] + distance * unit[0], source[1] + distance * unit[1]];
+    if (!frontendCellFree(cell, arena, pillarByCell)) return false;
+  }
+
+  return true;
+}
+
+function frontendDiagonalStepBlocked(previous: CellTuple, unit: CellTuple, arena: ArenaSets, pillarByCell: Map<string, LocalPillar>): boolean {
+  if (unit[0] === 0 || unit[1] === 0) return false;
+
+  const sideA: CellTuple = [previous[0] + unit[0], previous[1]];
+  const sideB: CellTuple = [previous[0], previous[1] + unit[1]];
+
+  return !frontendCellFree(sideA, arena, pillarByCell) || !frontendCellFree(sideB, arena, pillarByCell);
+}
+
+function applyMovementConstraints(action: InternalAction, source: CellTuple, arena: ArenaSets, pillarByCell: Map<string, LocalPillar>): InternalAction | null {
+  const target = cellTuple(action.targetCell);
+  const rawDestination = cellTuple(action.destinationCell);
 
   if (action.spell === "indecision") {
-    if (action.targetKind !== "cell") return null;
     const dx = target[0] - source[0];
     const dy = target[1] - source[1];
+
     if (Math.abs(dx) + Math.abs(dy) !== 1) return null;
-    if (!sameCell(destination, target)) return null;
-    if (!isFree(destination)) return null;
-    return { ...action, destinationCell: cellDict(destination), targetCell: cellDict(target) };
+    if (!sameCell(rawDestination, target)) return null;
+    if (!frontendCellFree(target, arena, pillarByCell)) return null;
+
+    return { ...action, targetKind: "cell", destinationCell: cellDict(target) };
   }
 
   if (action.spell === "reflection") {
-    if (action.targetKind !== "pillar") return null;
     if (!pillarByCell.has(cellKey(target))) return null;
 
     const dx = target[0] - source[0];
     const dy = target[1] - source[1];
+
     if (Math.abs(dx) !== 1 || Math.abs(dy) !== 1) return null;
 
-    const reflected: CellTuple = [target[0] + dx, target[1] + dy];
-    if (!isFree(reflected)) return null;
+    const destination: CellTuple = [target[0] + dx, target[1] + dy];
+    if (!frontendCellFree(destination, arena, pillarByCell)) return null;
 
-    return { ...action, targetCell: cellDict(target), destinationCell: cellDict(reflected) };
+    return {
+      ...action,
+      targetKind: "pillar",
+      destinationCell: cellDict(destination),
+    };
   }
 
   if (action.spell === "repulsion") {
-    if (action.targetKind !== "pillar") return null;
     if (!pillarByCell.has(cellKey(target))) return null;
 
     const targetDx = target[0] - source[0];
@@ -397,22 +435,22 @@ function applyMovementConstraints(action: InternalAction, source: CellTuple, are
       const previous: CellTuple = [source[0] + (distance - 1) * awayUnit[0], source[1] + (distance - 1) * awayUnit[1]];
       const candidate: CellTuple = [source[0] + distance * awayUnit[0], source[1] + distance * awayUnit[1]];
 
-      if (awayUnit[0] !== 0 && awayUnit[1] !== 0) {
-        const sideA: CellTuple = [previous[0] + awayUnit[0], previous[1]];
-        const sideB: CellTuple = [previous[0], previous[1] + awayUnit[1]];
-        if (!isFree(sideA) || !isFree(sideB)) break;
-      }
+      if (frontendDiagonalStepBlocked(previous, awayUnit, arena, pillarByCell)) break;
+      if (!frontendCellFree(candidate, arena, pillarByCell)) break;
 
-      if (!isFree(candidate)) break;
       lastFree = candidate;
     }
 
     if (sameCell(lastFree, source)) return null;
-    return { ...action, targetCell: cellDict(target), destinationCell: cellDict(lastFree) };
+
+    return {
+      ...action,
+      targetKind: "pillar",
+      destinationCell: cellDict(lastFree),
+    };
   }
 
   if (action.spell === "attraction") {
-    if (action.targetKind !== "pillar") return null;
     if (!pillarByCell.has(cellKey(target))) return null;
 
     const targetDx = target[0] - source[0];
@@ -422,27 +460,23 @@ function applyMovementConstraints(action: InternalAction, source: CellTuple, are
 
     if (targetSteps === null || targetSteps < 1 || targetSteps > 6 || !targetUnit) return null;
     if (targetUnit[0] !== 0 && targetUnit[1] !== 0) return null;
+    if (!frontendLineClearExclusive(source, target, targetUnit, arena, pillarByCell)) return null;
 
-    for (let distance = 1; distance < targetSteps; distance += 1) {
-      const between: CellTuple = [source[0] + distance * targetUnit[0], source[1] + distance * targetUnit[1]];
-      if (pillarByCell.has(cellKey(between))) return null;
-      if (arena.classification(between) !== "walkable") return null;
-    }
+    const maxDistance = Math.min(3, targetSteps - 1);
+    const destination: CellTuple = [source[0] + maxDistance * targetUnit[0], source[1] + maxDistance * targetUnit[1]];
 
-    let lastFree: CellTuple = [source[0], source[1]];
-    const maxPull = Math.min(3, targetSteps - 1);
-    for (let distance = 1; distance <= maxPull; distance += 1) {
-      const candidate: CellTuple = [source[0] + distance * targetUnit[0], source[1] + distance * targetUnit[1]];
-      if (!isFree(candidate)) break;
-      lastFree = candidate;
-    }
+    if (!frontendCellFree(destination, arena, pillarByCell)) return null;
 
-    if (sameCell(lastFree, source)) return null;
-    return { ...action, targetCell: cellDict(target), destinationCell: cellDict(lastFree) };
+    return {
+      ...action,
+      targetKind: "pillar",
+      destinationCell: cellDict(destination),
+    };
   }
 
   return null;
 }
+/* FRONTEND_SPELL_CONTRACT_GATE_END */
 
 function enumerateActions(
   source: CellTuple,
@@ -698,7 +732,8 @@ export function solveLocalGiven(given: LocalGivenState, options: { maxNodes?: nu
   };
 }
 
-export function localSolverResultToFrontendResult(
+export /* targetKind normalised by applyMovementConstraints before UI mapping */
+function localSolverResultToFrontendResult(
   local: LocalSolverResult,
   timings: PipelineTimingsMs,
   imageSize?: { width: number; height: number },
