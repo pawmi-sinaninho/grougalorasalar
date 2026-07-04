@@ -1,6 +1,13 @@
 import { solveScreenshotRuntime } from '../src/lib/frontend-solver';
 import type { CaptureWarning, FrontendSolveResult, SolverActionStep } from '../src/lib/frontend-solver';
 
+declare global {
+  interface Window {
+    __grougalLastFrontendResult?: unknown;
+    __grougalLastFrontendEnvelope?: unknown;
+  }
+}
+
 type SpellKey = 'indecision' | 'reflection' | 'repulsion' | 'attraction';
 type Availability = 'unknown' | 'available' | 'unavailable';
 type Cell = { x: number; y: number };
@@ -303,6 +310,25 @@ function resultStatus(result: FrontendSolveResult): string {
   return 'blocked_missing_data';
 }
 
+
+function publishFrontendDebug(label: string, payload: unknown): void {
+  if (typeof window === 'undefined') return;
+
+  try {
+    if (label.includes('result')) {
+      window.__grougalLastFrontendResult = payload;
+    }
+    if (label.includes('envelope')) {
+      window.__grougalLastFrontendEnvelope = payload;
+    }
+
+    // eslint-disable-next-line no-console
+    console.info(`[grougal/frontend-only] ${label}`, payload);
+  } catch {
+    // Debug publishing must never break the solver flow.
+  }
+}
+
 function frontendResultToEnvelope(
   result: FrontendSolveResult,
   analysisId: string,
@@ -411,7 +437,11 @@ async function frontendOnlyUploadImage(
     },
   );
 
-  return frontendResultToEnvelope(result, analysisId, version + 1, startedAtMs, imageUrl);
+  publishFrontendDebug('solveScreenshotRuntime.result', result);
+
+  const envelope = frontendResultToEnvelope(result, analysisId, version + 1, startedAtMs, imageUrl);
+  publishFrontendDebug('analysisEnvelope.envelope', envelope);
+  return envelope;
 }
 
 async function frontendOnlyCommand(
