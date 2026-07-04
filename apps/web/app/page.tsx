@@ -365,7 +365,7 @@ export default function Home() {
         <video ref={captureVideo} className="capture-source" muted playsInline aria-hidden="true" />
       </header>
 
-      {busy && <div className="loading-banner" role="status" aria-live="polite"><span className="spinner" aria-hidden="true" /><div><strong>{data ? 'Calcul de la solution…' : 'Analyse de l’arène…'}</strong><small>La capture est en cours de traitement.</small></div></div>}
+      {busy && <div className="loading-banner" role="status" aria-live="polite"><span className="spinner" aria-hidden="true" /><div><strong>{data ? 'Analyse de la capture…' : 'Analyse de l’arène…'}</strong><small>La capture est en cours de traitement.</small></div></div>}
 
       {!imageUrl && <section className="upload"><div className="paste-key">Ctrl+V</div><h2>Capture d’écran du début du tour</h2><p>Aucune saisie ni confirmation.</p>{debug && <label>Fixture locale<input aria-label="Capture du combat (debug)" type="file" accept="image/png,image/jpeg,image/webp" disabled={busy} onChange={event => event.target.files?.[0] && begin(event.target.files[0])} /></label>}</section>}
 
@@ -412,7 +412,6 @@ export default function Home() {
             </svg>}
           </div>
           <div className="analysis-strip" aria-live="polite"><strong>{busy ? (data ? 'Calcul de la solution…' : 'Analyse de l’arène…') : recommendation ? 'Solution prête' : stageLabels[progress.stage] ?? 'Analyse en cours'}</strong>{debug && <span>{Math.round(elapsedMs || progress.elapsedMs)} ms</span>}</div>
-          {recommendation?.actions.length ? <div className="overlay-legend" aria-label="Légende des trajets"><span><i className="target-swatch" />Orange : portée jusqu’à la cible</span><span><i className="movement-swatch" />Blanc : déplacement du joueur</span></div> : null}
           {data && debug && <div className="summary-grid">
             <div className={player ? 'summary ok' : 'summary warn'}><strong>{player ? 'Joueur détecté' : 'Joueur à corriger'}</strong><span>Repère cyan sur la capture</span></div>
             <div className={pillars.length ? 'summary ok' : 'summary warn'}><strong>{pillars.length} piliers proposés</strong><span>{doubtfulPillars.length ? `${doubtfulPillars.length} à vérifier en orange` : 'Tous clairement positionnés'}</span></div>
