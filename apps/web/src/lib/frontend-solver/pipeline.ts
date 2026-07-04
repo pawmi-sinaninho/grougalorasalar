@@ -13,7 +13,7 @@ import type { FrontendCaptureInput, FrontendSolveResult } from "./types";
  */
 export async function analyzeAndSolveFrontend(input: FrontendCaptureInput): Promise<FrontendSolveResult> {
   const timer = createStageTimer();
-  const warnings = [];
+  const warnings: FrontendSolveResult["warnings"] = [];
 
   try {
     const bitmap = await timer.measureAsync("image_decode_ms", () => inputToImageBitmap(input));

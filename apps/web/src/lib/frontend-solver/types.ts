@@ -77,6 +77,8 @@ export interface FrontendSolveResult {
   source: "frontend" | "backend";
   status: "solved" | "warning" | "rejected" | "not_implemented";
   message?: string;
+  reason?: CaptureRejectReason | string;
+  confidence?: number;
   actions?: SolverActionStep[];
   warnings: CaptureWarning[];
   debug: CaptureDebug;
