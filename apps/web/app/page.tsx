@@ -45,6 +45,45 @@ const stageLabels: Record<string, string> = {
   recognition_complete: 'Éléments détectés — vérification requise',
 };
 
+const FRONTEND_OVERLAY_REF_WIDTH = 1951;
+const FRONTEND_OVERLAY_REF_HEIGHT = 1267;
+const FRONTEND_OVERLAY_REF_ORIGIN: Point = { x: 964.895, y: 441.7425 };
+const FRONTEND_OVERLAY_REF_BASIS_X: Point = { x: 66.75, y: 33.375 };
+const FRONTEND_OVERLAY_REF_BASIS_Y: Point = { x: -66.75, y: 33.375 };
+
+function isFinitePoint(point?: Point): point is Point {
+  return Boolean(
+    point
+      && Number.isFinite(point.x)
+      && Number.isFinite(point.y)
+      && Math.abs(point.x) < 100000
+      && Math.abs(point.y) < 100000,
+  );
+}
+
+function isUsableRegistration(registration?: Registration): registration is Required<Registration> {
+  return Boolean(
+    registration
+      && isFinitePoint(registration.originImage)
+      && isFinitePoint(registration.basisXImage)
+      && isFinitePoint(registration.basisYImage)
+      && Math.hypot(registration.basisXImage.x, registration.basisXImage.y) > 2
+      && Math.hypot(registration.basisYImage.x, registration.basisYImage.y) > 2,
+  );
+}
+
+function makeFallbackRegistration(imageSize: { width: number; height: number }): Registration | undefined {
+  const { width, height } = imageSize;
+  if (!Number.isFinite(width) || !Number.isFinite(height) || width <= 10 || height <= 10) return undefined;
+  const sx = width / FRONTEND_OVERLAY_REF_WIDTH;
+  const sy = height / FRONTEND_OVERLAY_REF_HEIGHT;
+  return {
+    originImage: { x: FRONTEND_OVERLAY_REF_ORIGIN.x * sx, y: FRONTEND_OVERLAY_REF_ORIGIN.y * sy },
+    basisXImage: { x: FRONTEND_OVERLAY_REF_BASIS_X.x * sx, y: FRONTEND_OVERLAY_REF_BASIS_X.y * sy },
+    basisYImage: { x: FRONTEND_OVERLAY_REF_BASIS_Y.x * sx, y: FRONTEND_OVERLAY_REF_BASIS_Y.y * sy },
+  };
+}
+
 function project(cell: Cell, registration?: Registration): Point | null {
   const o = registration?.originImage;
   const bx = registration?.basisXImage;
@@ -136,7 +175,15 @@ export default function Home() {
   const turn = (data?.turnState ?? {}) as TurnState;
   const fight = data?.fight;
   const recognition = (data?.recognition ?? {}) as Recognition;
-  const registration = recognition.registration;
+  const detectedRegistration = recognition.registration;
+  const registration = useMemo(() => {
+    const fallback = makeFallbackRegistration(imageSize);
+    // Frontend-only recognition uses the same reference projection as the
+    // browser-local detector. Prefer this fallback when the envelope did not
+    // provide a reliable registration, otherwise the SVG overlay is skipped.
+    if (data?.frontendOnly && fallback) return fallback;
+    return isUsableRegistration(detectedRegistration) ? detectedRegistration : fallback;
+  }, [data?.frontendOnly, detectedRegistration, imageSize.width, imageSize.height]);
   const pillars = turn.pillars ?? [];
   const player = turn.player?.current ?? null;
   const glyphAnchor = recognition.proposals?.glyphPattern?.anchorCell ?? { x: 0, y: 0 };
@@ -333,6 +380,21 @@ function startLocalWorker(file: File) {
     imageSize,
     recommendation?.expected.finalCell,
   );
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    (window as unknown as { __grougalOverlayDebug?: unknown }).__grougalOverlayDebug = {
+      hasData: Boolean(data),
+      frontendOnly: Boolean(data?.frontendOnly),
+      hasDetectedRegistration: isUsableRegistration(detectedRegistration),
+      hasRegistration: isUsableRegistration(registration),
+      imageSize,
+      actionCount: recommendation?.actions.length ?? 0,
+      firstAction: recommendation?.actions[0] ?? null,
+      expected: recommendation?.expected ?? null,
+    };
+  }, [data, detectedRegistration, registration, imageSize, recommendation]);
+
   const castCounts = recommendation?.actions.reduce<Record<string, number>>((counts, action) => {
     if (action.spell) counts[action.spell] = (counts[action.spell] ?? 0) + 1;
     return counts;
@@ -359,9 +421,9 @@ function startLocalWorker(file: File) {
 
       {imageUrl && <div className={data ? 'workspace' : 'workspace preview-only'}>
         <section className="board-card">
-          <div className={`board-image ${correctionMode ? 'is-correcting' : ''}`}>
+          <div className={`board-image ${correctionMode ? 'is-correcting' : ''}`} style={{ position: 'relative' }}>
             <img src={imageUrl} alt="Capture du combat à vérifier" onLoad={event => setImageSize({ width: event.currentTarget.naturalWidth, height: event.currentTarget.naturalHeight })} />
-            {data && registration?.originImage && <svg data-testid="detection-overlay" className="overlay" viewBox={`0 0 ${imageSize.width} ${imageSize.height}`} onClick={handleBoardClick} role="img" aria-label="Repères détectés sur la capture">
+            {data && registration?.originImage && <svg data-testid="detection-overlay" className="overlay" viewBox={`0 0 ${imageSize.width} ${imageSize.height}`} onClick={handleBoardClick} role="img" aria-label="Repères détectés sur la capture" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 5, pointerEvents: correctionMode ? 'auto' : 'none', overflow: 'visible' }}>
               {debug && pillars.map(item => {
                 const centre = project(item.cell, registration); const points = polygon(item.cell, registration);
                 const doubtful = doubtfulPillars.some(candidate => candidate.id === item.id);
@@ -380,11 +442,11 @@ function startLocalWorker(file: File) {
                 const source = action.sourceCell && project(action.sourceCell, registration);
                 const destination = action.destinationCell && project(action.destinationCell, registration);
                 return <g key={`solution-path-${index}-${action.canonicalSignature}`}>
-                  {source && target && action.targetKind === 'pillar' && <line x1={source.x} y1={source.y} x2={target.x} y2={target.y} className="target-line" />}
-                  {source && destination && <line x1={source.x} y1={source.y} x2={destination.x} y2={destination.y} className="movement-line" />}
+                  {source && target && action.targetKind === 'pillar' && <line x1={source.x} y1={source.y} x2={target.x} y2={target.y} className="target-line" stroke="#ffb347" strokeWidth={7} strokeLinecap="round" strokeDasharray="12 9" opacity={0.98} vectorEffect="non-scaling-stroke" />}
+                  {source && destination && <line x1={source.x} y1={source.y} x2={destination.x} y2={destination.y} className="movement-line" stroke="#ffffff" strokeWidth={8} strokeLinecap="round" opacity={0.98} vectorEffect="non-scaling-stroke" />}
                 </g>;
               })}
-              {recommendation?.expected.finalCell && (() => { const centre = project(recommendation.expected.finalCell, registration); return centre && <circle data-testid="final-cell-marker" cx={centre.x} cy={centre.y} r="30" className="final-cell" />; })()}
+              {recommendation?.expected.finalCell && (() => { const centre = project(recommendation.expected.finalCell, registration); return centre && <circle data-testid="final-cell-marker" cx={centre.x} cy={centre.y} r="30" className="final-cell" fill="none" stroke="#9dff5f" strokeWidth={7} opacity={0.98} vectorEffect="non-scaling-stroke" />; })()}
               {(recommendation?.expected.whitePillarIds ?? []).map(id => { const pillar = pillars.find(item => item.id === id); const centre = pillar && project(pillar.cell, registration); return centre && <text key={`white-hit-${id}`} x={centre.x + 22} y={centre.y - 28} className="white-hit">+</text>; })}
               {(recommendation?.expected.blackPillarIds ?? []).map(id => { const pillar = pillars.find(item => item.id === id); const centre = pillar && project(pillar.cell, registration); return centre && <text key={`black-hit-${id}`} x={centre.x + 22} y={centre.y - 28} className="black-hit">×</text>; })}
               {recommendation?.actions.map((action, index) => {
@@ -392,9 +454,9 @@ function startLocalWorker(file: File) {
                 const pin = actionPins[index];
                 const displayOrder = index + 1;
                 return target && pin && <g key={`solution-pin-${displayOrder}-${action.canonicalSignature}`} data-testid="action-target-marker" data-action-order={displayOrder}>
-                  <line x1={target.x} y1={target.y} x2={pin.x} y2={pin.y} className="pin-callout" />
-                  <circle cx={pin.x} cy={pin.y} r="22" className="action-pin" />
-                  <text data-testid="action-number" x={pin.x} y={pin.y + 8} className="action-number">{displayOrder}</text>
+                  <line x1={target.x} y1={target.y} x2={pin.x} y2={pin.y} className="pin-callout" stroke="#caff62" strokeWidth={5} strokeLinecap="round" opacity={0.98} vectorEffect="non-scaling-stroke" />
+                  <circle cx={pin.x} cy={pin.y} r="22" className="action-pin" fill="#caff62" stroke="#07110c" strokeWidth={5} opacity={0.98} vectorEffect="non-scaling-stroke" />
+                  <text data-testid="action-number" x={pin.x} y={pin.y + 8} className="action-number" fill="#07110c" fontSize="24" fontWeight="900" textAnchor="middle">{displayOrder}</text>
                 </g>;
               })}
             </svg>}
