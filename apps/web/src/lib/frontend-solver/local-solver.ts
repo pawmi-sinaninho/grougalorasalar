@@ -662,28 +662,53 @@ export function localSolverResultToFrontendResult(
   timings: PipelineTimingsMs,
   imageSize?: { width: number; height: number },
 ): FrontendSolveResult {
-  const actions: SolverActionStep[] = local.actions.map(action => ({
+  const ok = local.status === "solved";
+
+  const actions: SolverActionStep[] = local.actions.map((action, index) => ({
     label: action.instruction,
+    instruction: action.instruction,
     spell: action.spell,
     from: `${action.sourceCell.x},${action.sourceCell.y}`,
     to: `${action.destinationCell.x},${action.destinationCell.y}`,
     apCost: 1,
     note: action.canonicalSignature,
+    order: index + 1,
+    sourceCell: { ...action.sourceCell },
+    destinationCell: { ...action.destinationCell },
+    targetKind: action.targetKind,
+    targetCell: { ...action.targetCell },
+    targetPillarId: action.targetPillarId,
+    canonicalSignature: action.canonicalSignature,
+    pathCells: action.pathCells.map(cell => ({ ...cell })),
   }));
 
   return {
-    ok: local.status === "solved",
+    ok,
     source: "frontend",
-    status: local.status === "solved" ? "solved" : "rejected",
-    message: local.status === "solved" ? "Local TypeScript solver returned a recommendation." : "Local TypeScript solver did not find a safe recommendation.",
-    reason: local.status === "solved" ? undefined : local.status,
-    confidence: local.status === "solved" ? 1 : 0.3,
+    status: ok ? "solved" : "rejected",
+    message: ok
+      ? "Local TypeScript solver returned a recommendation."
+      : "Local TypeScript solver did not find a safe recommendation.",
+    reason: ok ? undefined : local.status,
+    confidence: ok ? 1 : 0.3,
     actions,
+    expected: {
+      finalCell: local.expected.finalCell,
+      raceOutcome: local.expected.raceOutcome,
+      blackPillarIds: local.expected.blackPillarIds,
+      whitePillarIds: local.expected.whitePillarIds,
+      rechargedSpells: local.expected.rechargedSpells,
+      directCenterEffect: local.expected.directCenterEffect,
+      nextSpellState: local.expected.nextSpellState,
+    },
     warnings: [],
     debug: {
-      reason: local.status === "solved" ? undefined : "solver_failed",
+      reason: ok ? undefined : "solver_failed",
       image_size: imageSize,
-      confidence: local.status === "solved" ? 1 : 0.3,
+      confidence: ok ? 1 : 0.3,
+      solver_status: local.status,
+      solver_reason_codes: local.statusReasonCodes,
+      solver_node_count: local.diagnostics.nodeCount,
       notes: [
         "TypeScript local tactical solver executed in the browser.",
         `Solver status: ${local.status}`,

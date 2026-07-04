@@ -71,21 +71,42 @@ export interface FrontendCaptureInput {
 
 export interface SolverActionStep {
   label: string;
+  instruction?: string;
   spell?: string;
   from?: string;
   to?: string;
   apCost?: number;
   note?: string;
+  order?: number;
+  sourceCell?: { x: number; y: number };
+  destinationCell?: { x: number; y: number };
+  targetKind?: "cell" | "pillar";
+  targetCell?: { x: number; y: number };
+  targetPillarId?: string | null;
+  canonicalSignature?: string;
+  pathCells?: Array<{ x: number; y: number }>;
+  [key: string]: unknown;
+}
+
+export interface FrontendRecommendationExpected {
+  finalCell: { x: number; y: number } | null;
+  raceOutcome: string;
+  blackPillarIds?: string[];
+  whitePillarIds?: string[];
+  rechargedSpells?: string[];
+  directCenterEffect?: string;
+  nextSpellState?: Record<string, number> | null;
 }
 
 export interface FrontendSolveResult {
   ok: boolean;
   source: "frontend" | "backend";
-  status: "solved" | "warning" | "rejected" | "not_implemented";
+  status: "solved" | "warning" | "rejected" | "not_implemented" | "blocked_missing_data";
   message?: string;
   reason?: CaptureRejectReason | string;
   confidence?: number;
   actions?: SolverActionStep[];
+  expected?: FrontendRecommendationExpected;
   warnings: CaptureWarning[];
   debug: CaptureDebug;
   timings_ms: PipelineTimingsMs;
