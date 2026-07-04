@@ -24,7 +24,6 @@ from .session_store import SessionError, SessionStore
 from .solver import DeterministicSolver
 from .turn_analysis import analyse_turn
 from .util import load_json
-from capture_diagnostics import install_capture_diagnostics  # capture-diagnostics-patch
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 RUNTIME_ROOT = Path(os.environ.get("GS_SESSION_ROOT", PROJECT_ROOT / "runtime" / "sessions"))
@@ -37,8 +36,6 @@ store = SessionStore(RUNTIME_ROOT)
 solver = DeterministicSolver(PROJECT_ROOT)
 fast_engine = get_fast_engine(PROJECT_ROOT)
 app = FastAPI(title="Grougalorasalar Solver API", version="1.0.0")
-install_capture_diagnostics(app)  # capture-diagnostics-patch
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[origin for origin in os.environ.get("GS_ALLOWED_ORIGINS", "http://localhost:3000").split(",") if origin],

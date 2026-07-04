@@ -24,8 +24,6 @@ REFERENCE_BASIS = np.column_stack([REFERENCE_BASIS_X, REFERENCE_BASIS_Y])
 REFERENCE_BASIS_INV = np.linalg.inv(REFERENCE_BASIS)
 WORK_MIN_WIDTH = 960
 WORK_MAX_WIDTH = 1280
-WORK_EXTRA_MAX_WIDTH = 1792
-WORK_MULTI_SCALE_WIDTHS = (960, 1152, 1280, 1536, 1792)
 CANONICAL_BOARD_BOTTOM = 880
 CHARGE_TRACK_CENTRES = {
     "indecision": ((150, 1110), (225, 1070), (300, 1030), (370, 990), (440, 950)),
@@ -125,14 +123,6 @@ class FastRecognitionEngine:
         )
         if self._reference_descriptors is None or len(self._reference_keypoints) < 100:
             raise RuntimeError("Reference ORB feature cache is insufficient")
-        self._registration_variant_cache: dict[int, tuple[Any, float, Any, Any]] = {
-            int(round(self.reference_width * self._reference_scale)): (
-                self._reference_work,
-                self._reference_scale,
-                self._reference_keypoints,
-                self._reference_descriptors,
-            )
-        }
 
         canonical_cells_path = project_root / "data" / "arena" / "grougalorasalar.cells.json"
         if canonical_cells_path.exists():
@@ -623,81 +613,17 @@ class FastRecognitionEngine:
         }
 
     def register(self, image: np.ndarray) -> RegistrationResult:
-        """Register a screenshot against the canonical arena using resolution retries.
-
-        Different players capture Dofus at different desktop/window sizes. ORB is
-        scale-tolerant, but one downscaled working width can still lose the exact
-        features needed for this arena. We therefore try a small bounded set of
-        width-normalised registrations and keep the geometrically best accepted
-        affine transform. Solver input remains pixel-free.
-        """
-        height, width = image.shape[:2]
-        attempts: list[tuple[int, RegistrationResult]] = []
-        for target_width in self._registration_width_candidates(width):
-            reference_work, reference_scale, reference_keypoints, reference_descriptors = (
-                self._registration_variant(target_width)
-            )
-            result = self._register_once(
-                image,
-                target_width=target_width,
-                reference_work=reference_work,
-                reference_scale=reference_scale,
-                reference_keypoints=reference_keypoints,
-                reference_descriptors=reference_descriptors,
-            )
-            attempts.append((target_width, result))
-
-        accepted = [(width, item) for width, item in attempts if item.accepted]
-        if accepted:
-            accepted.sort(
-                key=lambda pair: (
-                    pair[1].p95_residual_cell if pair[1].p95_residual_cell is not None else 999.0,
-                    pair[1].median_residual_cell if pair[1].median_residual_cell is not None else 999.0,
-                    -pair[1].inlier_count,
-                    -pair[1].confidence,
-                    pair[0],
-                )
-            )
-            return accepted[0][1]
-
-        if attempts:
-            attempts.sort(
-                key=lambda pair: (
-                    -pair[1].confidence,
-                    -pair[1].inlier_count,
-                    pair[1].p95_residual_cell if pair[1].p95_residual_cell is not None else 999.0,
-                    pair[0],
-                )
-            )
-            return attempts[0][1]
-
-        return self._registration_failure("VISION-REGISTRATION-NO-VARIANTS")
-
-    def _register_once(
-        self,
-        image: np.ndarray,
-        *,
-        target_width: int | None = None,
-        reference_work: np.ndarray | None = None,
-        reference_scale: float | None = None,
-        reference_keypoints: Any | None = None,
-        reference_descriptors: np.ndarray | None = None,
-    ) -> RegistrationResult:
-        target_work, target_scale = self._working_gray(image, target_width=target_width)
-        reference_work = self._reference_work if reference_work is None else reference_work
-        reference_scale = self._reference_scale if reference_scale is None else reference_scale
-        reference_keypoints = self._reference_keypoints if reference_keypoints is None else reference_keypoints
-        reference_descriptors = self._reference_descriptors if reference_descriptors is None else reference_descriptors
+        target_work, target_scale = self._working_gray(image)
         keypoints, descriptors = self._orb.detectAndCompute(target_work, None)
         if descriptors is None or len(keypoints) < 80:
             return self._registration_failure("VISION-REGISTRATION-FEATURES")
 
-        pairs = self._matcher.knnMatch(reference_descriptors, descriptors, k=2)
+        pairs = self._matcher.knnMatch(self._reference_descriptors, descriptors, k=2)
         good = [first for first, second in pairs if first.distance < 0.72 * second.distance]
         if len(good) < 60:
             return self._registration_failure("VISION-REGISTRATION-MATCHES", good_matches=len(good))
 
-        source_work = np.float32([reference_keypoints[item.queryIdx].pt for item in good])
+        source_work = np.float32([self._reference_keypoints[item.queryIdx].pt for item in good])
         target_points_work = np.float32([keypoints[item.trainIdx].pt for item in good])
         affine_work, inlier_mask = cv2.estimateAffinePartial2D(
             source_work,
@@ -720,18 +646,18 @@ class FastRecognitionEngine:
 
         predicted = cv2.transform(source_work[None, :, :], affine_work)[0]
         residual_px = np.linalg.norm(predicted - target_points_work, axis=1)[inliers]
-        reference_basis_work = REFERENCE_BASIS * reference_scale
+        reference_basis_work = REFERENCE_BASIS * self._reference_scale
         target_basis_work = affine_work[:, :2] @ reference_basis_work
         cell_scale_work = float(np.mean(np.linalg.norm(target_basis_work, axis=0)))
         residual_cell = residual_px / max(cell_scale_work, 1e-6)
         median_cell = float(np.median(residual_cell))
         p95_cell = float(np.percentile(residual_cell, 95))
 
-        region_count = self._spatial_region_count(source_work[inliers], reference_work.shape[:2])
+        region_count = self._spatial_region_count(source_work[inliers])
         second_inliers = self._second_hypothesis_inliers(source_work, target_points_work, inliers)
         ambiguity_margin = 1.0 - (second_inliers / max(inlier_count, 1))
 
-        affine_original = self._to_original_affine(affine_work, target_scale, reference_scale)
+        affine_original = self._to_original_affine(affine_work, target_scale)
         inverse_original = cv2.invertAffineTransform(affine_original)
         linear = affine_original[:, :2]
         scale = math.sqrt(abs(float(np.linalg.det(linear))))
@@ -924,51 +850,9 @@ class FastRecognitionEngine:
         small = cv2.GaussianBlur(small, (3, 3), 0)
         return (small - float(small.mean())) / max(float(small.std()), 1.0)
 
-
-    def _registration_width_candidates(self, source_width: int) -> tuple[int, ...]:
-        if source_width <= 0:
-            return (WORK_MIN_WIDTH,)
-        default_width = min(WORK_MAX_WIDTH, max(WORK_MIN_WIDTH, source_width))
-        upper = min(WORK_EXTRA_MAX_WIDTH, max(WORK_MIN_WIDTH, source_width))
-        candidates: list[int] = [default_width]
-        for width in WORK_MULTI_SCALE_WIDTHS:
-            if WORK_MIN_WIDTH <= width <= upper:
-                candidates.append(width)
-        if upper not in candidates:
-            candidates.append(upper)
-        unique: list[int] = []
-        for width in candidates:
-            normalized = int(width)
-            if normalized not in unique:
-                unique.append(normalized)
-        return tuple(unique)
-
-    def _registration_variant(self, target_width: int) -> tuple[np.ndarray, float, Any, np.ndarray]:
-        target_width = int(target_width)
-        cached = self._registration_variant_cache.get(target_width)
-        if cached is not None:
-            return cached
-        reference_work, reference_scale = self._working_gray(self.reference, target_width=target_width)
-        keypoints, descriptors = self._orb.detectAndCompute(reference_work, None)
-        if descriptors is None or len(keypoints) < 100:
-            # Fall back to the boot-time cache rather than letting one weak
-            # reference scale make all registration fail.
-            return (
-                self._reference_work,
-                self._reference_scale,
-                self._reference_keypoints,
-                self._reference_descriptors,
-            )
-        cached = (reference_work, reference_scale, keypoints, descriptors)
-        self._registration_variant_cache[target_width] = cached
-        return cached
-
-    def _working_gray(self, image: np.ndarray, target_width: int | None = None) -> tuple[np.ndarray, float]:
+    def _working_gray(self, image: np.ndarray) -> tuple[np.ndarray, float]:
         height, width = image.shape[:2]
-        if target_width is None:
-            target_width = min(WORK_MAX_WIDTH, max(WORK_MIN_WIDTH, width))
-        else:
-            target_width = max(1, int(target_width))
+        target_width = min(WORK_MAX_WIDTH, max(WORK_MIN_WIDTH, width))
         scale = target_width / width
         if abs(scale - 1.0) < 1e-6:
             resized = image
@@ -977,26 +861,16 @@ class FastRecognitionEngine:
         gray = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY) if resized.ndim == 3 else resized
         return gray, scale
 
-    def _to_original_affine(
-        self,
-        affine_work: np.ndarray,
-        target_scale: float,
-        reference_scale: float | None = None,
-    ) -> np.ndarray:
+    def _to_original_affine(self, affine_work: np.ndarray, target_scale: float) -> np.ndarray:
         original = affine_work.astype(np.float64).copy()
-        reference_scale = self._reference_scale if reference_scale is None else reference_scale
-        original[:, :2] *= reference_scale / target_scale
+        original[:, :2] *= self._reference_scale / target_scale
         original[:, 2] /= target_scale
         return original
 
-    def _spatial_region_count(
-        self,
-        points: np.ndarray,
-        work_shape: tuple[int, int] | None = None,
-    ) -> int:
+    def _spatial_region_count(self, points: np.ndarray) -> int:
         if len(points) == 0:
             return 0
-        height, width = work_shape if work_shape is not None else self._reference_work.shape[:2]
+        height, width = self._reference_work.shape[:2]
         occupied = set()
         for x, y in points:
             column = min(2, max(0, int(x / max(width, 1) * 3)))

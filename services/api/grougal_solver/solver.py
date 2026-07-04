@@ -573,8 +573,6 @@ class DeterministicSolver:
             required = cfg.get("alignment")
             if required == "cardinal" and alignment != "cardinal":
                 return None
-            if required == "diagonal" and alignment != "diagonal":
-                return None
             if required == "cardinal_or_diagonal" and alignment not in {"cardinal", "diagonal"}:
                 return None
             if required == "unknown":
@@ -604,14 +602,20 @@ class DeterministicSolver:
             unit = self._normalised_direction(source[0] - target[0], source[1] - target[1])
             if unit is None:
                 return None
-            distance_key = "cardinalDistance" if alignment == "cardinal" else "diagonalDistance"
-            move_distance = cfg.get(distance_key)
-            if move_distance is None:
+            final_distance_key = (
+                "cardinalFinalDistanceFromPillar"
+                if alignment == "cardinal"
+                else "diagonalFinalDistanceFromPillar"
+            )
+            final_distance = cfg.get(final_distance_key)
+            target_distance = self._aligned_steps(target[0] - source[0], target[1] - source[1])
+            if final_distance is None or target_distance is None:
                 rules.append("R-014")
-                move_distance = 3 if alignment == "cardinal" else 2
-            # Rejet uses the targeted pillar only to define a valid direction.
-            # The movement distance is always measured from the current player
-            # cell: 3 cells on a cardinal line, 2 diagonal steps on a diagonal.
+                final_distance = cfg.get("distance", 3)
+                target_distance = 0
+            # Rejet places the player at a fixed radius from the target pillar;
+            # it does not add that radius to the player's current distance.
+            move_distance = max(0, final_distance - target_distance)
             destination = source[0] + move_distance * unit[0], source[1] + move_distance * unit[1]
         else:
             unit = self._normalised_direction(dx, dy)
@@ -673,9 +677,9 @@ class DeterministicSolver:
             # pillar leaves the player on the current cell.
             return action
         if spell == "repulsion" and destination == source:
-            # Rejet normally displaces from the current player cell. Keep this
-            # defensive branch for malformed profiles or manually overridden
-            # fixtures without converting it into an end-turn movement.
+            # A diagonal range-two target already places the player at the
+            # verified two-cell final radius. The cast is mechanically legal,
+            # but does not satisfy the mandatory movement for ending the turn.
             return action
         dx, dy = destination[0] - source[0], destination[1] - source[1]
         steps = self._aligned_steps(dx, dy)

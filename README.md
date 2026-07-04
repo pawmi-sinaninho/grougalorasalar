@@ -5,10 +5,10 @@ French-first, deterministic screenshot-to-turn assistant for the fixed Grougalor
 ## End-user flow
 
 1. Open `http://localhost:3000`.
-2. In Dofus, open the top-right `...` menu and choose `Masquer tous les modules` before starting the fight.
-3. Choose the Dofus window once, click `Capturer ce tour` at the start of every turn, execute the numbered recommendation, finish the round, and capture the next turn.
+2. Paste a complete screenshot from the start of the round with `Ctrl+V`.
+3. Wait for the numbered recommendation, execute it, finish the round, and paste the next screenshot.
 
-The standard route uses the browser window-capture workflow and asks for no AP, charge, pillar, glyph, confirmation, or solve-button input. It shows numbered target markers, movement, final cell, black/white hits, progression, and next-round charges. Diagnostic controls exist only at `/?debug=1`.
+The standard route asks for no AP, charge, pillar, glyph, confirmation, or solve-button input. It shows numbered target markers, movement, final cell, black/white hits, progression, and next-round charges. Diagnostic controls exist only at `/?debug=1`.
 
 ## Start
 

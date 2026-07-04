@@ -45,45 +45,6 @@ const stageLabels: Record<string, string> = {
   recognition_complete: 'Éléments détectés — vérification requise',
 };
 
-const FRONTEND_OVERLAY_REF_WIDTH = 1951;
-const FRONTEND_OVERLAY_REF_HEIGHT = 1267;
-const FRONTEND_OVERLAY_REF_ORIGIN: Point = { x: 964.895, y: 441.7425 };
-const FRONTEND_OVERLAY_REF_BASIS_X: Point = { x: 66.75, y: 33.375 };
-const FRONTEND_OVERLAY_REF_BASIS_Y: Point = { x: -66.75, y: 33.375 };
-
-function isFinitePoint(point?: Point): point is Point {
-  return Boolean(
-    point
-      && Number.isFinite(point.x)
-      && Number.isFinite(point.y)
-      && Math.abs(point.x) < 100000
-      && Math.abs(point.y) < 100000,
-  );
-}
-
-function isUsableRegistration(registration?: Registration): registration is Required<Registration> {
-  return Boolean(
-    registration
-      && isFinitePoint(registration.originImage)
-      && isFinitePoint(registration.basisXImage)
-      && isFinitePoint(registration.basisYImage)
-      && Math.hypot(registration.basisXImage.x, registration.basisXImage.y) > 2
-      && Math.hypot(registration.basisYImage.x, registration.basisYImage.y) > 2,
-  );
-}
-
-function makeFallbackRegistration(imageSize: { width: number; height: number }): Registration | undefined {
-  const { width, height } = imageSize;
-  if (!Number.isFinite(width) || !Number.isFinite(height) || width <= 10 || height <= 10) return undefined;
-  const sx = width / FRONTEND_OVERLAY_REF_WIDTH;
-  const sy = height / FRONTEND_OVERLAY_REF_HEIGHT;
-  return {
-    originImage: { x: FRONTEND_OVERLAY_REF_ORIGIN.x * sx, y: FRONTEND_OVERLAY_REF_ORIGIN.y * sy },
-    basisXImage: { x: FRONTEND_OVERLAY_REF_BASIS_X.x * sx, y: FRONTEND_OVERLAY_REF_BASIS_X.y * sy },
-    basisYImage: { x: FRONTEND_OVERLAY_REF_BASIS_Y.x * sx, y: FRONTEND_OVERLAY_REF_BASIS_Y.y * sy },
-  };
-}
-
 function project(cell: Cell, registration?: Registration): Point | null {
   const o = registration?.originImage;
   const bx = registration?.basisXImage;
@@ -175,15 +136,7 @@ export default function Home() {
   const turn = (data?.turnState ?? {}) as TurnState;
   const fight = data?.fight;
   const recognition = (data?.recognition ?? {}) as Recognition;
-  const detectedRegistration = recognition.registration;
-  const registration = useMemo(() => {
-    const fallback = makeFallbackRegistration(imageSize);
-    // Frontend-only recognition uses the same reference projection as the
-    // browser-local detector. Prefer this fallback when the envelope did not
-    // provide a reliable registration, otherwise the SVG overlay is skipped.
-    if (data?.frontendOnly && fallback) return fallback;
-    return isUsableRegistration(detectedRegistration) ? detectedRegistration : fallback;
-  }, [data?.frontendOnly, detectedRegistration, imageSize.width, imageSize.height]);
+  const registration = recognition.registration;
   const pillars = turn.pillars ?? [];
   const player = turn.player?.current ?? null;
   const glyphAnchor = recognition.proposals?.glyphPattern?.anchorCell ?? { x: 0, y: 0 };
@@ -216,7 +169,19 @@ export default function Home() {
   useEffect(() => () => { if (imageUrl.startsWith('blob:')) URL.revokeObjectURL(imageUrl); }, [imageUrl]);
 
   useEffect(() => () => captureStream.current?.getTracks().forEach(track => track.stop()), []);
-function startLocalWorker(file: File) {
+
+  useEffect(() => {
+    const paste = (event: ClipboardEvent) => {
+      const image = Array.from(event.clipboardData?.items ?? []).find(item => item.type.startsWith('image/'))?.getAsFile();
+      if (!image) return;
+      event.preventDefault();
+      void begin(new File([image], image.name || 'capture-collee.png', { type: image.type }));
+    };
+    window.addEventListener('paste', paste);
+    return () => window.removeEventListener('paste', paste);
+  });
+
+  function startLocalWorker(file: File) {
     if (typeof Worker === 'undefined') return;
     const worker = new Worker('/workers/analysis-worker.js');
     worker.onmessage = (event: MessageEvent<WorkerStage & { type: string }>) => {
@@ -236,7 +201,7 @@ function startLocalWorker(file: File) {
   async function chooseGameWindow() {
     setError('');
     if (!navigator.mediaDevices?.getDisplayMedia) {
-      setError('La capture de fenêtre n’est pas disponible dans ce navigateur. Sélectionnez la fenêtre Dofus, puis capturez le tour.');
+      setError('La capture de fenêtre n’est pas disponible dans ce navigateur. Utilisez Ctrl+V.');
       return;
     }
     try {
@@ -253,7 +218,7 @@ function startLocalWorker(file: File) {
       setCaptureActive(true);
     } catch (reason) {
       if ((reason as DOMException)?.name !== 'NotAllowedError') {
-        setError('La fenêtre de jeu n’a pas pu être ouverte. Réessayez après avoir sélectionné la fenêtre Dofus.');
+        setError('La fenêtre de jeu n’a pas pu être ouverte. Réessayez ou utilisez Ctrl+V.');
       }
     }
   }
@@ -380,21 +345,6 @@ function startLocalWorker(file: File) {
     imageSize,
     recommendation?.expected.finalCell,
   );
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    (window as unknown as { __grougalOverlayDebug?: unknown }).__grougalOverlayDebug = {
-      hasData: Boolean(data),
-      frontendOnly: Boolean(data?.frontendOnly),
-      hasDetectedRegistration: isUsableRegistration(detectedRegistration),
-      hasRegistration: isUsableRegistration(registration),
-      imageSize,
-      actionCount: recommendation?.actions.length ?? 0,
-      firstAction: recommendation?.actions[0] ?? null,
-      expected: recommendation?.expected ?? null,
-    };
-  }, [data, detectedRegistration, registration, imageSize, recommendation]);
-
   const castCounts = recommendation?.actions.reduce<Record<string, number>>((counts, action) => {
     if (action.spell) counts[action.spell] = (counts[action.spell] ?? 0) + 1;
     return counts;
@@ -405,7 +355,7 @@ function startLocalWorker(file: File) {
       <header>
         <p className="eyebrow">ASSISTANT DE TOUR</p>
         <h1>Grougalorasalar Solver</h1>
-        <p>Capturez la fenêtre Dofus au début du tour. La solution apparaît automatiquement.</p>
+        <p>Collez la capture du début du tour avec Ctrl+V. Votre action apparaît automatiquement.</p>
         {fight && data && <p className="turn-label">Tour {fight.round}</p>}
         <div className="capture-controls">
           <button type="button" className="choose-window" onClick={chooseGameWindow} disabled={busy}>{captureActive ? 'Changer la fenêtre Dofus' : 'Choisir la fenêtre Dofus'}</button>
@@ -415,15 +365,15 @@ function startLocalWorker(file: File) {
         <video ref={captureVideo} className="capture-source" muted playsInline aria-hidden="true" />
       </header>
 
-      {busy && <div className="loading-banner" role="status" aria-live="polite"><span className="spinner" aria-hidden="true" /><div><strong>{data ? 'Calcul de la solution…' : 'Analyse de l’arène…'}</strong><small>Toutes les informations de calcul sont affichées ici.</small></div></div>}
+      {busy && <div className="loading-banner" role="status" aria-live="polite"><span className="spinner" aria-hidden="true" /><div><strong>{data ? 'Calcul de la solution…' : 'Analyse de l’arène…'}</strong><small>La capture est en cours de traitement.</small></div></div>}
 
-      {!imageUrl && <div className="start-grid"><section className="upload"><div className="capture-icon">▣</div><h2>Capture du début du tour</h2><p>Choisissez la fenêtre Dofus, puis utilisez <strong>Capturer ce tour</strong> à chaque début de tour.</p>{debug && <label>Fixture locale<input aria-label="Capture du combat (debug)" type="file" accept="image/png,image/jpeg,image/webp" disabled={busy} onChange={event => event.target.files?.[0] && begin(event.target.files[0])} /></label>}</section><aside className="howto-card" aria-label="Comment utiliser le solveur"><p className="step">MODE D’EMPLOI</p><h2>Comment l’utiliser</h2><ol><li><strong>Avant le combat :</strong> dans Dofus, ouvrez le menu en haut à droite avec les trois points verticaux, puis choisissez <em>Masquer tous les modules</em>.</li><li><strong>Au début de chaque tour :</strong> sélectionnez la fenêtre Dofus une seule fois si nécessaire, puis cliquez sur <em>Capturer ce tour</em>.</li><li><strong>Ensuite :</strong> exécutez les actions numérotées affichées sur l’image, terminez le tour, puis capturez le tour suivant.</li></ol></aside></div>}
+      {!imageUrl && <section className="upload"><div className="paste-key">Ctrl+V</div><h2>Capture d’écran du début du tour</h2><p>Aucune saisie ni confirmation.</p>{debug && <label>Fixture locale<input aria-label="Capture du combat (debug)" type="file" accept="image/png,image/jpeg,image/webp" disabled={busy} onChange={event => event.target.files?.[0] && begin(event.target.files[0])} /></label>}</section>}
 
       {imageUrl && <div className={data ? 'workspace' : 'workspace preview-only'}>
         <section className="board-card">
-          <div className={`board-image ${correctionMode ? 'is-correcting' : ''}`} style={{ position: 'relative' }}>
+          <div className={`board-image ${correctionMode ? 'is-correcting' : ''}`}>
             <img src={imageUrl} alt="Capture du combat à vérifier" onLoad={event => setImageSize({ width: event.currentTarget.naturalWidth, height: event.currentTarget.naturalHeight })} />
-            {data && registration?.originImage && <svg data-testid="detection-overlay" className="overlay" viewBox={`0 0 ${imageSize.width} ${imageSize.height}`} onClick={handleBoardClick} role="img" aria-label="Repères détectés sur la capture" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 5, pointerEvents: correctionMode ? 'auto' : 'none', overflow: 'visible' }}>
+            {data && registration?.originImage && <svg data-testid="detection-overlay" className="overlay" viewBox={`0 0 ${imageSize.width} ${imageSize.height}`} onClick={handleBoardClick} role="img" aria-label="Repères détectés sur la capture">
               {debug && pillars.map(item => {
                 const centre = project(item.cell, registration); const points = polygon(item.cell, registration);
                 const doubtful = doubtfulPillars.some(candidate => candidate.id === item.id);
@@ -442,11 +392,11 @@ function startLocalWorker(file: File) {
                 const source = action.sourceCell && project(action.sourceCell, registration);
                 const destination = action.destinationCell && project(action.destinationCell, registration);
                 return <g key={`solution-path-${index}-${action.canonicalSignature}`}>
-                  {source && target && action.targetKind === 'pillar' && <line x1={source.x} y1={source.y} x2={target.x} y2={target.y} className="target-line" stroke="#ffb347" strokeWidth={7} strokeLinecap="round" strokeDasharray="12 9" opacity={0.98} vectorEffect="non-scaling-stroke" />}
-                  {source && destination && <line x1={source.x} y1={source.y} x2={destination.x} y2={destination.y} className="movement-line" stroke="#ffffff" strokeWidth={8} strokeLinecap="round" opacity={0.98} vectorEffect="non-scaling-stroke" />}
+                  {source && target && action.targetKind === 'pillar' && <line x1={source.x} y1={source.y} x2={target.x} y2={target.y} className="target-line" />}
+                  {source && destination && <line x1={source.x} y1={source.y} x2={destination.x} y2={destination.y} className="movement-line" />}
                 </g>;
               })}
-              {recommendation?.expected.finalCell && (() => { const centre = project(recommendation.expected.finalCell, registration); return centre && <circle data-testid="final-cell-marker" cx={centre.x} cy={centre.y} r="30" className="final-cell" fill="none" stroke="#9dff5f" strokeWidth={7} opacity={0.98} vectorEffect="non-scaling-stroke" />; })()}
+              {recommendation?.expected.finalCell && (() => { const centre = project(recommendation.expected.finalCell, registration); return centre && <circle data-testid="final-cell-marker" cx={centre.x} cy={centre.y} r="30" className="final-cell" />; })()}
               {(recommendation?.expected.whitePillarIds ?? []).map(id => { const pillar = pillars.find(item => item.id === id); const centre = pillar && project(pillar.cell, registration); return centre && <text key={`white-hit-${id}`} x={centre.x + 22} y={centre.y - 28} className="white-hit">+</text>; })}
               {(recommendation?.expected.blackPillarIds ?? []).map(id => { const pillar = pillars.find(item => item.id === id); const centre = pillar && project(pillar.cell, registration); return centre && <text key={`black-hit-${id}`} x={centre.x + 22} y={centre.y - 28} className="black-hit">×</text>; })}
               {recommendation?.actions.map((action, index) => {
@@ -454,13 +404,14 @@ function startLocalWorker(file: File) {
                 const pin = actionPins[index];
                 const displayOrder = index + 1;
                 return target && pin && <g key={`solution-pin-${displayOrder}-${action.canonicalSignature}`} data-testid="action-target-marker" data-action-order={displayOrder}>
-                  <line x1={target.x} y1={target.y} x2={pin.x} y2={pin.y} className="pin-callout" stroke="#caff62" strokeWidth={5} strokeLinecap="round" opacity={0.98} vectorEffect="non-scaling-stroke" />
-                  <circle cx={pin.x} cy={pin.y} r="22" className="action-pin" fill="#caff62" stroke="#07110c" strokeWidth={5} opacity={0.98} vectorEffect="non-scaling-stroke" />
-                  <text data-testid="action-number" x={pin.x} y={pin.y + 8} className="action-number" fill="#07110c" fontSize="24" fontWeight="900" textAnchor="middle">{displayOrder}</text>
+                  <line x1={target.x} y1={target.y} x2={pin.x} y2={pin.y} className="pin-callout" />
+                  <circle cx={pin.x} cy={pin.y} r="22" className="action-pin" />
+                  <text data-testid="action-number" x={pin.x} y={pin.y + 8} className="action-number">{displayOrder}</text>
                 </g>;
               })}
             </svg>}
           </div>
+          <div className="analysis-strip" aria-live="polite"><strong>{busy ? (data ? 'Calcul de la solution…' : 'Analyse de l’arène…') : recommendation ? 'Solution prête' : stageLabels[progress.stage] ?? 'Analyse en cours'}</strong>{debug && <span>{Math.round(elapsedMs || progress.elapsedMs)} ms</span>}</div>
           {recommendation?.actions.length ? <div className="overlay-legend" aria-label="Légende des trajets"><span><i className="target-swatch" />Orange : portée jusqu’à la cible</span><span><i className="movement-swatch" />Blanc : déplacement du joueur</span></div> : null}
           {data && debug && <div className="summary-grid">
             <div className={player ? 'summary ok' : 'summary warn'}><strong>{player ? 'Joueur détecté' : 'Joueur à corriger'}</strong><span>Repère cyan sur la capture</span></div>
@@ -470,7 +421,7 @@ function startLocalWorker(file: File) {
           {correctionMode && <p className="click-hint">Cliquez directement sur la bonne case de la capture.</p>}
         </section>
 
-        {data && !debug && <aside className="player-panel">{recommendation ? <><p className="step">VOTRE TOUR</p><h2>{recommendation.status === 'ambiguous_input' ? 'Nouvelle capture nécessaire' : recommendation.status === 'invalid_screenshot' ? 'Capture illisible' : recommendation.status === 'no_safe_solution' ? 'Aucun coup sûr' : recommendation.status === 'capacity_error' ? 'Calcul interrompu' : recommendation.status === 'blocked_missing_data' ? 'Capture incomplète' : 'Actions à exécuter'}</h2>{recommendation.status === 'provisional_solution' && <p className="provisional">Proposition sûre pour les variantes visuelles plausibles.</p>}{recommendation.actions.length > 0 && <ol className="action-list">{recommendation.actions.map(action => <li key={action.canonicalSignature}><span>{action.order}</span><strong>{spellLabels[action.spell as SpellKey]}</strong><small>cible marquée {action.order}</small></li>)}<li className="end-turn"><span>{recommendation.actions.length + 1}</span><strong>Terminez le tour</strong></li></ol>}{recommendation.expected.finalCell && <div className="outcome"><p><strong>Position finale</strong><br />Anneau vert sur la capture</p><p><strong>Glyphes noirs</strong><br />{recommendation.expected.blackPillarIds?.length ? `${recommendation.expected.blackPillarIds.length} collision(s) marquée(s)` : 'Aucune collision'}</p><p><strong>Glyphes blancs</strong><br />{recommendation.expected.whitePillarIds?.length ? `${recommendation.expected.whitePillarIds.length} recharge(s) marquée(s)` : 'Aucune recharge'}</p><p><strong>Progression</strong><br />{recommendation.expected.raceOutcome === 'crocoburio_advance' ? 'Crocoburio avance' : recommendation.expected.raceOutcome === 'dragon_advance' ? 'Grougalorasalar avance' : 'Neutre'}</p></div>}{recommendation.expected.nextSpellState && <div className="charges"><strong>Charges : maintenant → prochain tour</strong>{spellKeys.map(spell => <span key={spell}>{spellLabels[spell]} {fight?.charges[spell] ?? '–'} → {recommendation.expected.nextSpellState?.[spell] ?? '–'}<small>{castCounts[spell] ? ` (${castCounts[spell]} utilisée${castCounts[spell] > 1 ? 's' : ''})` : ''}</small></span>)}</div>}{Boolean(recommendation.alternatives?.length) && <details className="alternatives"><summary>Autres options équivalentes</summary>{recommendation.alternatives?.slice(0, 2).map((alternative, index) => <p key={index}>Option {index + 2} · {alternative.sequence.length} action(s)</p>)}</details>}{recommendation.actions.length > 0 ? <p className="next-paste">Exécutez les actions, terminez le tour, puis cliquez sur Capturer ce tour.</p> : <p className="next-paste">Capturez une nouvelle image complète du début du tour.</p>}<button className="new-fight" onClick={newFight}>Nouveau combat</button></> : <><p className="step">ANALYSE</p><h2>Calcul en cours…</h2></>}</aside>}
+        {data && !debug && <aside className="player-panel">{recommendation ? <><p className="step">VOTRE TOUR</p><h2>{recommendation.status === 'ambiguous_input' ? 'Nouvelle capture nécessaire' : recommendation.status === 'invalid_screenshot' ? 'Capture illisible' : recommendation.status === 'no_safe_solution' ? 'Aucun coup sûr' : recommendation.status === 'capacity_error' ? 'Calcul interrompu' : recommendation.status === 'blocked_missing_data' ? 'Capture incomplète' : 'Actions à exécuter'}</h2>{recommendation.status === 'provisional_solution' && <p className="provisional">Proposition sûre pour les variantes visuelles plausibles.</p>}{recommendation.actions.length > 0 && <ol className="action-list">{recommendation.actions.map(action => <li key={action.canonicalSignature}><span>{action.order}</span><strong>{spellLabels[action.spell as SpellKey]}</strong><small>cible marquée {action.order}</small></li>)}<li className="end-turn"><span>{recommendation.actions.length + 1}</span><strong>Terminez le tour</strong></li></ol>}{recommendation.expected.finalCell && <div className="outcome"><p><strong>Position finale</strong><br />Anneau vert sur la capture</p><p><strong>Glyphes noirs</strong><br />{recommendation.expected.blackPillarIds?.length ? `${recommendation.expected.blackPillarIds.length} collision(s) marquée(s)` : 'Aucune collision'}</p><p><strong>Glyphes blancs</strong><br />{recommendation.expected.whitePillarIds?.length ? `${recommendation.expected.whitePillarIds.length} recharge(s) marquée(s)` : 'Aucune recharge'}</p><p><strong>Progression</strong><br />{recommendation.expected.raceOutcome === 'crocoburio_advance' ? 'Crocoburio avance' : recommendation.expected.raceOutcome === 'dragon_advance' ? 'Grougalorasalar avance' : 'Neutre'}</p></div>}{recommendation.expected.nextSpellState && <div className="charges"><strong>Charges : maintenant → prochain tour</strong>{spellKeys.map(spell => <span key={spell}>{spellLabels[spell]} {fight?.charges[spell] ?? '–'} → {recommendation.expected.nextSpellState?.[spell] ?? '–'}<small>{castCounts[spell] ? ` (${castCounts[spell]} utilisée${castCounts[spell] > 1 ? 's' : ''})` : ''}</small></span>)}</div>}{Boolean(recommendation.alternatives?.length) && <details className="alternatives"><summary>Autres options équivalentes</summary>{recommendation.alternatives?.slice(0, 2).map((alternative, index) => <p key={index}>Option {index + 2} · {alternative.sequence.length} action(s)</p>)}</details>}{recommendation.actions.length > 0 ? <p className="next-paste">Exécutez les actions, terminez le tour, puis collez la prochaine capture avec Ctrl+V.</p> : <p className="next-paste">Collez une nouvelle capture complète du début du tour.</p>}<button className="new-fight" onClick={newFight}>Nouveau combat</button></> : <><p className="step">ANALYSE</p><h2>Calcul en cours…</h2></>}</aside>}
 
         {data && debug && <aside>
           <div className="aside-heading"><div><p className="step">DIAGNOSTIC</p><h2>État détecté</h2></div></div>
