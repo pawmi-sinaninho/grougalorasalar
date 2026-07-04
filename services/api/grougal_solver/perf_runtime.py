@@ -1,3 +1,4 @@
+import hashlib
 from __future__ import annotations
 
 import asyncio
@@ -201,3 +202,13 @@ def install_fastapi_perf(app: Any) -> Any:
     except Exception:
         pass
     return app
+
+
+def _stable_request_fingerprint(method: str, path: str, body: bytes) -> str:
+    h = hashlib.sha256()
+    h.update(method.encode('utf-8', errors='ignore'))
+    h.update(b'|')
+    h.update(path.encode('utf-8', errors='ignore'))
+    h.update(b'|')
+    h.update(body)
+    return h.hexdigest()

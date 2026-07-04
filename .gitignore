@@ -12,3 +12,5 @@ runtime/sessions-e2e/
 .env
 .codex-deps/
 apps/web/.npm-cache/
+.pytest-tmp/
+.perf_patch_backup/

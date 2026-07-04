@@ -125,3 +125,21 @@ export async function perfFetch(input: RequestInfo | URL, init?: RequestInit): P
     inflight.delete(key);
   }
 }
+
+
+export async function perfFetchWithRetry(input: RequestInfo | URL, init?: RequestInit, retries = 2): Promise<Response> {
+  let lastError: unknown;
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const res = await perfFetch(input, init);
+      if (res.ok) return res;
+      lastError = new Error(`HTTP ${res.status}`);
+    } catch (e) {
+      lastError = e;
+    }
+    if (attempt < retries) {
+      await new Promise((r) => setTimeout(r, 250 * (attempt + 1)));
+    }
+  }
+  throw lastError instanceof Error ? lastError : new Error('Unknown fetch error');
+}
