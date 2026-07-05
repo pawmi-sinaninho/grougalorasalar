@@ -274,11 +274,12 @@ export default function Home() {
         setError('La position du joueur ne correspond pas à la fin calculée du tour précédent. Le combat n’a pas été avancé.');
       }
       setProgress({ stage: 'recognition_complete', elapsedMs: performance.now() - (startedAt.current ?? performance.now()) });
-    } catch {
-      if (requestId === requestSequence.current) {
-        setError('La capture n’a pas pu être analysée. Réessayez avec une capture complète du combat.');
-      }
-    } finally {
+    } catch (error) {
+  console.error('Capture analysis failed', error);
+  if (requestId === requestSequence.current) {
+    setError(error instanceof Error ? error.message : String(error));
+  }
+} finally {
       if (requestId === requestSequence.current) {
         setBusy(false); setElapsedMs(performance.now() - (startedAt.current ?? performance.now()));
       }

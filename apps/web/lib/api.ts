@@ -53,7 +53,24 @@ export type AnalysisEnvelope = {
 };
 
 export const API = process.env.NEXT_PUBLIC_API_BASE ?? 'http://localhost:8000/api/v1';
+async function apiError(response: Response, fallback: string): Promise<Error> {
+  let body = '';
+  try {
+    body = await response.text();
+  } catch {
+    body = '';
+  }
 
+  let detail = body;
+  try {
+    const parsed = JSON.parse(body);
+    detail = JSON.stringify(parsed.detail ?? parsed.error ?? parsed);
+  } catch {
+    // keep raw body
+  }
+
+  return new Error(`${fallback} [HTTP ${response.status}] ${detail}`);
+}
 export async function createAnalysis(locale = 'fr') {
   const response = await perfFetch(`${API}/analyses`, {
     method: 'POST',
@@ -65,7 +82,7 @@ export async function createAnalysis(locale = 'fr') {
       qualityImprovementConsent: false
     })
   });
-  if (!response.ok) throw new Error('Création impossible');
+  if (!response.ok) throw await apiError(response, 'Création impossible');
   return response.json() as Promise<{ session: AnalysisEnvelope['session']; accessToken: string }>;
 }
 
@@ -73,10 +90,13 @@ export async function uploadImage(id: string, token: string, version: number, fi
   const body = new FormData();
   body.append('file', file);
   body.append('expectedStateVersion', String(version));
-  const response = await perfFetch(`${API}/analyses/${id}/image`, {
-    method: 'POST', headers: { Authorization: `Bearer ${token}` }, body
-  });
-  if (!response.ok) throw new Error('Image refusée');
+  const response = await fetch(`${API}/analyses/${id}/image`, {
+  method: 'POST',
+  headers: { Authorization: `Bearer ${token}` },
+  body,
+  cache: 'no-store',
+});
+if (!response.ok) throw await apiError(response, 'Image refusée');
   return response.json();
 }
 
