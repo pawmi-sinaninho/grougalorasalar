@@ -891,6 +891,26 @@ class DeterministicSolver:
         low_charges = sum(1 for value in known_charges if value <= 1)
         usable_spells = sum(1 for value in known_charges if value > 0)
         charge_spread = (maximum_charge - minimum_charge) if known_charges else 99
+        charge_floor_key = tuple(-value for value in sorted(known_charges))
+
+        cast_counter = Counter(
+            action.get("spell")
+            for action in candidate.get("actions", [])
+            if action.get("spell") in SPELLS
+        )
+        no_matching_white_recharge = not candidate.get("whitePillarIds") and not candidate.get("rechargedSpells")
+        scarce_cast_penalty = 0
+        if no_matching_white_recharge and not resource_unknown:
+            for spell, count in cast_counter.items():
+                end_value = next_spell_state.get(spell)
+                if isinstance(end_value, int):
+                    # No matching white hit means end_value + casts reconstructs
+                    # the conservative start-of-turn charge for the used spell.
+                    # Lower start charge = higher penalty; this only breaks ties
+                    # between already-safe candidates.
+                    start_estimate = min(4, end_value + count)
+                    scarce_cast_penalty += max(0, 5 - start_estimate) * count
+
         edge_margin = self._edge_margin(cell)
         centre_distance = self._centre_distance(cell)
         return (
@@ -901,6 +921,8 @@ class DeterministicSolver:
             resource_unknown,
             zero_charges,
             low_charges,
+            scarce_cast_penalty,
+            charge_floor_key,
             -minimum_charge,
             charge_spread,
             -usable_spells,
