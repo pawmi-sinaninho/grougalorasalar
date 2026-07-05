@@ -616,7 +616,12 @@ class DeterministicSolver:
                 target_distance = 0
             # Rejet places the player at a fixed radius from the target pillar;
             # it does not add that radius to the player's current distance.
-            move_distance = max(0, final_distance - target_distance)
+            if spell == "repulsion":
+                # Rejet: target pillar validates the cast direction only.
+                # Movement is player-relative: diagonal = Px 2 / Py 2, linear = 3 cells.
+                move_distance = 2 if unit[0] != 0 and unit[1] != 0 else int(cfg.get("distance", 3))
+            else:
+                move_distance = max(0, final_distance - target_distance)
             destination = source[0] + move_distance * unit[0], source[1] + move_distance * unit[1]
         else:
             unit = self._normalised_direction(dx, dy)
