@@ -28,3 +28,7 @@ REJET_TEST_FIX_REPORT.md
 FRONTEND_API_DEBUG_RETRY_REPORT.md
 .frontend_api_auth_retry_backup/
 FRONTEND_API_AUTH_RETRY_REPORT.md
+.frontend_session_recovery_backup/
+FRONTEND_SESSION_RECOVERY_REPORT.md
+.frontend_cleanup_fix_backup/
+FRONTEND_CLEANUP_FIX_REPORT.md

@@ -1,4 +1,5 @@
 import { perfFetch } from "./perfFetch";
+
 export type AnalysisEnvelope = {
   session: {
     analysisId: string;
@@ -36,9 +37,15 @@ export type AnalysisEnvelope = {
     solverStatus?: string;
     statusReasonCodes: string[];
     actions: Array<{
-      order: number; instruction: string; canonicalSignature: string; spell?: string;
-      targetKind?: 'cell' | 'pillar'; targetPillarId?: string | null; targetCell?: { x: number; y: number };
-      sourceCell?: { x: number; y: number }; destinationCell?: { x: number; y: number };
+      order: number;
+      instruction: string;
+      canonicalSignature: string;
+      spell?: string;
+      targetKind?: 'cell' | 'pillar';
+      targetPillarId?: string | null;
+      targetCell?: { x: number; y: number };
+      sourceCell?: { x: number; y: number };
+      destinationCell?: { x: number; y: number };
     }>;
     expected: {
       finalCell: { x: number; y: number } | null;
@@ -77,12 +84,12 @@ function sleep(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function perfFetchWithRetry(input: RequestInfo | URL, init?: RequestInit, attempts = 3): Promise<Response> {
+async function networkFetchWithRetry(input: RequestInfo | URL, init?: RequestInit, attempts = 3): Promise<Response> {
   let lastError: unknown;
 
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
     try {
-      return await perfFetch(input, init);
+      return await fetch(input, init);
     } catch (error) {
       lastError = error;
       if (attempt === attempts) break;
@@ -94,17 +101,17 @@ async function perfFetchWithRetry(input: RequestInfo | URL, init?: RequestInit, 
 }
 
 export async function createAnalysis(locale = 'fr') {
-  const response = await perfFetchWithRetry(`${API}/analyses`, {
+  const response = await networkFetchWithRetry(`${API}/analyses`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       schemaVersion: '0.8.0',
       locale,
       retentionConsent: 'ephemeral_only',
-      qualityImprovementConsent: false
-    })
+      qualityImprovementConsent: false,
+    }),
   });
-  if (!response.ok) throw await apiError(response, 'Création impossible');
+  if (!response.ok) throw await apiError(response, 'Creation impossible');
   return response.json() as Promise<{ session: AnalysisEnvelope['session']; accessToken: string }>;
 }
 
@@ -112,51 +119,63 @@ export async function uploadImage(id: string, token: string, version: number, fi
   const body = new FormData();
   body.append('file', file);
   body.append('expectedStateVersion', String(version));
-  const response = await perfFetchWithRetry(`${API}/analyses/${id}/image`, {
+
+  const response = await networkFetchWithRetry(`${API}/analyses/${id}/image`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}` },
     body,
   });
-if (!response.ok) throw await apiError(response, 'Image refusée');
+  if (!response.ok) throw await apiError(response, 'Image refusee');
   return response.json();
 }
 
 export async function command(id: string, token: string, version: number, type: string, payload: object): Promise<AnalysisEnvelope> {
-  const response = await perfFetchWithRetry(`${API}/analyses/${id}/commands`, {
+  const response = await networkFetchWithRetry(`${API}/analyses/${id}/commands`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      schemaVersion: '0.6.0', commandId: `cmd_${crypto.randomUUID().replaceAll('-', '')}`,
-      analysisId: id, expectedStateVersion: version, type, payload, issuedAt: new Date().toISOString()
-    })
+      schemaVersion: '0.6.0',
+      commandId: `cmd_${crypto.randomUUID().replaceAll('-', '')}`,
+      analysisId: id,
+      expectedStateVersion: version,
+      type,
+      payload,
+      issuedAt: new Date().toISOString(),
+    }),
   });
-  if (!response.ok) throw await apiError(response, 'Commande refusée');
+  if (!response.ok) throw await apiError(response, 'Commande refusee');
   return response.json();
 }
 
 export async function solve(id: string, token: string, version: number): Promise<AnalysisEnvelope> {
-  const response = await perfFetchWithRetry(`${API}/analyses/${id}/solve`, {
+  const response = await networkFetchWithRetry(`${API}/analyses/${id}/solve`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ schemaVersion: '0.8.0', expectedStateVersion: version, mode: 'review', maxAlternatives: 2, confirmedSingleSourceRuleIds: [] })
+    body: JSON.stringify({
+      schemaVersion: '0.8.0',
+      expectedStateVersion: version,
+      mode: 'review',
+      maxAlternatives: 2,
+      confirmedSingleSourceRuleIds: [],
+    }),
   });
   if (!response.ok) throw await apiError(response, 'Solveur indisponible');
   return response.json();
 }
 
 export async function deleteAnalysis(id: string, token: string): Promise<void> {
-  const response = await perfFetchWithRetry(`${API}/analyses/${id}`, {
-    method: 'DELETE', headers: { Authorization: `Bearer ${token}` }
+  const response = await networkFetchWithRetry(`${API}/analyses/${id}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${token}` },
   });
   if (!response.ok && response.status !== 404) throw await apiError(response, 'Suppression impossible');
 }
 
-
 export async function fetchAssetUrl(id: string, token: string, kind: 'normalised' | 'thumbnail' | 'annotated'): Promise<string> {
   const response = await perfFetch(`${API}/analyses/${id}/asset/${kind}`, {
     headers: { Authorization: `Bearer ${token}` },
-    cache: 'no-store'
+    cache: 'no-store',
   });
-  if (!response.ok) throw new Error(`Asset ${kind} indisponible`);
+  if (!response.ok) throw await apiError(response, `Asset ${kind} indisponible`);
   return URL.createObjectURL(await response.blob());
 }

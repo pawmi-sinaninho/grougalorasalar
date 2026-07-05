@@ -277,7 +277,14 @@ export default function Home() {
     } catch (error) {
       console.error('Capture analysis failed', error);
       if (requestId === requestSequence.current) {
-        setError(error instanceof Error ? error.message : String(error));
+        const message = error instanceof Error ? error.message : String(error);
+        if (message.includes('API-AUTH-NOT-FOUND') || message.includes('API-STATE-EXPIRED')) {
+          setToken('');
+          setData(null);
+          setError('La session du combat a expire ou le serveur a redemarre. Lancez un nouveau combat.');
+        } else {
+          setError(message);
+        }
       }
     } finally {
       if (requestId === requestSequence.current) {
@@ -300,8 +307,8 @@ export default function Home() {
       const updated = await command(data.session.analysisId, token, data.session.stateVersion, type, payload);
       setData(updated);
       return updated;
-    } catch {
-      setError('La modification n’a pas pu être enregistrée. Réessayez.');
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'La modification n a pas pu etre enregistree. Reessayez.');
       return null;
     } finally { setBusy(false); }
   }
@@ -310,7 +317,7 @@ export default function Home() {
     if (!data || !ready) return;
     setBusy(true); setError('');
     try { setData(await solve(data.session.analysisId, token, data.session.stateVersion)); }
-    catch { setError('Le calcul n’a pas abouti. Vérifiez les éléments signalés puis réessayez.'); }
+    catch (error) { setError(error instanceof Error ? error.message : 'Le calcul n a pas abouti. Reessayez.'); }
     finally { setBusy(false); }
   }
 
