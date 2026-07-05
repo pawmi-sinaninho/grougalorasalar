@@ -411,3 +411,42 @@ def test_ui_annotations_and_recommendations_use_only_binding_spell_names() -> No
         assert required in source
     for obsolete in ("Réflexion", "Répulsion", "Attirance"):
         assert obsolete not in source
+
+def test_direct_center_white_does_not_recharge_all_spells() -> None:
+    """Regression: centre white must not grant +1 to unrelated spells.
+
+    Matching white pillar hits recharge their own spell type only.
+    """
+    solver = DeterministicSolver(PROJECT_ROOT)
+    profile = _profile()
+    pillars = {
+        (1, 0): {"id": "I1", "cell": {"x": 1, "y": 0}, "spellType": "indecision"},
+    }
+    node = SearchNode(
+        cell=(0, 0),
+        budget=10,
+        actions=[{"canonicalSignature": "attraction"}, {"canonicalSignature": "indecision"}],
+        cast_counts={"indecision": 1, "reflection": 0, "repulsion": 0, "attraction": 1},
+        spell_values={"indecision": 1, "reflection": 2, "repulsion": 2, "attraction": 1},
+    )
+    given = {
+        "player": {"current": {"x": 0, "y": 0}},
+        "glyphs": {
+            "blackOffsets": [],
+            "whiteOffsets": [{"dx": 1, "dy": 0}],
+            "physicalBlackCells": [],
+            "physicalWhiteCells": [{"x": 0, "y": 0}],
+        },
+    }
+
+    terminal = solver._resolve_terminal(node, given, profile, pillars, RuleAuthority({}), True)
+
+    assert terminal["whitePillarIds"] == ["I1"]
+    assert terminal["rechargedSpells"] == ["indecision"]
+    assert terminal["nextSpellState"] == {
+        "indecision": 2,
+        "reflection": 2,
+        "repulsion": 2,
+        "attraction": 1,
+    }
+

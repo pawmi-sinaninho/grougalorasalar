@@ -67,7 +67,7 @@ def render_annotated(
             if previous and destination_cell:
                 x1, y1 = project(previous)
                 x2, y2 = project(destination_cell)
-                draw.line((x1, y1, x2, y2), fill="yellow", width=max(3, image.width // 600))
+                # Removed: action range/target line. It was only visual noise and added annotation work.
                 previous = destination_cell
         final = recommendation.get("expected", {}).get("finalCell")
         if final:

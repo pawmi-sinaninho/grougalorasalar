@@ -404,8 +404,7 @@ export default function Home() {
                 const pin = actionPins[index];
                 const displayOrder = index + 1;
                 return target && pin && <g key={`solution-pin-${displayOrder}-${action.canonicalSignature}`} data-testid="action-target-marker" data-action-order={displayOrder}>
-                  <line x1={target.x} y1={target.y} x2={pin.x} y2={pin.y} className="pin-callout" />
-                  <circle cx={pin.x} cy={pin.y} r="22" className="action-pin" />
+<circle cx={pin.x} cy={pin.y} r="22" className="action-pin" />
                   <text data-testid="action-number" x={pin.x} y={pin.y + 8} className="action-number">{displayOrder}</text>
                 </g>;
               })}

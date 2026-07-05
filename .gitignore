@@ -18,3 +18,5 @@ apps/web/.npm-cache/
 UI_CLEANUP_REMOVE_ORANGE_REPORT.md
 .orange_path_removal_backup/
 ORANGE_PATH_REMOVAL_REPORT.md
+.overlay_charge_fix_backup/
+OVERLAY_CHARGE_FIX_REPORT.md

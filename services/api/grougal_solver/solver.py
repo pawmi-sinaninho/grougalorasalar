@@ -820,8 +820,8 @@ class DeterministicSolver:
                 next_spell_state[spell] = None
                 continue
             recharge = white_counts.get(spell, 0)
-            if direct_white and profile["resources"].get("centerWhiteRecharge") == "all_spells_plus_one":
-                recharge += 1
+            # Direct centre-white is not a global spell recharge.
+            # Only matching white pillar hits recharge their own spell type.
             maximum = profile["resources"]["maxCharges"].get(spell)
             start_value = value + node.cast_counts.get(spell, 0)
             next_spell_state[spell] = (

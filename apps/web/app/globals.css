@@ -34,7 +34,6 @@ h2,h3,p { margin-top:0; }
 .overlay-label { font-size:15px; }.overlay-sub { font-size:10px; }.player-label { fill:#61e8ff; font-size:17px; }
 .glyph { stroke:#d84cff; stroke-width:4; vector-effect:non-scaling-stroke; }.glyph.black { fill:#17151fbb; }.glyph.white { fill:#e9e8f5cc; }
 .player-cell { fill:#18dffc44; stroke:#18dffc; stroke-width:5; vector-effect:non-scaling-stroke; }.player-dot { fill:#ff435c; stroke:#fff; stroke-width:3; vector-effect:non-scaling-stroke; }
-.target-line { stroke:#ffad42; stroke-width:5; stroke-linecap:round; stroke-dasharray:4 9; vector-effect:non-scaling-stroke; filter:drop-shadow(0 2px 3px #000); }
 .movement-line { stroke:#fff; stroke-width:7; stroke-linecap:round; stroke-dasharray:16 10; vector-effect:non-scaling-stroke; filter:drop-shadow(0 2px 3px #000); }
 .pin-callout { stroke:#bce565; stroke-width:3; stroke-dasharray:4 5; vector-effect:non-scaling-stroke; filter:drop-shadow(0 1px 2px #000); }
 .action-pin { fill:#bce565; stroke:#071009; stroke-width:5; vector-effect:non-scaling-stroke; filter:drop-shadow(0 2px 4px #000); }.action-number { fill:#071009; text-anchor:middle; font-size:24px; font-weight:950; paint-order:stroke; stroke:#efffd5; stroke-width:4px; stroke-linejoin:round; }
