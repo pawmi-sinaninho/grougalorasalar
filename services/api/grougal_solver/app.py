@@ -136,22 +136,6 @@ def _solve_document(analysis_id: str, document: dict[str, Any]) -> dict[str, Any
         document["fight"] = stage_transition(document["fight"], result)
     document["recommendationInvalidated"] = False
     document["state"] = result["status"]
-    source = store.asset_path(analysis_id, "normalised.png")
-    if source.exists() and result.get("expected", {}).get("finalCell"):
-        overlay_started = time.perf_counter()
-        annotated = store.asset_path(analysis_id, "annotated.png")
-        render_annotated(
-            PROJECT_ROOT,
-            source,
-            annotated,
-            document["turnState"],
-            result,
-            registration=(document.get("recognition") or {}).get("registration"),
-        )
-        document.setdefault("assets", {})["annotated"] = True
-        document["performance"]["overlayMs"] = round(
-            (time.perf_counter() - overlay_started) * 1000.0, 3
-        )
     return document
 
 
@@ -400,11 +384,25 @@ def get_asset(
     authorization: str | None = Header(default=None),
     x_analysis_token: str | None = Header(default=None, alias="X-Analysis-Token"),
 ):
-    store.read(analysis_id, _token(authorization, x_analysis_token))
+    document = store.read(analysis_id, _token(authorization, x_analysis_token))
     names = {"normalised": "normalised.png", "thumbnail": "thumbnail.webp", "annotated": "annotated.png"}
     if asset_kind not in names:
         raise HTTPException(status_code=404)
+
     path = store.asset_path(analysis_id, names[asset_kind])
+    if asset_kind == "annotated" and not path.exists():
+        source = store.asset_path(analysis_id, "normalised.png")
+        recommendation = document.get("recommendation") or {}
+        if source.exists() and recommendation.get("expected", {}).get("finalCell"):
+            render_annotated(
+                PROJECT_ROOT,
+                source,
+                path,
+                document["turnState"],
+                recommendation,
+                registration=(document.get("recognition") or {}).get("registration"),
+            )
+
     if not path.exists():
         raise HTTPException(status_code=404)
     media = "image/webp" if path.suffix == ".webp" else "image/png"

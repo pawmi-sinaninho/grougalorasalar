@@ -1,5 +1,3 @@
-import { perfFetch } from "./perfFetch";
-
 export type AnalysisEnvelope = {
   session: {
     analysisId: string;
@@ -175,7 +173,7 @@ export async function deleteAnalysis(id: string, token: string): Promise<void> {
 }
 
 export async function fetchAssetUrl(id: string, token: string, kind: 'normalised' | 'thumbnail' | 'annotated'): Promise<string> {
-  const response = await perfFetch(`${API}/analyses/${id}/asset/${kind}`, {
+  const response = await networkFetchWithRetry(`${API}/analyses/${id}/asset/${kind}`, {
     headers: { Authorization: `Bearer ${token}` },
     cache: 'no-store',
   });

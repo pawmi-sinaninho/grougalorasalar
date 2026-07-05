@@ -214,16 +214,6 @@ export default function Home() {
 
   useEffect(() => () => captureStream.current?.getTracks().forEach(track => track.stop()), []);
 
-  useEffect(() => {
-    const paste = (event: ClipboardEvent) => {
-      const image = Array.from(event.clipboardData?.items ?? []).find(item => item.type.startsWith('image/'))?.getAsFile();
-      if (!image) return;
-      event.preventDefault();
-      void begin(new File([image], image.name || 'capture-collee.png', { type: image.type }));
-    };
-    window.addEventListener('paste', paste);
-    return () => window.removeEventListener('paste', paste);
-  });
 
   function startLocalWorker(file: File) {
     if (typeof Worker === 'undefined') return;
@@ -294,7 +284,7 @@ export default function Home() {
     if (imageUrl.startsWith('blob:')) URL.revokeObjectURL(imageUrl);
     setImageUrl(URL.createObjectURL(file));
     setProgress({ stage: 'preview_ready', elapsedMs: 0 });
-    startLocalWorker(file);
+    if (debug) startLocalWorker(file);
     try {
       let analysisId: string;
       let accessToken: string;
