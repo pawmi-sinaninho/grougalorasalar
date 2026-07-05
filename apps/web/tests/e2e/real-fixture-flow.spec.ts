@@ -14,12 +14,12 @@ async function pasteImage(page: import('@playwright/test').Page, filePath: strin
   }, base64);
 }
 
-test('Ctrl+V runs recognition and solver without normal manual controls', async ({ page }) => {
+test('capture flow runs recognition and solver without normal manual controls', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('button', { name: 'Choisir la fenêtre Dofus' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Capturer ce tour' })).toBeDisabled();
   await expect(page.getByText('© 2026 Pawmi (Sinaninho)', { exact: true })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Capture d’écran du début du tour' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Capturer chaque tour' })).toBeVisible();
   await pasteImage(page, fixture);
 
   await expect(page.getByRole('heading', { name: /Actions à exécuter|Aucun coup sûr|Nouvelle capture nécessaire/ })).toBeVisible({ timeout: 5_000 });

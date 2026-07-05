@@ -201,7 +201,7 @@ export default function Home() {
   async function chooseGameWindow() {
     setError('');
     if (!navigator.mediaDevices?.getDisplayMedia) {
-      setError('La capture de fenêtre n’est pas disponible dans ce navigateur. Utilisez Ctrl+V.');
+      setError('La capture de fenetre n est pas disponible dans ce navigateur. Choisissez une fenetre compatible ou utilisez un autre navigateur.');
       return;
     }
     try {
@@ -218,7 +218,7 @@ export default function Home() {
       setCaptureActive(true);
     } catch (reason) {
       if ((reason as DOMException)?.name !== 'NotAllowedError') {
-        setError('La fenêtre de jeu n’a pas pu être ouverte. Réessayez ou utilisez Ctrl+V.');
+        setError('La fenetre Dofus n a pas pu etre ouverte. Reessayez puis choisissez la fenetre Dofus.');
       }
     }
   }
@@ -363,7 +363,7 @@ export default function Home() {
       <header>
         <p className="eyebrow">ASSISTANT DE TOUR</p>
         <h1>Grougalorasalar Solver</h1>
-        <p>Collez la capture du début du tour avec Ctrl+V. Votre action apparaît automatiquement.</p>
+        <p>Selectionnez votre fenetre Dofus, puis capturez chaque debut de tour.</p>
         {fight && data && <p className="turn-label">Tour {fight.round}</p>}
         <div className="capture-controls">
           <button type="button" className="choose-window" onClick={chooseGameWindow} disabled={busy}>{captureActive ? 'Changer la fenêtre Dofus' : 'Choisir la fenêtre Dofus'}</button>
@@ -374,8 +374,18 @@ export default function Home() {
       </header>
 
       {busy && <div className="loading-banner" role="status" aria-live="polite"><span className="spinner" aria-hidden="true" /><div><strong>{data ? 'Analyse de la capture…' : 'Analyse de l’arène…'}</strong><small>La capture est en cours de traitement.</small></div></div>}
-
-      {!imageUrl && <section className="upload"><div className="paste-key">Ctrl+V</div><h2>Capture d’écran du début du tour</h2><p>Aucune saisie ni confirmation.</p>{debug && <label>Fixture locale<input aria-label="Capture du combat (debug)" type="file" accept="image/png,image/jpeg,image/webp" disabled={busy} onChange={event => event.target.files?.[0] && begin(event.target.files[0])} /></label>}</section>}
+      {!imageUrl && <section className="upload">
+        <div className="setup-guide" aria-label="Instructions de capture">
+          <p className="step">MODE D'EMPLOI</p>
+          <h2>Capturer chaque tour</h2>
+          <ol className="setup-steps">
+            <li><span>1</span><p><strong>Choisissez votre fenetre Dofus.</strong><br />Cliquez sur Choisir la fenetre Dofus, puis selectionnez le jeu.</p></li>
+            <li><span>2</span><p><strong>Masquez les modules.</strong><br />En combat, ouvrez les trois points &quot;...&quot; en haut a droite, puis cliquez sur &quot;Masquer tous les modules&quot;.</p></li>
+            <li><span>3</span><p><strong>Capturez chaque debut de tour.</strong><br />A chaque debut de tour, cliquez sur Capturer ce tour.</p></li>
+          </ol>
+        </div>
+        {debug && <label>Fixture locale<input aria-label="Capture du combat (debug)" type="file" accept="image/png,image/jpeg,image/webp" disabled={busy} onChange={event => event.target.files?.[0] && begin(event.target.files[0])} /></label>}
+      </section>}
 
       {imageUrl && <div className={data ? 'workspace' : 'workspace preview-only'}>
         <section className="board-card">
@@ -427,7 +437,7 @@ export default function Home() {
           {correctionMode && <p className="click-hint">Cliquez directement sur la bonne case de la capture.</p>}
         </section>
 
-        {data && !debug && <aside className="player-panel">{recommendation ? <><p className="step">VOTRE TOUR</p><h2>{recommendation.status === 'ambiguous_input' ? 'Nouvelle capture nécessaire' : recommendation.status === 'invalid_screenshot' ? 'Capture illisible' : recommendation.status === 'no_safe_solution' ? 'Aucun coup sûr' : recommendation.status === 'capacity_error' ? 'Calcul interrompu' : recommendation.status === 'blocked_missing_data' ? 'Capture incomplète' : 'Actions à exécuter'}</h2>{recommendation.status === 'provisional_solution' && <p className="provisional">Proposition sûre pour les variantes visuelles plausibles.</p>}{recommendation.actions.length > 0 && <ol className="action-list">{recommendation.actions.map(action => <li key={action.canonicalSignature}><span>{action.order}</span><strong>{spellLabels[action.spell as SpellKey]}</strong><small>cible marquée {action.order}</small></li>)}<li className="end-turn"><span>{recommendation.actions.length + 1}</span><strong>Terminez le tour</strong></li></ol>}{recommendation.expected.finalCell && <div className="outcome"><p><strong>Position finale</strong><br />Anneau vert sur la capture</p><p><strong>Glyphes noirs</strong><br />{recommendation.expected.blackPillarIds?.length ? `${recommendation.expected.blackPillarIds.length} collision(s) marquée(s)` : 'Aucune collision'}</p><p><strong>Glyphes blancs</strong><br />{recommendation.expected.whitePillarIds?.length ? `${recommendation.expected.whitePillarIds.length} recharge(s) marquée(s)` : 'Aucune recharge'}</p><p><strong>Progression</strong><br />{recommendation.expected.raceOutcome === 'crocoburio_advance' ? 'Crocoburio avance' : recommendation.expected.raceOutcome === 'dragon_advance' ? 'Grougalorasalar avance' : 'Neutre'}</p></div>}{recommendation.expected.nextSpellState && <div className="charges"><strong>Charges : maintenant → prochain tour</strong>{spellKeys.map(spell => <span key={spell}>{spellLabels[spell]} {fight?.charges[spell] ?? '–'} → {recommendation.expected.nextSpellState?.[spell] ?? '–'}<small>{castCounts[spell] ? ` (${castCounts[spell]} utilisée${castCounts[spell] > 1 ? 's' : ''})` : ''}</small></span>)}</div>}{Boolean(recommendation.alternatives?.length) && <details className="alternatives"><summary>Autres options équivalentes</summary>{recommendation.alternatives?.slice(0, 2).map((alternative, index) => <p key={index}>Option {index + 2} · {alternative.sequence.length} action(s)</p>)}</details>}{recommendation.actions.length > 0 ? <p className="next-paste">Exécutez les actions, terminez le tour, puis collez la prochaine capture avec Ctrl+V.</p> : <p className="next-paste">Collez une nouvelle capture complète du début du tour.</p>}<button className="new-fight" onClick={newFight}>Nouveau combat</button></> : <><p className="step">ANALYSE</p><h2>Calcul en cours…</h2></>}</aside>}
+        {data && !debug && <aside className="player-panel">{recommendation ? <><p className="step">VOTRE TOUR</p><h2>{recommendation.status === 'ambiguous_input' ? 'Nouvelle capture nécessaire' : recommendation.status === 'invalid_screenshot' ? 'Capture illisible' : recommendation.status === 'no_safe_solution' ? 'Aucun coup sûr' : recommendation.status === 'capacity_error' ? 'Calcul interrompu' : recommendation.status === 'blocked_missing_data' ? 'Capture incomplète' : 'Actions à exécuter'}</h2>{recommendation.status === 'provisional_solution' && <p className="provisional">Proposition sûre pour les variantes visuelles plausibles.</p>}{recommendation.actions.length > 0 && <ol className="action-list">{recommendation.actions.map(action => <li key={action.canonicalSignature}><span>{action.order}</span><strong>{spellLabels[action.spell as SpellKey]}</strong><small>cible marquée {action.order}</small></li>)}<li className="end-turn"><span>{recommendation.actions.length + 1}</span><strong>Terminez le tour</strong></li></ol>}{recommendation.expected.finalCell && <div className="outcome"><p><strong>Position finale</strong><br />Anneau vert sur la capture</p><p><strong>Glyphes noirs</strong><br />{recommendation.expected.blackPillarIds?.length ? `${recommendation.expected.blackPillarIds.length} collision(s) marquée(s)` : 'Aucune collision'}</p><p><strong>Glyphes blancs</strong><br />{recommendation.expected.whitePillarIds?.length ? `${recommendation.expected.whitePillarIds.length} recharge(s) marquée(s)` : 'Aucune recharge'}</p><p><strong>Progression</strong><br />{recommendation.expected.raceOutcome === 'crocoburio_advance' ? 'Crocoburio avance' : recommendation.expected.raceOutcome === 'dragon_advance' ? 'Grougalorasalar avance' : 'Neutre'}</p></div>}{recommendation.expected.nextSpellState && <div className="charges"><strong>Charges : maintenant → prochain tour</strong>{spellKeys.map(spell => <span key={spell}>{spellLabels[spell]} {fight?.charges[spell] ?? '–'} → {recommendation.expected.nextSpellState?.[spell] ?? '–'}<small>{castCounts[spell] ? ` (${castCounts[spell]} utilisée${castCounts[spell] > 1 ? 's' : ''})` : ''}</small></span>)}</div>}{Boolean(recommendation.alternatives?.length) && <details className="alternatives"><summary>Autres options équivalentes</summary>{recommendation.alternatives?.slice(0, 2).map((alternative, index) => <p key={index}>Option {index + 2} · {alternative.sequence.length} action(s)</p>)}</details>}{recommendation.actions.length > 0 ? <p className="next-paste">Executez les actions, terminez le tour, puis cliquez sur Capturer ce tour au debut du prochain tour.</p> : <p className="next-paste">Cliquez sur Capturer ce tour avec une capture complete du debut du tour.</p>}<button className="new-fight" onClick={newFight}>Nouveau combat</button></> : <><p className="step">ANALYSE</p><h2>Calcul en cours…</h2></>}</aside>}
 
         {data && debug && <aside>
           <div className="aside-heading"><div><p className="step">DIAGNOSTIC</p><h2>État détecté</h2></div></div>
