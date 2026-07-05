@@ -37,7 +37,7 @@ class SessionStore:
         self.hard_hours = hard_hours
         self._lock = threading.RLock()
 
-    def create(self, locale: str, quality_improvement: bool = False) -> tuple[dict[str, Any], str]:
+    def create(self, locale: str, quality_improvement: bool = False, initial_fight: dict[str, Any] | None = None) -> tuple[dict[str, Any], str]:
         now = utc_now()
         analysis_id = f"ana_{secrets.token_urlsafe(18)}"
         token = secrets.token_urlsafe(32)
@@ -59,7 +59,7 @@ class SessionStore:
             "assets": {},
             "observations": [],
             "turnState": None,
-            "fight": new_fight_state(),
+            "fight": deep_copy(initial_fight) if isinstance(initial_fight, dict) else new_fight_state(),
             "history": [],
             "future": [],
             "audit": [],

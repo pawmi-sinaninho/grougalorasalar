@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Literal
+from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -11,6 +11,7 @@ class CreateAnalysisRequest(BaseModel):
     locale: Literal["fr", "de", "en"] = "fr"
     retentionConsent: Literal["ephemeral_only"] = "ephemeral_only"
     qualityImprovementConsent: bool = False
+    initialFight: dict[str, Any] | None = None
 
 
 class SolveRequest(BaseModel):

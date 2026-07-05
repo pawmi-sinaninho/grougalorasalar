@@ -3,6 +3,50 @@
 import { useEffect, useMemo, useRef, useState, type MouseEvent } from 'react';
 import { command, createAnalysis, deleteAnalysis, solve, uploadImage, type AnalysisEnvelope } from '../lib/api';
 
+
+type FightSnapshot = NonNullable<AnalysisEnvelope['fight']>;
+const FIGHT_RESUME_KEY = 'grougalorasalar:fight-resume:v1';
+
+function loadFightSnapshot(): FightSnapshot | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = window.sessionStorage.getItem(FIGHT_RESUME_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as { fight?: FightSnapshot };
+    return parsed.fight ?? null;
+  } catch {
+    return null;
+  }
+}
+
+function saveFightSnapshot(fight?: AnalysisEnvelope['fight'] | null): void {
+  if (typeof window === 'undefined' || !fight) return;
+  try {
+    window.sessionStorage.setItem(FIGHT_RESUME_KEY, JSON.stringify({
+      schemaVersion: 1,
+      savedAt: new Date().toISOString(),
+      fight,
+    }));
+  } catch {
+    // Session resume is best-effort only.
+  }
+}
+
+function clearFightSnapshot(): void {
+  if (typeof window === 'undefined') return;
+  try {
+    window.sessionStorage.removeItem(FIGHT_RESUME_KEY);
+  } catch {
+    // ignore
+  }
+}
+
+function isSessionLostError(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error);
+  return message.includes('API-AUTH-NOT-FOUND') || message.includes('API-STATE-EXPIRED');
+}
+
+
 const spellKeys = ['indecision', 'reflection', 'repulsion', 'attraction'] as const;
 type SpellKey = (typeof spellKeys)[number];
 type Availability = 'unknown' | 'available' | 'unavailable';
@@ -270,6 +314,7 @@ export default function Home() {
       const uploaded = await uploadImage(analysisId, accessToken, stateVersion, file);
       if (requestId !== requestSequence.current) return;
       setData(uploaded);
+      saveFightSnapshot(uploaded.fight);
       if (uploaded.fight?.syncStatus === 'player_mismatch') {
         setError('La position du joueur ne correspond pas à la fin calculée du tour précédent. Le combat n’a pas été avancé.');
       }
@@ -278,9 +323,37 @@ export default function Home() {
       console.error('Capture analysis failed', error);
       if (requestId === requestSequence.current) {
         const message = error instanceof Error ? error.message : String(error);
-        if (message.includes('API-AUTH-NOT-FOUND') || message.includes('API-STATE-EXPIRED')) {
+        if (isSessionLostError(error)) {
+          const resumeFight = data?.fight ?? loadFightSnapshot();
+          if (resumeFight) {
+            try {
+              const recovered = await createAnalysis('fr', resumeFight);
+              setToken(recovered.accessToken);
+              setProgress({ stage: 'session_created', elapsedMs: performance.now() - (startedAt.current ?? performance.now()) });
+              const uploaded = await uploadImage(
+                recovered.session.analysisId,
+                recovered.accessToken,
+                recovered.session.stateVersion,
+                file,
+              );
+              if (requestId !== requestSequence.current) return;
+              setData(uploaded);
+              saveFightSnapshot(uploaded.fight);
+              if (uploaded.fight?.syncStatus === 'player_mismatch') {
+                setError('La position du joueur ne correspond pas a la fin calculee du tour precedent. Le combat n a pas ete avance.');
+              } else {
+                setError('');
+              }
+              setProgress({ stage: 'recognition_complete', elapsedMs: performance.now() - (startedAt.current ?? performance.now()) });
+              return;
+            } catch (recoveryError) {
+              console.error('Session recovery failed', recoveryError);
+            }
+          }
+
           setToken('');
           setData(null);
+          clearFightSnapshot();
           setError('La session du combat a expire ou le serveur a redemarre. Lancez un nouveau combat.');
         } else {
           setError(message);
@@ -297,7 +370,7 @@ export default function Home() {
     requestSequence.current += 1;
     if (data && token) await deleteAnalysis(data.session.analysisId, token).catch(() => undefined);
     if (imageUrl.startsWith('blob:')) URL.revokeObjectURL(imageUrl);
-    setData(null); setToken(''); setImageUrl(''); setError(''); setBusy(false);
+    setData(null); setToken(''); setImageUrl(''); setError(''); setBusy(false); clearFightSnapshot();
   }
 
   async function send(type: string, payload: object) {
@@ -306,6 +379,7 @@ export default function Home() {
     try {
       const updated = await command(data.session.analysisId, token, data.session.stateVersion, type, payload);
       setData(updated);
+      saveFightSnapshot(updated.fight);
       return updated;
     } catch (error) {
       setError(error instanceof Error ? error.message : 'La modification n a pas pu etre enregistree. Reessayez.');
@@ -316,7 +390,11 @@ export default function Home() {
   async function runSolver() {
     if (!data || !ready) return;
     setBusy(true); setError('');
-    try { setData(await solve(data.session.analysisId, token, data.session.stateVersion)); }
+    try {
+      const updated = await solve(data.session.analysisId, token, data.session.stateVersion);
+      setData(updated);
+      saveFightSnapshot(updated.fight);
+    }
     catch (error) { setError(error instanceof Error ? error.message : 'Le calcul n a pas abouti. Reessayez.'); }
     finally { setBusy(false); }
   }

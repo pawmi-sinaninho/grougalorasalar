@@ -216,7 +216,7 @@ def meta():
 
 @app.post("/api/v1/analyses", status_code=201)
 def create_analysis(payload: CreateAnalysisRequest, idempotency_key: str | None = Header(default=None, alias="Idempotency-Key")):
-    document, access_token = store.create(payload.locale, payload.qualityImprovementConsent)
+    document, access_token = store.create(payload.locale, payload.qualityImprovementConsent, initial_fight=payload.initialFight)
     return {"session": store.public_session(document), "accessToken": access_token}
 
 

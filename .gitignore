@@ -34,3 +34,5 @@ FRONTEND_SESSION_RECOVERY_REPORT.md
 FRONTEND_CLEANUP_FIX_REPORT.md
 .frontend_capture_flow_copy_backup/
 FRONTEND_CAPTURE_FLOW_COPY_REPORT.md
+.session_resume_state_backup_v2/
+SESSION_RESUME_STATE_V2_REPORT.md

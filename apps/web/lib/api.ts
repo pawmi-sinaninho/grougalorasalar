@@ -59,6 +59,8 @@ export type AnalysisEnvelope = {
   } | null;
 };
 
+export type FightStateSnapshot = NonNullable<AnalysisEnvelope['fight']>;
+
 export const API = process.env.NEXT_PUBLIC_API_BASE ?? 'http://localhost:8000/api/v1';
 
 async function apiError(response: Response, fallback: string): Promise<Error> {
@@ -100,7 +102,7 @@ async function networkFetchWithRetry(input: RequestInfo | URL, init?: RequestIni
   throw lastError instanceof Error ? lastError : new Error(String(lastError));
 }
 
-export async function createAnalysis(locale = 'fr') {
+export async function createAnalysis(locale = 'fr', initialFight?: FightStateSnapshot | null) {
   const response = await networkFetchWithRetry(`${API}/analyses`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -109,6 +111,7 @@ export async function createAnalysis(locale = 'fr') {
       locale,
       retentionConsent: 'ephemeral_only',
       qualityImprovementConsent: false,
+      ...(initialFight ? { initialFight } : {}),
     }),
   });
   if (!response.ok) throw await apiError(response, 'Creation impossible');
