@@ -773,34 +773,97 @@ class FastRecognitionEngine:
 
     def detect_player(self, canonical: np.ndarray, pillar_cells: set[tuple[int, int]]) -> dict[str, Any] | None:
         hsv = cv2.cvtColor(canonical, cv2.COLOR_BGR2HSV)
-        scores: list[tuple[float, tuple[int, int], int]] = []
-        for cell in self.automatic_object_cells:
-            if cell in pillar_cells:
-                continue
+
+        def score_patch(cell: tuple[int, int], *, loose: bool) -> tuple[float, int]:
             centre = REFERENCE_ORIGIN + cell[0] * REFERENCE_BASIS_X + cell[1] * REFERENCE_BASIS_Y
             cx, cy = np.rint(centre).astype(int)
-            patch = hsv[max(0, cy - 15) : min(hsv.shape[0], cy + 28), max(0, cx - 48) : min(hsv.shape[1], cx + 48)]
-            if patch.size == 0:
-                continue
-            hue, saturation, value = cv2.split(patch)
+            if loose:
+                # The live player base can sit lower than the logical cell centre
+                # and can be partly covered by the character sprite. Use a larger
+                # lower-biased patch only as a fallback, never as the primary gate.
+                y0, y1 = max(0, cy - 22), min(hsv.shape[0], cy + 58)
+                x0, x1 = max(0, cx - 60), min(hsv.shape[1], cx + 60)
+                patch = hsv[y0:y1, x0:x1]
+                if patch.size == 0:
+                    return 0.0, 0
+                hue, saturation, value = cv2.split(patch)
+                mask = (hue >= 78) & (hue <= 122) & (saturation >= 55) & (value >= 45)
+                count = int(mask.sum())
+                # Ignore large flat cyan map/start-track patches. The controlled
+                # unit base is a compact blue ring; broad tiles are not.
+                if count > 900:
+                    return 0.0, count
+                score = float(count + 0.006 * saturation[mask].sum()) if count else 0.0
+                return score, count
+
+            centre_patch = hsv[
+                max(0, cy - 15) : min(hsv.shape[0], cy + 28),
+                max(0, cx - 48) : min(hsv.shape[1], cx + 48),
+            ]
+            if centre_patch.size == 0:
+                return 0.0, 0
+            hue, saturation, value = cv2.split(centre_patch)
             mask = (hue >= 85) & (hue <= 115) & (saturation >= 80) & (value >= 65)
             count = int(mask.sum())
             score = float(count + 0.01 * saturation[mask].sum()) if count else 0.0
-            scores.append((score, cell, count))
-        if not scores:
+            return score, count
+
+        strict_scores: list[tuple[float, tuple[int, int], int]] = []
+        for cell in self.automatic_object_cells:
+            if cell in pillar_cells:
+                continue
+            score, count = score_patch(cell, loose=False)
+            strict_scores.append((score, cell, count))
+
+        if not strict_scores:
             return None
-        scores.sort(reverse=True)
-        best_score, best_cell, best_count = scores[0]
-        second_score = scores[1][0] if len(scores) > 1 else 0.0
+        strict_scores.sort(reverse=True)
+        best_score, best_cell, best_count = strict_scores[0]
+        second_score = strict_scores[1][0] if len(strict_scores) > 1 else 0.0
         ratio = best_score / max(second_score, 1.0)
-        if best_count < 150 or ratio < 2.0:
+        if best_count >= 150 and ratio >= 2.0:
+            confidence = min(0.995, 0.82 + min(best_count / 700.0, 1.0) * 0.10 + min((ratio - 2.0) / 6.0, 1.0) * 0.07)
+            return {
+                "cell": {"x": best_cell[0], "y": best_cell[1]},
+                "confidence": round(confidence, 6),
+                "blueBasePixelCount": best_count,
+                "separationRatio": round(ratio, 6),
+                "method": "registered_blue_unit_base_cell_sampling",
+            }
+
+        # Conservative fallback for live screenshots where the blue base is
+        # visible but split/partly covered, causing the strict patch to miss it.
+        # This keeps false positives bounded by requiring a clear winner.
+        loose_scores: list[tuple[float, tuple[int, int], int]] = []
+        for cell in self.automatic_object_cells:
+            if cell in pillar_cells:
+                continue
+            score, count = score_patch(cell, loose=True)
+            if count >= 55:
+                loose_scores.append((score, cell, count))
+
+        if not loose_scores:
             return None
-        confidence = min(0.995, 0.82 + min(best_count / 700.0, 1.0) * 0.10 + min((ratio - 2.0) / 6.0, 1.0) * 0.07)
+        loose_scores.sort(reverse=True)
+        fallback_score, fallback_cell, fallback_count = loose_scores[0]
+        second_fallback = loose_scores[1][0] if len(loose_scores) > 1 else 0.0
+        fallback_ratio = fallback_score / max(second_fallback, 1.0)
+        if fallback_count < 65 or fallback_ratio < 1.55:
+            return None
+
+        confidence = min(
+            0.86,
+            0.62
+            + min(fallback_count / 350.0, 1.0) * 0.12
+            + min((fallback_ratio - 1.55) / 4.0, 1.0) * 0.12,
+        )
         return {
-            "cell": {"x": best_cell[0], "y": best_cell[1]},
+            "cell": {"x": fallback_cell[0], "y": fallback_cell[1]},
             "confidence": round(confidence, 6),
-            "blueBasePixelCount": best_count,
-            "separationRatio": round(ratio, 6),
+            "blueBasePixelCount": fallback_count,
+            "separationRatio": round(fallback_ratio, 6),
+            "method": "loose_blue_unit_base_cell_sampling",
+            "fallback": True,
         }
 
     def match_fixture(

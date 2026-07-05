@@ -92,13 +92,15 @@ def baseline_recognition(
     player = result.get("player")
     if player:
         state["player"] = {"current": deep_copy(player["cell"]), "previous": None}
+        player_method = str(player.get("method") or "registered_blue_unit_base_cell_sampling")
+        player_reason = "FAST-PATH-PLAYER-FALLBACK" if player.get("fallback") else "FAST-PATH-PLAYER"
         observations.append(
             _obs(
                 "player.current",
                 state["player"]["current"],
                 float(player["confidence"]),
-                "registered_blue_unit_base_cell_sampling",
-                reason="FAST-PATH-PLAYER",
+                player_method,
+                reason=player_reason,
             )
         )
     else:

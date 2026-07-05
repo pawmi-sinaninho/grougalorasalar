@@ -34,6 +34,8 @@ export type AnalysisEnvelope = {
     status: string;
     solverStatus?: string;
     statusReasonCodes: string[];
+    validator?: { status: string; issues: string[] };
+    warnings?: string[];
     actions: Array<{
       order: number;
       instruction: string;

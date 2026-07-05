@@ -20,6 +20,7 @@ from .fight_state import reconcile_round_start, resource_state, stage_transition
 from .image_ingest import UploadRejected, normalise_image
 from .overlay import render_annotated
 from .recognition import baseline_recognition
+from .recommendation_validator import validate_recommendation
 from .session_store import SessionError, SessionStore
 from .solver import DeterministicSolver
 from .turn_analysis import analyse_turn
@@ -129,7 +130,12 @@ def _solve_document(analysis_id: str, document: dict[str, Any]) -> dict[str, Any
         document.get("recognition") or {},
     )
     internal_timings = result.pop("_internalTimings", {})
-    document.setdefault("performance", {})["solverMs"] = internal_timings.get("solverMs", solver_ms)
+    validation_started = time.perf_counter()
+    result = validate_recommendation(document["turnState"], result)
+    document.setdefault("performance", {})["validatorMs"] = round(
+        (time.perf_counter() - validation_started) * 1000.0, 3
+    )
+    document["performance"]["solverMs"] = internal_timings.get("solverMs", solver_ms)
     document["performance"]["hypothesisMs"] = internal_timings.get("hypothesisMs", 0.0)
     document["recommendation"] = result
     if result["status"] in {"solved", "provisional_solution"}:
