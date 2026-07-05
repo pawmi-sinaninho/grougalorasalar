@@ -105,7 +105,13 @@ def baseline_recognition(
         observations.append(_obs("player.current", None, 0.0, "player_not_resolved", reason="MODEL-001"))
 
     state["pillars"] = [
-        {"id": item["id"], "cell": deep_copy(item["cell"]), "spellType": item["spellType"]}
+        {
+            "id": item["id"],
+            "cell": deep_copy(item["cell"]),
+            "spellType": item["spellType"],
+            "confidence": float(item.get("confidence", 0.0)),
+            "snapResidualCell": float(item.get("snapResidualCell", 0.0)),
+        }
         for item in result.get("pillars", [])
     ]
     pillar_confidence = min(

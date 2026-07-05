@@ -563,6 +563,13 @@ class DeterministicSolver:
         if target_type == "unknown":
             rules.append("R-044")
 
+        pillar_confidence = pillar.get("confidence")
+        if isinstance(pillar_confidence, (int, float)) and float(pillar_confidence) < 0.90:
+            rules.append("VISION-LOW-CONFIDENCE-TARGET-PILLAR")
+        snap_residual = pillar.get("snapResidualCell")
+        if isinstance(snap_residual, (int, float)) and float(snap_residual) > 0.15:
+            rules.append("VISION-LOW-SNAP-TARGET-PILLAR")
+
         alignment = self._alignment(dx, dy)
         if spell == "repulsion":
             allowed = cfg.get("allowedAlignments")
@@ -1142,6 +1149,8 @@ class DeterministicSolver:
             "ARENA-BOUNDARY": "S-CONFIRM-BOUNDARY",
             "ARENA-OCCLUDED": "S-BLOCK-OCCLUDED-CELL",
             "ATTRACTION-SHORT-RANGE": "S-BLOCK-ATTRACTION-SHORT-RANGE",
+            "VISION-LOW-CONFIDENCE-TARGET-PILLAR": "S-BLOCK-LOW-CONFIDENCE-TARGET-PILLAR",
+            "VISION-LOW-SNAP-TARGET-PILLAR": "S-BLOCK-LOW-SNAP-TARGET-PILLAR",
         }
         if rule_id in explicit:
             return explicit[rule_id]
