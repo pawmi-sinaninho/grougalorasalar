@@ -77,12 +77,12 @@ function sleep(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function fetchWithRetry(input: RequestInfo | URL, init?: RequestInit, attempts = 3): Promise<Response> {
+async function perfFetchWithRetry(input: RequestInfo | URL, init?: RequestInit, attempts = 3): Promise<Response> {
   let lastError: unknown;
 
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
     try {
-      return await fetch(input, init);
+      return await perfFetch(input, init);
     } catch (error) {
       lastError = error;
       if (attempt === attempts) break;
@@ -92,8 +92,9 @@ async function fetchWithRetry(input: RequestInfo | URL, init?: RequestInit, atte
 
   throw lastError instanceof Error ? lastError : new Error(String(lastError));
 }
+
 export async function createAnalysis(locale = 'fr') {
-  const response = await fetchWithRetry(`${API}/analyses`, {
+  const response = await perfFetchWithRetry(`${API}/analyses`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -111,18 +112,17 @@ export async function uploadImage(id: string, token: string, version: number, fi
   const body = new FormData();
   body.append('file', file);
   body.append('expectedStateVersion', String(version));
-  const response = await fetchWithRetry(`${API}/analyses/${id}/image`, {
+  const response = await perfFetchWithRetry(`${API}/analyses/${id}/image`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}` },
     body,
-    cache: 'no-store',
   });
 if (!response.ok) throw await apiError(response, 'Image refusée');
   return response.json();
 }
 
 export async function command(id: string, token: string, version: number, type: string, payload: object): Promise<AnalysisEnvelope> {
-  const response = await fetchWithRetry(`${API}/analyses/${id}/commands`, {
+  const response = await perfFetchWithRetry(`${API}/analyses/${id}/commands`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -135,7 +135,7 @@ export async function command(id: string, token: string, version: number, type: 
 }
 
 export async function solve(id: string, token: string, version: number): Promise<AnalysisEnvelope> {
-  const response = await fetchWithRetry(`${API}/analyses/${id}/solve`, {
+  const response = await perfFetchWithRetry(`${API}/analyses/${id}/solve`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({ schemaVersion: '0.8.0', expectedStateVersion: version, mode: 'review', maxAlternatives: 2, confirmedSingleSourceRuleIds: [] })
@@ -145,7 +145,7 @@ export async function solve(id: string, token: string, version: number): Promise
 }
 
 export async function deleteAnalysis(id: string, token: string): Promise<void> {
-  const response = await fetchWithRetry(`${API}/analyses/${id}`, {
+  const response = await perfFetchWithRetry(`${API}/analyses/${id}`, {
     method: 'DELETE', headers: { Authorization: `Bearer ${token}` }
   });
   if (!response.ok && response.status !== 404) throw await apiError(response, 'Suppression impossible');

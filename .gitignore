@@ -26,3 +26,5 @@ REJET_PUSH_FIX_REPORT.md
 REJET_TEST_FIX_REPORT.md
 .frontend_api_debug_retry_backup/
 FRONTEND_API_DEBUG_RETRY_REPORT.md
+.frontend_api_auth_retry_backup/
+FRONTEND_API_AUTH_RETRY_REPORT.md
