@@ -159,6 +159,10 @@ function layoutActionPins(
   });
 }
 
+function canvasToBlob(canvas: HTMLCanvasElement, type: string, quality?: number): Promise<Blob | null> {
+  return new Promise(resolve => canvas.toBlob(resolve, type, quality));
+}
+
 export default function Home() {
   const [token, setToken] = useState('');
   const [data, setData] = useState<AnalysisEnvelope | null>(null);
@@ -267,12 +271,15 @@ export default function Home() {
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     canvas.getContext('2d')?.drawImage(video, 0, 0, canvas.width, canvas.height);
-    const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, 'image/png'));
+    const webp = await canvasToBlob(canvas, 'image/webp', 0.94);
+    const blob = webp ?? await canvasToBlob(canvas, 'image/png');
     if (!blob) {
-      setError('La capture n’a pas pu être créée.');
+      setError('La capture n a pas pu etre creee.');
       return;
     }
-    await begin(new File([blob], `tour-${(fight?.round ?? 0) + 1}.png`, { type: 'image/png' }));
+    const extension = webp ? 'webp' : 'png';
+    const mimeType = webp ? 'image/webp' : 'image/png';
+    await begin(new File([blob], `tour-${(fight?.round ?? 0) + 1}.${extension}`, { type: mimeType }));
   }
 
   async function begin(file: File) {
