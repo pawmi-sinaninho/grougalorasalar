@@ -24,3 +24,5 @@ OVERLAY_CHARGE_FIX_REPORT.md
 REJET_PUSH_FIX_REPORT.md
 .rejet_test_fix_backup/
 REJET_TEST_FIX_REPORT.md
+.frontend_api_debug_retry_backup/
+FRONTEND_API_DEBUG_RETRY_REPORT.md

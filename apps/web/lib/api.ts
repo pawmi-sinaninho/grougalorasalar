@@ -53,6 +53,7 @@ export type AnalysisEnvelope = {
 };
 
 export const API = process.env.NEXT_PUBLIC_API_BASE ?? 'http://localhost:8000/api/v1';
+
 async function apiError(response: Response, fallback: string): Promise<Error> {
   let body = '';
   try {
@@ -71,8 +72,28 @@ async function apiError(response: Response, fallback: string): Promise<Error> {
 
   return new Error(`${fallback} [HTTP ${response.status}] ${detail}`);
 }
+
+function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function fetchWithRetry(input: RequestInfo | URL, init?: RequestInit, attempts = 3): Promise<Response> {
+  let lastError: unknown;
+
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      return await fetch(input, init);
+    } catch (error) {
+      lastError = error;
+      if (attempt === attempts) break;
+      await sleep(700 * attempt);
+    }
+  }
+
+  throw lastError instanceof Error ? lastError : new Error(String(lastError));
+}
 export async function createAnalysis(locale = 'fr') {
-  const response = await perfFetch(`${API}/analyses`, {
+  const response = await fetchWithRetry(`${API}/analyses`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -90,18 +111,18 @@ export async function uploadImage(id: string, token: string, version: number, fi
   const body = new FormData();
   body.append('file', file);
   body.append('expectedStateVersion', String(version));
-  const response = await fetch(`${API}/analyses/${id}/image`, {
-  method: 'POST',
-  headers: { Authorization: `Bearer ${token}` },
-  body,
-  cache: 'no-store',
-});
+  const response = await fetchWithRetry(`${API}/analyses/${id}/image`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+    body,
+    cache: 'no-store',
+  });
 if (!response.ok) throw await apiError(response, 'Image refusée');
   return response.json();
 }
 
 export async function command(id: string, token: string, version: number, type: string, payload: object): Promise<AnalysisEnvelope> {
-  const response = await perfFetch(`${API}/analyses/${id}/commands`, {
+  const response = await fetchWithRetry(`${API}/analyses/${id}/commands`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -109,25 +130,25 @@ export async function command(id: string, token: string, version: number, type: 
       analysisId: id, expectedStateVersion: version, type, payload, issuedAt: new Date().toISOString()
     })
   });
-  if (!response.ok) throw new Error((await response.json()).error?.code ?? 'Commande refusée');
+  if (!response.ok) throw await apiError(response, 'Commande refusée');
   return response.json();
 }
 
 export async function solve(id: string, token: string, version: number): Promise<AnalysisEnvelope> {
-  const response = await perfFetch(`${API}/analyses/${id}/solve`, {
+  const response = await fetchWithRetry(`${API}/analyses/${id}/solve`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({ schemaVersion: '0.8.0', expectedStateVersion: version, mode: 'review', maxAlternatives: 2, confirmedSingleSourceRuleIds: [] })
   });
-  if (!response.ok) throw new Error((await response.json()).error?.code ?? 'Solveur indisponible');
+  if (!response.ok) throw await apiError(response, 'Solveur indisponible');
   return response.json();
 }
 
 export async function deleteAnalysis(id: string, token: string): Promise<void> {
-  const response = await perfFetch(`${API}/analyses/${id}`, {
+  const response = await fetchWithRetry(`${API}/analyses/${id}`, {
     method: 'DELETE', headers: { Authorization: `Bearer ${token}` }
   });
-  if (!response.ok && response.status !== 404) throw new Error('Suppression impossible');
+  if (!response.ok && response.status !== 404) throw await apiError(response, 'Suppression impossible');
 }
 
 

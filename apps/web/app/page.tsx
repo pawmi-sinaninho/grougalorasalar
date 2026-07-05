@@ -275,11 +275,11 @@ export default function Home() {
       }
       setProgress({ stage: 'recognition_complete', elapsedMs: performance.now() - (startedAt.current ?? performance.now()) });
     } catch (error) {
-  console.error('Capture analysis failed', error);
-  if (requestId === requestSequence.current) {
-    setError(error instanceof Error ? error.message : String(error));
-  }
-} finally {
+      console.error('Capture analysis failed', error);
+      if (requestId === requestSequence.current) {
+        setError(error instanceof Error ? error.message : String(error));
+      }
+    } finally {
       if (requestId === requestSequence.current) {
         setBusy(false); setElapsedMs(performance.now() - (startedAt.current ?? performance.now()));
       }
