@@ -230,10 +230,10 @@ class DeterministicSolver:
                     depth = len(node.actions)
                     best_safe_cast_count = depth if best_safe_cast_count is None else min(best_safe_cast_count, depth)
 
-            # Cast count is the primary ranking key. Breadth-first search has
-            # now evaluated every equally cheap state; costlier continuations
-            # cannot become the recommendation and need not be generated.
-            if prune_dominated and best_safe_cast_count is not None and len(node.actions) >= best_safe_cast_count:
+            # Keep a bounded tactical lookahead after the first safe ending.
+            # A slightly longer line can preserve charges or avoid an exposed
+            # edge cell; the timeout and Pareto pruning still cap the search.
+            if prune_dominated and best_safe_cast_count is not None and len(node.actions) >= best_safe_cast_count + 3:
                 continue
 
             if node.budget < movement_cost:
@@ -878,18 +878,51 @@ class DeterministicSolver:
         ]
         resource_unknown = len(known_charges) != len(SPELLS)
         minimum_charge = min(known_charges) if known_charges else -1
+        maximum_charge = max(known_charges) if known_charges else -1
         total_charges = sum(known_charges)
+        zero_charges = sum(1 for value in known_charges if value == 0)
+        low_charges = sum(1 for value in known_charges if value <= 1)
+        usable_spells = sum(1 for value in known_charges if value > 0)
+        charge_spread = (maximum_charge - minimum_charge) if known_charges else 99
+        edge_margin = self._edge_margin(cell)
+        centre_distance = self._centre_distance(cell)
         return (
-            # All candidates reaching ranking are already black-safe. Spending
-            # fewer spell charges is the primary tactical objective.
+            # Product contract: white/recharge benefits are optional and only
+            # break ties between equally short safe sequences. Within the same
+            # cast count, prefer resource resilience and safer interior cells.
             candidate["castCount"],
             resource_unknown,
+            zero_charges,
+            low_charges,
             -minimum_charge,
+            charge_spread,
+            -usable_spells,
             -total_charges,
-            race_rank,
+            -edge_margin,
+            centre_distance,
             -mobility,
+            race_rank,
             tuple(candidate["sequence"]),
         )
+
+    @staticmethod
+    def _edge_margin(cell: tuple[int, int]) -> int:
+        x, y = cell
+        return min(
+            x + 12,
+            13 - x,
+            y + 12,
+            13 - y,
+            x + y + 11,
+            13 - (x + y),
+            x - y + 13,
+            13 - (x - y),
+        )
+
+    @staticmethod
+    def _centre_distance(cell: tuple[int, int]) -> int:
+        x, y = cell
+        return max(abs(x), abs(y), abs(x + y), abs(x - y))
 
     @staticmethod
     def _is_black_safe(candidate: dict[str, Any]) -> bool:
