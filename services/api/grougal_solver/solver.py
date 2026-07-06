@@ -877,6 +877,7 @@ class DeterministicSolver:
             for offset in [(-1, 0), (0, -1), (0, 1), (1, 0)]
             if arena.classification((cell[0] + offset[0], cell[1] + offset[1])) == "walkable"
         )
+
         next_spell_state = candidate.get("nextSpellState") or {}
         known_charges = [
             int(next_spell_state[spell])
@@ -893,32 +894,31 @@ class DeterministicSolver:
         charge_spread = (maximum_charge - minimum_charge) if known_charges else 99
         charge_floor_key = tuple(-value for value in sorted(known_charges))
 
+        white_hit_count = len(candidate.get("whitePillarIds") or [])
+        recharged_spell_count = len(candidate.get("rechargedSpells") or [])
+
         cast_counter = Counter(
             action.get("spell")
             for action in candidate.get("actions", [])
             if action.get("spell") in SPELLS
         )
-        no_matching_white_recharge = not candidate.get("whitePillarIds") and not candidate.get("rechargedSpells")
+        no_matching_white_recharge = white_hit_count == 0 and recharged_spell_count == 0
         scarce_cast_penalty = 0
         if no_matching_white_recharge and not resource_unknown:
             for spell, count in cast_counter.items():
                 end_value = next_spell_state.get(spell)
                 if isinstance(end_value, int):
-                    # No matching white hit means end_value + casts reconstructs
-                    # the conservative start-of-turn charge for the used spell.
-                    # Lower start charge = higher penalty; this only breaks ties
-                    # between already-safe candidates.
                     start_estimate = min(4, end_value + count)
                     scarce_cast_penalty += max(0, 5 - start_estimate) * count
 
         edge_margin = self._edge_margin(cell)
         centre_distance = self._centre_distance(cell)
         return (
-            # Product contract: white/recharge benefits are optional and only
-            # break ties between equally short safe sequences. Within the same
-            # cast count, prefer resource resilience and safer interior cells.
             candidate["castCount"],
             resource_unknown,
+            race_rank,
+            -white_hit_count,
+            -recharged_spell_count,
             zero_charges,
             low_charges,
             scarce_cast_penalty,
@@ -930,7 +930,6 @@ class DeterministicSolver:
             -edge_margin,
             centre_distance,
             -mobility,
-            race_rank,
             tuple(candidate["sequence"]),
         )
 
