@@ -58,3 +58,7 @@ PLAYER_FALLBACK_TEST_UI_FIX_REPORT.md
 CHARGE_PRESERVATION_RANKING_REPORT.md
 .ui_status_copy_backup/
 UI_STATUS_COPY_REPORT.md
+.recharge_priority_ranking_backup/
+RECHARGE_PRIORITY_RANKING_REPORT.md
+.ui_cleanup_solution_copy_backup/
+UI_CLEANUP_SOLUTION_COPY_REPORT.md
