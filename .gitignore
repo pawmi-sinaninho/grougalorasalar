@@ -12,3 +12,7 @@ apps/web/node_modules/
 apps/web/.playwright-tmp/
 apps/web/playwright-report/
 apps/web/test-results/
+.capacity_fallback_solver_backup/
+CAPACITY_FALLBACK_SOLVER_REPORT.md
+.capacity_fallback_recursion_fix_backup/
+CAPACITY_FALLBACK_RECURSION_FIX_REPORT.md

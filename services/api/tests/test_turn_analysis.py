@@ -85,3 +85,52 @@ def test_same_action_under_plausible_hypothesis_stays_provisional() -> None:
     assert result["status"] == "provisional_solution"
     assert result["actions"]
     assert result["hypothesisSummary"]["evaluated"] == 2
+
+
+def test_capacity_error_retries_with_trusted_recognition_state() -> None:
+    from grougal_solver.solver import CapacityExceeded
+    from grougal_solver.turn_analysis import _solve_given_with_capacity_fallback
+
+    class FallbackSolver:
+        def __init__(self) -> None:
+            self.calls = []
+
+        def solve_given(self, state: dict, **kwargs: object) -> dict:
+            self.calls.append((state, kwargs))
+            if len(self.calls) == 1:
+                raise CapacityExceeded("solver timeout")
+            return {
+                "status": "provisional_solution",
+                "statusReasonCodes": ["S-SOLVED-CONTRACT"],
+                "expected": {"raceOutcome": "crocoburio_advance"},
+            }
+
+    state = {
+        "profileMode": "production_verified_profile",
+        "arena": {
+            "boundaryUnverified": [{"x": 13, "y": 0}],
+            "occludedUnknown": [{"x": 0, "y": 1}],
+        },
+        "flags": {
+            "pillarSetComplete": False,
+            "criticalFieldsConfirmed": False,
+            "recognitionValidated": False,
+        },
+    }
+
+    solver = FallbackSolver()
+    result = _solve_given_with_capacity_fallback(solver, state)  # type: ignore[arg-type]
+
+    assert result["status"] == "provisional_solution"
+    assert len(solver.calls) == 2
+    fallback_state = solver.calls[1][0]
+    fallback_kwargs = solver.calls[1][1]
+    assert fallback_state["arena"]["boundaryUnverified"] == []
+    assert fallback_state["arena"]["occludedUnknown"] == []
+    assert fallback_state["flags"]["pillarSetComplete"] is True
+    assert fallback_state["flags"]["criticalFieldsConfirmed"] is True
+    assert fallback_state["flags"]["recognitionValidated"] is True
+    assert fallback_state["profileMode"] == "capacity_fallback_trusted_recognition"
+    assert fallback_kwargs["timeout_seconds"] == 8.0
+    assert fallback_kwargs["max_nodes"] == 250_000
+    assert state["arena"]["boundaryUnverified"] == [{"x": 13, "y": 0}]
