@@ -8,6 +8,7 @@ header { border-left:5px solid #bce565; padding-left:20px; margin-bottom:24px; }
 .capture-controls button { width:auto; margin:0; padding:10px 14px; text-align:center; }
 .capture-controls .capture-turn { border-color:#bce565; background:#bce565; color:#08100c; font-weight:900; }
 .capture-controls .stop-window { background:transparent; }
+.capture-error { flex:1 1 360px; min-height:42px; display:flex; align-items:center; margin:0; padding:9px 12px; color:#ffcca0; background:#472417; border:1px solid #bd663f; border-radius:5px; font-weight:750; line-height:1.25; }
 .capture-source { position:fixed; width:1px; height:1px; opacity:0; pointer-events:none; }
 .loading-banner { position:sticky; z-index:20; top:10px; display:flex; align-items:center; gap:14px; margin:0 0 16px; padding:14px 18px; border:1px solid #bce565; background:#172219f2; box-shadow:0 12px 34px #0009; }
 .loading-banner div { display:grid; gap:2px; }.loading-banner strong { color:#dff8a9; }.loading-banner small { color:#b8c7be; }

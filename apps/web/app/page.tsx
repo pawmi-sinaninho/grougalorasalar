@@ -444,11 +444,12 @@ export default function Home() {
           <button type="button" className="choose-window" onClick={chooseGameWindow} disabled={busy}>{captureActive ? 'Changer la fenêtre Dofus' : 'Choisir la fenêtre Dofus'}</button>
           <button type="button" className="capture-turn" onClick={captureGameWindow} disabled={!captureActive || busy}>Capturer ce tour</button>
           {captureActive && <button type="button" className="stop-window" onClick={stopWindowCapture} disabled={busy}>Arrêter</button>}
+          {error && <p className="capture-error" role="alert">{error}</p>}
         </div>
         <video ref={captureVideo} className="capture-source" muted playsInline aria-hidden="true" />
       </header>
 
-      {busy && <div className="loading-banner" role="status" aria-live="polite"><span className="spinner" aria-hidden="true" /><div><strong>{data ? 'Analyse de la capture… (15–20 s par tour)' : 'Chargement de l’arène… (30–35 s au premier chargement)'}</strong><small>{data ? 'La capture est en cours de traitement.' : 'Premier chargement plus long : l’arène et les modèles se préparent.'}</small></div></div>}
+      {busy && <div className="loading-banner" role="status" aria-live="polite"><span className="spinner" aria-hidden="true" /><strong>{data ? 'Analyse de la capture…' : 'Analyse de l’arène…'}</strong></div>}
       {!imageUrl && <section className="upload">
         <div className="setup-guide" aria-label="Instructions de capture">
           <p className="step">MODE D'EMPLOI</p>
@@ -548,7 +549,6 @@ export default function Home() {
         </aside>}
       </div>}
 
-      {error && <p className="error" role="alert">{error}</p>}
       <footer className="site-credit">© 2026 Pawmi (Sinaninho)</footer>
     </main>
   );
