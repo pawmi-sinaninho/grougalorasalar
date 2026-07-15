@@ -85,7 +85,7 @@ type WorkerStage = { stage: string; elapsedMs: number };
 const stageLabels: Record<string, string> = {
   preview_ready: 'Aperçu local prêt', decode_started: 'Décodage local', decode_complete: 'Image décodée',
   working_copy_ready: 'Copie de travail créée', preprocessing_complete: 'Prétraitement terminé',
-  session_created: 'Session privée créée', upload_running: 'Chargement de l’arène (30–35 s au premier chargement)',
+  session_created: 'Session privée créée', upload_running: 'Analyse de l?ar?ne?',
   recognition_complete: 'Éléments détectés — vérification requise',
 };
 
