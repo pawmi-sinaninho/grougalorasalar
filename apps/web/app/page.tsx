@@ -32,6 +32,8 @@ function saveFightSnapshot(fight?: AnalysisEnvelope['fight'] | null): void {
   }
 }
 
+const publicBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
+
 function clearFightSnapshot(): void {
   if (typeof window === 'undefined') return;
   try {
@@ -221,7 +223,9 @@ export default function Home() {
 
   function startLocalWorker(file: File) {
     if (typeof Worker === 'undefined') return;
-    const worker = new Worker('/workers/analysis-worker.js');
+    const worker = new Worker(
+      `${publicBasePath}/workers/analysis-worker.js`
+    );
     worker.onmessage = (event: MessageEvent<WorkerStage & { type: string }>) => {
       if (event.data.type === 'stage') setProgress(event.data);
       if (event.data.type === 'complete' || event.data.type === 'error') worker.terminate();
