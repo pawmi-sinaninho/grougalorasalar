@@ -165,6 +165,105 @@ function canvasToBlob(canvas: HTMLCanvasElement, type: string, quality?: number)
   return new Promise(resolve => canvas.toBlob(resolve, type, quality));
 }
 
+function waitForCaptureFrame(
+  video: HTMLVideoElement,
+  timeoutMs = 5000,
+): Promise<void> {
+  const isReady = () =>
+    video.videoWidth > 0 &&
+    video.videoHeight > 0 &&
+    video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA;
+
+  if (isReady()) {
+    return Promise.resolve();
+  }
+
+  return new Promise((resolve, reject) => {
+    let settled = false;
+    let timeoutId = 0;
+
+    const cleanup = () => {
+      window.clearTimeout(timeoutId);
+      video.removeEventListener('loadedmetadata', check);
+      video.removeEventListener('loadeddata', check);
+      video.removeEventListener('canplay', check);
+      video.removeEventListener('playing', check);
+      video.removeEventListener('error', fail);
+    };
+
+    const finish = (error?: Error) => {
+      if (settled) return;
+
+      settled = true;
+      cleanup();
+
+      if (error) {
+        reject(error);
+      } else {
+        resolve();
+      }
+    };
+
+    const check = () => {
+      if (isReady()) {
+        finish();
+      }
+    };
+
+    const fail = () => {
+      finish(new Error('CAPTURE_VIDEO_ERROR'));
+    };
+
+    timeoutId = window.setTimeout(() => {
+      finish(new Error('CAPTURE_VIDEO_TIMEOUT'));
+    }, timeoutMs);
+
+    video.addEventListener('loadedmetadata', check);
+    video.addEventListener('loadeddata', check);
+    video.addEventListener('canplay', check);
+    video.addEventListener('playing', check);
+    video.addEventListener('error', fail);
+
+    check();
+  });
+}
+
+function captureErrorMessage(reason: unknown): string {
+  const error =
+    reason instanceof Error
+      ? reason
+      : null;
+
+  if (error?.message === 'CAPTURE_VIDEO_TIMEOUT') {
+    return 'La fenêtre a été partagée, mais aucune image exploitable n’a été reçue. Gardez Dofus visible puis réessayez.';
+  }
+
+  if (error?.message === 'CAPTURE_VIDEO_ERROR') {
+    return 'Le flux vidéo de la fenêtre sélectionnée est invalide. Arrêtez la capture puis sélectionnez Dofus à nouveau.';
+  }
+
+  if (error?.message === 'CAPTURE_VIDEO_PLAYBACK_BLOCKED') {
+    return 'Le navigateur a bloqué l’affichage local de la capture. Vérifiez les autorisations du site puis réessayez.';
+  }
+
+  switch (error?.name) {
+    case 'NotAllowedError':
+      return 'Le partage de l’écran a été annulé, refusé ou bloqué par le navigateur. Autorisez le partage puis réessayez.';
+
+    case 'InvalidStateError':
+      return 'Cliquez directement sur « Choisir la fenêtre Dofus » et gardez cette page active pendant la sélection.';
+
+    case 'NotReadableError':
+      return 'Le navigateur n’a pas pu lire la fenêtre sélectionnée. Fermez les autres captures d’écran puis réessayez.';
+
+    case 'NotFoundError':
+      return 'Aucune fenêtre partageable n’a été trouvée par le navigateur.';
+
+    default:
+      return 'La fenêtre Dofus n’a pas pu être ouverte. Réessayez puis sélectionnez la fenêtre Dofus.';
+  }
+}
+
 export default function Home() {
   const [token, setToken] = useState('');
   const [data, setData] = useState<AnalysisEnvelope | null>(null);
@@ -240,37 +339,90 @@ export default function Home() {
     setCaptureActive(false);
   }
 
-  async function chooseGameWindow() {
-    setError('');
-    if (!navigator.mediaDevices?.getDisplayMedia) {
-      setError('La capture de fenetre n est pas disponible dans ce navigateur. Choisissez une fenetre compatible ou utilisez un autre navigateur.');
-      return;
-    }
-    try {
-      stopWindowCapture();
-      const stream = await navigator.mediaDevices.getDisplayMedia({
-        video: { displaySurface: 'window' }, audio: false,
-      });
-      captureStream.current = stream;
-      if (captureVideo.current) {
-        captureVideo.current.srcObject = stream;
-        await captureVideo.current.play();
-      }
-      stream.getVideoTracks()[0]?.addEventListener('ended', stopWindowCapture, { once: true });
-      setCaptureActive(true);
-    } catch (reason) {
-      if ((reason as DOMException)?.name !== 'NotAllowedError') {
-        setError('La fenetre Dofus n a pas pu etre ouverte. Reessayez puis choisissez la fenetre Dofus.');
-      }
-    }
+async function chooseGameWindow() {
+  setError('');
+
+  if (!navigator.mediaDevices?.getDisplayMedia) {
+    setError(
+      'La capture de fenêtre n’est pas disponible dans ce navigateur.',
+    );
+    return;
   }
 
-  async function captureGameWindow() {
+  let stream: MediaStream | null = null;
+
+  try {
+    stopWindowCapture();
+
+    stream = await navigator.mediaDevices.getDisplayMedia({
+      video: { displaySurface: 'window' },
+      audio: false,
+    });
+
     const video = captureVideo.current;
-    if (!captureStream.current || !video || !video.videoWidth || !video.videoHeight) {
-      setError('La fenêtre de jeu n’est pas encore prête. Réessayez dans un instant.');
-      return;
+    const videoTrack = stream.getVideoTracks()[0];
+
+    if (!video || !videoTrack) {
+      throw new Error('CAPTURE_VIDEO_ERROR');
     }
+
+    captureStream.current = stream;
+
+    videoTrack.addEventListener(
+      'ended',
+      stopWindowCapture,
+      { once: true },
+    );
+
+    video.srcObject = stream;
+    video.muted = true;
+    video.playsInline = true;
+
+    try {
+      await video.play();
+    } catch (playbackError) {
+      console.error('Capture video playback failed', playbackError);
+      throw new Error('CAPTURE_VIDEO_PLAYBACK_BLOCKED');
+    }
+
+    await waitForCaptureFrame(video);
+
+    setCaptureActive(true);
+  } catch (reason) {
+    console.error('Window capture failed', reason);
+
+    stream?.getTracks().forEach(track => track.stop());
+
+    if (captureStream.current === stream) {
+      captureStream.current = null;
+    }
+
+    if (captureVideo.current?.srcObject === stream) {
+      captureVideo.current.srcObject = null;
+    }
+
+    setCaptureActive(false);
+    setError(captureErrorMessage(reason));
+  }
+}
+
+async function captureGameWindow() {
+  const video = captureVideo.current;
+
+  if (!captureStream.current || !video) {
+    setError(
+      'Aucune fenêtre Dofus active. Choisissez d’abord la fenêtre Dofus.',
+    );
+    return;
+  }
+
+  try {
+    await waitForCaptureFrame(video, 2500);
+  } catch (reason) {
+    console.error('Capture frame not ready', reason);
+    setError(captureErrorMessage(reason));
+    return;
+  }
     const canvas = document.createElement('canvas');
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
@@ -450,8 +602,14 @@ export default function Home() {
           {captureActive && <button type="button" className="stop-window" onClick={stopWindowCapture} disabled={busy}>Arrêter</button>}
           {error && <p className="capture-error" role="alert">{error}</p>}
         </div>
-        <video ref={captureVideo} className="capture-source" muted playsInline aria-hidden="true" />
-      </header>
+        <video
+          ref={captureVideo}
+          className="capture-source"
+          autoPlay
+          muted
+          playsInline
+          aria-hidden="true"
+        />      </header>
 
       {busy && <div className="loading-banner" role="status" aria-live="polite"><span className="spinner" aria-hidden="true" /><strong>{data ? 'Analyse de la capture…' : 'Analyse de l’arène…'}</strong></div>}
       {!imageUrl && <section className="upload">
