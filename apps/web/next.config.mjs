@@ -7,6 +7,7 @@ const nextConfig = {
   typedRoutes: false,
   basePath,
   assetPrefix: basePath || undefined,
+  trailingSlash: true,
   turbopack: {
     root: process.cwd()
   }
